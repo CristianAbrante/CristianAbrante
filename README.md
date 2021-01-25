@@ -10,7 +10,10 @@
 <a href="https://twitter.com/CristianAbrante" target="blank">
     <img align="center" src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/twitter.svg" alt="apoorv__tyagi" height="30" width="30" />
 </a>&nbsp;
-<a href="www.cristianabrante.com" target="blank">
+<a href="https://instagram.com/CristianAbrante" target="blank">
+    <img align="center" src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/instagram.svg" alt="apoorv__tyagi" height="30" width="30" />
+</a>&nbsp;
+<a href="http://cristianabrante.com" target="blank">
     <img align="center" src="https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/notion.svg" alt="apoorv__tyagi" height="30" width="30" />
 </a>&nbsp;
 </p>
@@ -41,7 +44,7 @@ This is an extract of my projects divided by topics.
 ### 🕸️ Web projects (React + Typescript)
 
 - **Genetics Knapsack**: [https://github.com/CristianAbrante/GeneticsJsKnapsack](https://github.com/CristianAbrante/GeneticsJsKnapsack)
-- **React CV app**: [https://github.com/CristianAbrante/ReactVision](https://github.com/CristianAbrante/ReactVision)
+- **React computer vision app**: [https://github.com/CristianAbrante/ReactVision](https://github.com/CristianAbrante/ReactVision)
 - **YOLO in browser**: [https://github.com/CristianAbrante/YOLO-in-browser](https://github.com/CristianAbrante/YOLO-in-browser)
 
 ### 💻 CS / research Projects
