@@ -15,7 +15,11 @@
 
 > 📈 data science student at [Aalto University](www.aalto.fi/en) (Helsinki, Finland) 🇫🇮.
 
-<div style="display:flex; width:50vw">
-    <img style="margin-right:5px" src="https://github-readme-stats.vercel.app/api/top-langs/?username=CristianAbrante&layout=compact&theme=solarized-light"/>
+<div align="center">
+    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=CristianAbrante&layout=compact&theme=solarized-light"/>
     <img src="https://github-readme-stats.vercel.app/api?username=CristianAbrante&show_icons=true&theme=solarized-light&hide=issues,prs"/>
 </div>
+
+## 👨🏻‍💻 About me
+
+Here you can check out all my projects:
