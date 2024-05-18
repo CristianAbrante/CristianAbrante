@@ -5,7 +5,7 @@
 
 ## 👨🏻‍💻 About me
 
-Software engineer at [Unity Technologies](https://unity.com/products/unity-ads) with a passion for data engineering and a strong academic background in data science.
+Passionate Data Engineer, currently working at [Foodello & Fiksuruoka.fi](https://www.foodello.com/choose-country-region), with a solid foundation in data science, gained through diverse international experiences. Currently thriving in a dynamic startup environment, I specialize in designing and implementing robust data and analytics architectures that drive business insights and decision-making.
 
 #### Technical Skills
 
@@ -15,9 +15,7 @@ Software engineer at [Unity Technologies](https://unity.com/products/unity-ads) 
 
 ## 🏗 Projects
 
-I like to share my personal projects and academic assignments with the GitHub community.
-
-This is an extract of those:
+This is an extract of my project (both personal and academic):
 
 #### Data science related projects
 
