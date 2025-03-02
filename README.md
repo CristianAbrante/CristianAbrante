@@ -11,7 +11,6 @@ Passionate Data Engineer with a strong foundation in data science, shaped by div
 
 - 👨🏻‍💻 Data Engineer - [`alohas.com`](https://alohas.com/)  
 *Barcelona, Spain | March 2025 - Present*  
-🛠 **Technologies**: SQL · dbt · Snowflake · Dagster · Terraform · GCP · Tableau
 
 - 👨🏻‍💻 Data Engineer - [`@Fiksuruoka-fi`](https://github.com/Fiksuruoka-fi)  
 *Helsinki, Finland | October 2023 - February 2025*  
