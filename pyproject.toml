@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "cristianabrante"
+version = "0.1.0"
+description = ""
+authors = ["Cristian Abrante <cristian@abrante.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+rendercv = {extras = ["full"], version = "^2.2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
