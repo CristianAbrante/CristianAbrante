@@ -5,7 +5,7 @@
 
 ## 👨🏻‍💻 About me
 
-Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at [Alohas.com](https://alohas.com/), a young, sustainability-focused fashion company, where I design and implement scalable data and analytics architectures to drive business insights and decision-making.
+Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at [Alohas.com](https://alohas.com/), where I design and implement scalable data and analytics architectures to drive business insights and decision-making.
 
 ## 💼 Work Experience
 
