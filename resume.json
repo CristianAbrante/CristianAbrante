@@ -40,7 +40,8 @@
         "Built data infrastructure and pipelines for analytics platforms",
         "Designed scalable data architectures supporting business growth",
         "Implemented data solutions enabling data-driven decision-making"
-      ]
+      ],
+      "visibility": ["readme", "pdf", "website"]
     },
     {
       "name": "Foodello - Fiksuruoka.fi",
@@ -55,7 +56,8 @@
         "Implemented data transformations in Snowflake data warehouse",
         "Built infrastructure as code using Terraform on GCP",
         "Created business intelligence dashboards using Tableau"
-      ]
+      ],
+      "visibility": ["readme", "website"]
     },
     {
       "name": "Unity Technologies",
@@ -70,7 +72,8 @@
         "Implemented data transformations and models using dbt and Snowflake",
         "Developed workflow orchestration solutions with Apache Airflow",
         "Managed cloud infrastructure on GCP using Terraform"
-      ]
+      ],
+      "visibility": ["readme", "website"]
     },
     {
       "name": "Unity Technologies",
@@ -84,7 +87,8 @@
         "Developed JavaScript and TypeScript applications",
         "Implemented automated testing using Jest",
         "Designed and documented APIs using OpenAPI Specification"
-      ]
+      ],
+      "visibility": ["readme", "website"]
     },
     {
       "name": "Aalto University",
@@ -98,7 +102,8 @@
         "Graded assignments for Methods of Data Mining course",
         "Provided constructive feedback to students",
         "Collaborated with PhD Wilhelmiina Hämäläinen"
-      ]
+      ],
+      "visibility": ["website"]
     },
     {
       "name": "ATECRESA",
@@ -112,7 +117,8 @@
         "Designed and developed scalable e-commerce platform",
         "Built solutions for restaurant sector in Canary Islands",
         "Full-stack development role"
-      ]
+      ],
+      "visibility": ["website"]
     },
     {
       "name": "Universidad de La Laguna",
@@ -127,7 +133,8 @@
         "Developed GeneticsJS, an open-source framework for evolutionary algorithms",
         "Funded by Spanish Education Ministry national collaboration grant",
         "Worked under PhD supervision on software engineering research"
-      ]
+      ],
+      "visibility": ["website"]
     }
   ],
   "volunteer": [],
@@ -153,7 +160,8 @@
         "Part of EIT Digital master's program",
         "Completed thesis: https://github.com/CristianAbrante/masters-thesis-data-science",
         "Course projects on GitHub: Machine Learning, Data Mining, Reinforcement Learning"
-      ]
+      ],
+      "visibility": ["pdf", "website"]
     },
     {
       "institution": "Coventry University",
@@ -171,7 +179,8 @@
         "Worked on real-world healthcare business case",
         "Collaborated with WCS Care Services (UK)",
         "Developed complete business model for proposed solution"
-      ]
+      ],
+      "visibility": ["website"]
     },
     {
       "institution": "Universidad Politécnica de Madrid",
@@ -194,7 +203,8 @@
         "Part of EIT Digital master's program (Year 1)",
         "Combined technical data science with business/entrepreneurship",
         "Foundation in statistical analysis and big data technologies"
-      ]
+      ],
+      "visibility": ["pdf", "website"]
     },
     {
       "institution": "Universidad de La Laguna",
@@ -226,7 +236,8 @@
         "Best academic record of promotion",
         "Strong foundation in algorithms, software engineering, and data science",
         "Technologies: Java, C++, JavaScript, HTML5, CSS3, Git"
-      ]
+      ],
+      "visibility": ["website"]
     },
     {
       "institution": "I.E.S. Lucas Martín Espino",
@@ -242,7 +253,8 @@
         "Grade: 9.81/10 (highest grade)",
         "Obtained with honors",
         "Best academic record of promotion"
-      ]
+      ],
+      "visibility": ["website"]
     },
     {
       "institution": "I.E.S. San Marcos",
@@ -254,7 +266,8 @@
       "summary": "Science and technology track in secondary education.",
       "courses": [],
       "keywords": ["Science", "Technology"],
-      "highlights": []
+      "highlights": [],
+      "visibility": ["website"]
     },
     {
       "institution": "I.E.S. El Tanque",
@@ -270,7 +283,8 @@
         "Grade: 9.55/10 (highest grade)",
         "Obtained with honors",
         "Best academic record of promotion"
-      ]
+      ],
+      "visibility": ["website"]
     }
   ],
   "awards": [
@@ -278,13 +292,15 @@
       "title": "Extraordinary Award for Academic Performance in Bachelor's Degree",
       "date": "2019-11-01",
       "awarder": "Universidad de La Laguna",
-      "summary": "Award obtained for exceptional academic performance in the Bachelor's degree in Computer Science at La Laguna University."
+      "summary": "Award obtained for exceptional academic performance in the Bachelor's degree in Computer Science at La Laguna University.",
+      "visibility": ["website"]
     },
     {
       "title": "Best Project Award - GeneticJS",
       "date": "2019-04-01",
       "awarder": "Oficina de Software Libre - Universidad de La Laguna",
-      "summary": "Special award for best project in the local phase of the Spanish University free software contest, given to the project GeneticJS."
+      "summary": "Special award for best project in the local phase of the Spanish University free software contest, given to the project GeneticJS.",
+      "visibility": ["website"]
     }
   ],
   "certificates": [],
@@ -300,32 +316,38 @@
         "Apache Spark",
         "Apache Druid",
         "Airflow"
-      ]
+      ],
+      "visibility": ["website"]
     },
     {
       "name": "Programming Languages",
       "level": "Advanced",
-      "keywords": ["SQL", "Python", "JavaScript", "TypeScript"]
+      "keywords": ["SQL", "Python", "JavaScript", "TypeScript"],
+      "visibility": ["website"]
     },
     {
       "name": "Cloud & Infrastructure",
       "level": "Advanced",
-      "keywords": ["GCP", "Terraform"]
+      "keywords": ["GCP", "Terraform"],
+      "visibility": ["website"]
     },
     {
       "name": "Analytics & Tools",
       "level": "Intermediate",
-      "keywords": ["Tableau", "Jest", "OpenAPI"]
+      "keywords": ["Tableau", "Jest", "OpenAPI"],
+      "visibility": ["website"]
     }
   ],
   "languages": [
     {
       "language": "Spanish",
-      "fluency": "Native speaker"
+      "fluency": "Native speaker",
+      "visibility": ["website"]
     },
     {
       "language": "English",
-      "fluency": "Full professional proficiency"
+      "fluency": "Full professional proficiency",
+      "visibility": ["website"]
     }
   ],
   "interests": [],
