@@ -23,10 +23,64 @@ npm run generate:readme
   - Links section (LinkedIn, GitHub, website, email)
 
 **Features:**
-- Automatically detects and displays technologies from work highlights
+- Displays technologies from `technologies` field
 - Formats dates as "Month Year - Month Year" (or "Present")
 - Handles GitHub organization URLs with special formatting
 - Adds HTML comments indicating the file is auto-generated
+
+---
+
+### `generate-cv.js`
+
+Generates LaTeX CV from `resume.json`.
+
+**Usage:**
+```bash
+npm run generate:cv
+```
+
+**What it does:**
+- Reads `resume.json`
+- Filters entries with `visibility: ["pdf"]`
+- Generates LaTeX file at `cv/output/cv.tex` with:
+  - Work Experience (latest position only)
+  - Education (master's degrees only)
+  - Contact information in sidebar
+  - Technologies for each position
+
+**Features:**
+- Escapes LaTeX special characters automatically
+- Formats dates for LaTeX documents
+- Copies necessary template files (altacv.cls, picture.jpg)
+- Auto-generated comment in output file
+
+**Compiling to PDF:**
+After generating the LaTeX file, compile it:
+```bash
+cd cv/output && pdflatex cv.tex
+```
+
+Or run both steps:
+```bash
+npm run generate:cv && cd cv/output && pdflatex -interaction=nonstopmode cv.tex
+```
+
+See [cv/README.md](../cv/README.md) for full documentation.
+
+---
+
+### `generate:all` (Coming in Phase 7)
+
+Generates all formats at once:
+```bash
+npm run generate:all
+```
+
+Currently generates:
+- README.md
+- LaTeX CV (cv.tex)
+
+Future: Will also generate website files.
 
 ## Future Scripts
 
