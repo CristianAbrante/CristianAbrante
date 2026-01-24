@@ -20,13 +20,13 @@ jobs:
           node-version: '20'
       
       - name: Install dependencies
-        run: npm install -g resume-schema
+        run: npm install -g @jsonresume/schema
       
       - name: Validate resume.json against schema
         run: |
           node -e "
           const fs = require('fs');
-          const resumeSchema = require('resume-schema');
+          const resumeSchema = require('@jsonresume/schema');
           const resume = JSON.parse(fs.readFileSync('./resume.json', 'utf8'));
           
           resumeSchema.validate(resume, (err, report) => {
