@@ -55,31 +55,6 @@ function formatDateRange(startDate, endDate) {
 }
 
 /**
- * Extract technologies from highlights or summary
- */
-function extractTechnologies(workEntry) {
-  const techKeywords = [
-    'SQL', 'dbt', 'Snowflake', 'Dagster', 'Terraform', 'GCP', 'Tableau',
-    'Apache Spark', 'Apache Druid', 'Airflow', 'Python', 'JavaScript', 
-    'TypeScript', 'Git', 'Jest', 'OpenAPI'
-  ];
-  
-  const text = [
-    workEntry.summary || '',
-    ...(workEntry.highlights || [])
-  ].join(' ');
-  
-  const foundTechs = new Set();
-  techKeywords.forEach(tech => {
-    if (text.includes(tech)) {
-      foundTechs.add(tech);
-    }
-  });
-  
-  return Array.from(foundTechs);
-}
-
-/**
  * Generate work experience section
  */
 function generateWorkExperience(resume) {
@@ -105,10 +80,9 @@ function generateWorkExperience(resume) {
     markdown += `- 👨🏻‍💻 ${work.position} - ${displayName}  \n`;
     markdown += `*${location}, ${country} | ${dateRange}*  \n`;
     
-    // Add technologies if available
-    const technologies = extractTechnologies(work);
-    if (technologies.length > 0) {
-      markdown += `🛠 **Technologies**: ${technologies.join(' · ')}`;
+    // Add technologies if available in the technologies field
+    if (work.technologies && Array.isArray(work.technologies) && work.technologies.length > 0) {
+      markdown += `🛠 **Technologies**: ${work.technologies.join(' · ')}`;
     }
     
     markdown += '\n\n';

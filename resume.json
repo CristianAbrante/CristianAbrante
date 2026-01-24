@@ -41,6 +41,7 @@
         "Designed scalable data architectures supporting business growth",
         "Implemented data solutions enabling data-driven decision-making"
       ],
+      "technologies": ["Dagster", "dbt", "BigQuery"],
       "visibility": ["readme", "pdf", "website"]
     },
     {
@@ -57,6 +58,7 @@
         "Built infrastructure as code using Terraform on GCP",
         "Created business intelligence dashboards using Tableau"
       ],
+      "technologies": ["dbt", "Snowflake", "Dagster", "Terraform", "GCP", "Tableau"],
       "visibility": ["readme", "website"]
     },
     {
@@ -73,6 +75,7 @@
         "Developed workflow orchestration solutions with Apache Airflow",
         "Managed cloud infrastructure on GCP using Terraform"
       ],
+      "technologies": ["Scala", "Apache Spark", "Apache Druid", "Airflow", "dbt", "Snowflake"],
       "visibility": ["readme", "website"]
     },
     {
@@ -88,6 +91,7 @@
         "Implemented automated testing using Jest",
         "Designed and documented APIs using OpenAPI Specification"
       ],
+      "technologies": ["JavaScript", "TypeScript", "Jest", "OpenAPI"],
       "visibility": ["readme", "website"]
     },
     {
@@ -103,6 +107,7 @@
         "Provided constructive feedback to students",
         "Collaborated with PhD Wilhelmiina Hämäläinen"
       ],
+      "technologies": [],
       "visibility": ["website"]
     },
     {
@@ -118,6 +123,7 @@
         "Built solutions for restaurant sector in Canary Islands",
         "Full-stack development role"
       ],
+      "technologies": ["React", "TypeScript", "Node.js", "GraphQL"],
       "visibility": ["website"]
     },
     {
@@ -134,6 +140,7 @@
         "Funded by Spanish Education Ministry national collaboration grant",
         "Worked under PhD supervision on software engineering research"
       ],
+      "technologies": ["TypeScript", "Evolutionary Algorithms", "Optimization"],
       "visibility": ["website"]
     }
   ],

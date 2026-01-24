@@ -14,7 +14,7 @@ Passionate Data Engineer with a strong foundation in data science, shaped by div
 
 - 👨🏻‍💻 Data Engineer - [`@ALOHAS2020`](https://github.com/ALOHAS2020)  
 *Barcelona, Spain | March 2025 - Present*  
-
+🛠 **Technologies**: Dagster · dbt · BigQuery
 
 - 👨🏻‍💻 Data Engineer - [`@Fiksuruoka-fi`](https://github.com/Fiksuruoka-fi)  
 *Helsinki, Finland | October 2023 - February 2025*  
@@ -22,7 +22,7 @@ Passionate Data Engineer with a strong foundation in data science, shaped by div
 
 - 👨🏻‍💻 Software Engineer - [`@Unity-Technologies`](https://github.com/Unity-Technologies)  
 *Helsinki, Finland | September 2021 - October 2023*  
-🛠 **Technologies**: dbt · Snowflake · Terraform · GCP · Apache Spark · Apache Druid · Airflow
+🛠 **Technologies**: Scala · Apache Spark · Apache Druid · Airflow · dbt · Snowflake
 
 - 👨🏻‍💻 Software Engineer Intern - [`@Unity-Technologies`](https://github.com/Unity-Technologies)  
 *Helsinki, Finland | April 2021 - September 2021*  
