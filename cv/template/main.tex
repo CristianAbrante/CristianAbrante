@@ -35,7 +35,7 @@
 
 
 % Change the page layout if you need to
-\geometry{left=1cm,right=9cm,marginparwidth=6.8cm,marginparsep=1.2cm,top=1.25cm,bottom=1.25cm,footskip=2}
+\geometry{left=1cm,right=9cm,marginparwidth=6.8cm,marginparsep=1.2cm,top=1.25cm,bottom=1.25cm,footskip=2pt}
 
 % Change the font if you want to.
 
@@ -71,172 +71,44 @@
 
 \hypersetup{urlcolor=links}
 
-\name{Cristian Abrante}
-\tagline{Data Engineer at ALOHAS}
-\photo{2.5cm}{picture}
+%% IMPORTANT: This is a TEMPLATE file for reference only.
+%% The actual CV is generated from resume.json using:
+%%   npm run generate:cv
+%%
+%% This generates cv/output/cv.tex with all content from resume.json.
+%% To customize colors, fonts, or layout, edit this template and
+%% regenerate the CV.
 
-%
-%\personalinfo{%
-  % Not all of these are required!
-  % You can add your own with \printinfo{symbol}{detail}
-%  \email{cristianabrantedorta@gmail.com}
-%  \phone{+34 634682893}
-%  \mailaddress{Calle Calvo Sotelo, nº 6, El Tanque}
-%  \location{Santa Cruz de Tenerife, España}
-%  \homepage{www.cristianabrante.com}
-%  \linkedin{linkedin.com/in/cristianabrante}
-%  \github{github.com/CristianAbrante}
-  %% You MUST add the academicons option to \documentclass, then compile with LuaLaTeX or XeLaTeX, if you want to use \orcid or other academicons commands.
-%   \orcid{orcid.org/0000-0000-0000-0000}
-%}
+%% Example structure (actual content comes from resume.json):
 
-%% Make the header extend all the way to the right, if you want. 
-\begin{fullwidth}
-\makecvheader
-\end{fullwidth}
-
-%% Depending on your tastes, you may want to make fonts of itemize environments slightly smaller
-%% \AtBeginEnvironment{itemize}{\small}
-
-
-%% Provide the file name containing the sidebar contents as an optional parameter to \cvsection.
-%% You can always just use \marginpar{...} if you do
-%% not need to align the top of the contents to any
-%% \cvsection title in the "main" bar.
-
-%% FOR DEFINING EXPERIENCE
-%%\cvsection[page1sidebar]{Summary}
-
-%%Software engineer at Unity technologies. Final year student of Data Science and digital innovation at Aalto University. Passionate about working with data and especially interested in data engineering.
-
-%% FOR DEFINING EXPERIENCE
-\cvsection[page1sidebar]{Work Experience}
-
-\cvevent{Data engineer}
-{ALOHAS (alohas.com)}
-{March 2025 - Present}{Barcelona, Spain}
-
-Responsible for the design and maintainance of the retail data pipeline.
-
-\medskip{}
-
-Skills: \textbf{Dagster}, \textbf{dbt}, \textbf{BigQuery}
-
-\divider
-
-\cvevent{Data engineer}
-{Foodello \& Fiksuruoka.fi}
-{October 2023 - February 2025}{Helsinki, Finland}
-
-Responsible for maintaining and improving the dbt analytics pipeline, orchestration platform and infrastructure as code. Ensuring data-driven decisions across the organization.
-
-\medskip{}
-
-Skills: \textbf{Dagster}, \textbf{dbt}, \textbf{SnowFlake}, \textbf{Terraform}
-
-\divider
-
-\cvevent{Software / data engineer}
-{Unity Technologies}
-{April 2021 - October 2023}{Helsinki, Finland}
-
-
-Contributed to transforming the UnityAds platform's reporting pipelines from Spark-based systems to a modern architecture with dbt and Snowflake.
-
-\medskip{}
-
-Skills: \textbf{Scala}, \textbf{Spark}, \textbf{Airflow}, \textbf{dbt}, \textbf{SnowFlake}
-
-\divider
-
-\cvevent{Full stack engineer}
-{ATECRESA}
-{March 2019 - June 2019}{Canary Islands, Spain}
-Development of an e-commerce platform that would be used by different costumers in the hospitalarity industry of the Canary Islands. \\
-
-\medskip{}
-
-Skills: \textbf{React}, \textbf{TypeScript}, \textbf{Node}, \textbf{GraphQL}
-
-\divider
-
-% \cvevent{Research intern}
-% {La Laguna University}
-% {November 2018 -- July 2019}{Canary Islands, Spain}
-
-% Research intern at the Languages and Computer Systems Group (La Laguna University), funded with the national university collaboration grant of the Spanish Education Ministry.
-
+% \name{Your Name}
+% \tagline{Your Job Title}
+% \photo{2.5cm}{picture}
+% 
+% \personalinfo{%
+%   \email{your.email@example.com}
+%   \homepage{yourwebsite.com}
+%   \linkedin{yourlinkedin}
+%   \github{yourgithub}
+% }
+% 
+% \begin{fullwidth}
+% \makecvheader
+% \end{fullwidth}
+% 
+% \cvsection[page1sidebar]{Work Experience}
+% 
+% \cvevent{Position}{Company}{Date Range}{Location}
+% Description of the role...
+% 
 % \medskip{}
-
-% Skills: \textbf{Optimization}, \textbf{Algorithms}, \textbf{Genetic Algorithms}, \textbf{TypeScript}
-
-%\divider
-
-%\cvevent{Job Title 2}{Company 2}{Month 20XX -- Ongoing}{Location}
-%%\begin{itemize}
-%%\item Job description 1
-
-%%\item Job description 2
-%%\end{itemize}
-
-%% END OF EXPERIENCE
-
-%% BEGIN OF EDUCATION
-
-\cvsection{Education}
-
-\cvevent{Master's in Data Science \& Digital Innovation (2nd year)}
-{Aalto University \& EIT Digital}
-{September 2020 -- November 2022}{Helsinki, Finland}
-
-I deepen my knowledge of data science subjects and also study entrepreneurship topics.
-
-\medskip{}
-
-Subjects: \textbf{Machine Learning}, \textbf{Data Mining}, \textbf{Reinforcement Learning}
-
-\divider
-
-%\cvevent{EIT Digital Summer school}
-%{Coventry University}
-%{August 2020}{Coventry, UK}
-
-%Study and development of a business case provided by WCS in the context of elderly care homes in the UK.
-
-%\divider
-
-\cvevent{Master's in Data Science \& Digital Innovation (1st year)}
-{Universidad politécnica de Madrid \& EIT Digital}
-{September 2019 -- June 2020}{Madrid, Spain}
-
-I gained strong foundations in data science and engineering while also learning about business and entrepreneurship concepts.
-
-\medskip{}
-
-Subjects: \textbf{Statistical Data Analysis}, \textbf{Data Processes}, \textbf{Deep Learning}
-
+% Skills: \textbf{Tech1}, \textbf{Tech2}
+% 
 % \divider
-
-% \cvevent{Bachelor's degree in Computer Science \& Engineering}
-% {Universidad de La Laguna}
-% {September 2015 -- June 2019}{Canary Islands, Spain}
-
-% Foundations of Computer Science and AI. Thesis project in the field of evolutionary algorithms and software development. \\
-
-\medskip{}
-
-Skills: \textbf{Java}, \textbf{C++}, \textbf{JavaScript}, \textbf{Git}
-
-%% END OF EDUCATION
-
-%% used to clear the page
-%% \clearpage
-
-%% If the NEXT page doesn't start with a \cvsection but you'd
-%% still like to add a sidebar, then use this command on THIS
-%% page to add it. The optional argument lets you pull up the 
-%% sidebar a bit so that it looks aligned with the top of the
-%% main column.
-% \addnextpagesidebar[-1ex]{page3sidebar}
+% 
+% \cvsection{Education}
+% 
+% \cvevent{Degree}{Institution}{Date Range}{Location}
+% Description of studies...
 
 \end{document}
