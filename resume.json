@@ -32,7 +32,8 @@
     {
       "name": "ALOHAS",
       "position": "Data Engineer",
-      "url": "https://alohas.com/",
+      "location": "Barcelona, Catalonia, Spain",
+      "url": "https://github.com/ALOHAS2020",
       "startDate": "2025-03-01",
       "summary": "Designing and implementing scalable data and analytics architectures to drive business insights and decision-making.",
       "highlights": [
@@ -42,8 +43,9 @@
       ]
     },
     {
-      "name": "Fiksuruoka",
+      "name": "Foodello - Fiksuruoka.fi",
       "position": "Data Engineer",
+      "location": "Helsinki, Finland",
       "url": "https://github.com/Fiksuruoka-fi",
       "startDate": "2023-10-01",
       "endDate": "2025-02-28",
@@ -58,6 +60,7 @@
     {
       "name": "Unity Technologies",
       "position": "Software Engineer",
+      "location": "Helsinki, Finland",
       "url": "https://github.com/Unity-Technologies",
       "startDate": "2021-09-01",
       "endDate": "2023-10-31",
@@ -72,6 +75,7 @@
     {
       "name": "Unity Technologies",
       "position": "Software Engineer Intern",
+      "location": "Helsinki, Finland",
       "url": "https://github.com/Unity-Technologies",
       "startDate": "2021-04-01",
       "endDate": "2021-09-30",
@@ -80,6 +84,49 @@
         "Developed JavaScript and TypeScript applications",
         "Implemented automated testing using Jest",
         "Designed and documented APIs using OpenAPI Specification"
+      ]
+    },
+    {
+      "name": "Aalto University",
+      "position": "Teacher Assistant (Grader)",
+      "location": "Helsinki, Finland",
+      "url": "https://www.aalto.fi/",
+      "startDate": "2020-10-01",
+      "endDate": "2021-01-31",
+      "summary": "Graded student assignments in Methods of Data Mining course taught by PhD Wilhelmiina Hämäläinen, providing feedback and ensuring fair grading.",
+      "highlights": [
+        "Graded assignments for Methods of Data Mining course",
+        "Provided constructive feedback to students",
+        "Collaborated with PhD Wilhelmiina Hämäläinen"
+      ]
+    },
+    {
+      "name": "ATECRESA",
+      "position": "Full Stack Engineer",
+      "location": "San Cristóbal de La Laguna, Canary Islands, Spain",
+      "url": "https://atecresa.com/",
+      "startDate": "2019-03-01",
+      "endDate": "2020-01-31",
+      "summary": "Designed and developed a scalable e-commerce platform for the restaurant sector in the Canary Islands.",
+      "highlights": [
+        "Designed and developed scalable e-commerce platform",
+        "Built solutions for restaurant sector in Canary Islands",
+        "Full-stack development role"
+      ]
+    },
+    {
+      "name": "Universidad de La Laguna",
+      "position": "Research Intern (Evolutionary Algorithms)",
+      "location": "San Cristóbal de La Laguna, Canary Islands, Spain",
+      "url": "https://www.ull.es/",
+      "startDate": "2018-11-01",
+      "endDate": "2019-06-30",
+      "summary": "Research intern at the Languages and Computer Systems Group, funded by the Spanish Education Ministry's national university collaboration grant, under the tutelage of PhD Eduardo M. Segredo González and PhD Coromoto A. León Hernández.",
+      "highlights": [
+        "Researched evolutionary algorithms and multi-objective optimization",
+        "Developed GeneticsJS, an open-source framework for evolutionary algorithms",
+        "Funded by Spanish Education Ministry national collaboration grant",
+        "Worked under PhD supervision on software engineering research"
       ]
     }
   ],
