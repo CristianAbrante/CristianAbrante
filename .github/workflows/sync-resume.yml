@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -57,7 +58,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add README.md
           git commit -m "chore: auto-update README.md from resume.json [skip ci]"
-          git push
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
       - name: Get version from resume.json
         id: get_version
@@ -73,6 +74,7 @@ jobs:
           retention-days: 90
 
       - name: Create Release with PDF
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: cv-${{ steps.get_version.outputs.version }}
