@@ -1,0 +1,168 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Cristian Abrante",
+    "label": "Data Engineer",
+    "image": "",
+    "email": "cristian@abrante.me",
+    "phone": "",
+    "url": "https://cristianabrante.com",
+    "summary": "Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at Alohas.com, where I design and implement scalable data and analytics architectures to drive business insights and decision-making.",
+    "location": {
+      "address": "",
+      "postalCode": "",
+      "city": "Barcelona",
+      "countryCode": "ES",
+      "region": "Catalonia"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "cristianabrante",
+        "url": "https://www.linkedin.com/in/cristianabrante/"
+      },
+      {
+        "network": "GitHub",
+        "username": "CristianAbrante",
+        "url": "https://github.com/CristianAbrante"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "ALOHAS",
+      "position": "Data Engineer",
+      "url": "https://alohas.com/",
+      "startDate": "2025-03-01",
+      "endDate": "",
+      "summary": "Designing and implementing scalable data and analytics architectures to drive business insights and decision-making.",
+      "highlights": [
+        "Built data infrastructure and pipelines for analytics platforms",
+        "Designed scalable data architectures supporting business growth",
+        "Implemented data solutions enabling data-driven decision-making"
+      ]
+    },
+    {
+      "name": "Fiksuruoka",
+      "position": "Data Engineer",
+      "url": "https://github.com/Fiksuruoka-fi",
+      "startDate": "2023-10-01",
+      "endDate": "2025-02-28",
+      "summary": "Data engineering role focused on building and maintaining data pipelines and infrastructure.",
+      "highlights": [
+        "Developed and maintained data pipelines using dbt and Dagster",
+        "Implemented data transformations in Snowflake data warehouse",
+        "Built infrastructure as code using Terraform on GCP",
+        "Created business intelligence dashboards using Tableau"
+      ]
+    },
+    {
+      "name": "Unity Technologies",
+      "position": "Software Engineer",
+      "url": "https://github.com/Unity-Technologies",
+      "startDate": "2021-09-01",
+      "endDate": "2023-10-31",
+      "summary": "Software engineering role working with data engineering technologies and distributed systems.",
+      "highlights": [
+        "Built data pipelines using Apache Spark and Apache Druid for large-scale data processing",
+        "Implemented data transformations and models using dbt and Snowflake",
+        "Developed workflow orchestration solutions with Apache Airflow",
+        "Managed cloud infrastructure on GCP using Terraform"
+      ]
+    },
+    {
+      "name": "Unity Technologies",
+      "position": "Software Engineer Intern",
+      "url": "https://github.com/Unity-Technologies",
+      "startDate": "2021-04-01",
+      "endDate": "2021-09-30",
+      "summary": "Software engineering internship focused on web development and API design.",
+      "highlights": [
+        "Developed JavaScript and TypeScript applications",
+        "Implemented automated testing using Jest",
+        "Designed and documented APIs using OpenAPI Specification"
+      ]
+    }
+  ],
+  "volunteer": [],
+  "education": [
+    {
+      "institution": "Aalto University",
+      "url": "https://www.aalto.fi/",
+      "area": "Data Science",
+      "studyType": "Master of Science",
+      "startDate": "2020-01-01",
+      "endDate": "2022-12-31",
+      "score": "",
+      "courses": []
+    },
+    {
+      "institution": "Universidad de La Laguna",
+      "url": "https://www.ull.es/",
+      "area": "Computer Science",
+      "studyType": "Bachelor",
+      "startDate": "2015-09-01",
+      "endDate": "2019-06-30",
+      "score": "",
+      "courses": []
+    }
+  ],
+  "awards": [
+    {
+      "title": "Extraordinary Award for Academic Performance in Bachelor's Degree",
+      "date": "2019-11-01",
+      "awarder": "Universidad de La Laguna",
+      "summary": "Award obtained for exceptional academic performance in the Bachelor's degree in Computer Science at La Laguna University."
+    },
+    {
+      "title": "Best Project Award - GeneticJS",
+      "date": "2019-04-01",
+      "awarder": "Oficina de Software Libre - Universidad de La Laguna",
+      "summary": "Special award for best project in the local phase of the Spanish University free software contest, given to the project GeneticJS."
+    }
+  ],
+  "certificates": [],
+  "publications": [],
+  "skills": [
+    {
+      "name": "Data Engineering",
+      "level": "Advanced",
+      "keywords": [
+        "dbt",
+        "Snowflake",
+        "Dagster",
+        "Apache Spark",
+        "Apache Druid",
+        "Airflow"
+      ]
+    },
+    {
+      "name": "Programming Languages",
+      "level": "Advanced",
+      "keywords": ["SQL", "Python", "JavaScript", "TypeScript"]
+    },
+    {
+      "name": "Cloud & Infrastructure",
+      "level": "Advanced",
+      "keywords": ["GCP", "Terraform"]
+    },
+    {
+      "name": "Analytics & Tools",
+      "level": "Intermediate",
+      "keywords": ["Tableau", "Jest", "OpenAPI"]
+    }
+  ],
+  "languages": [
+    {
+      "language": "Spanish",
+      "fluency": "Native speaker"
+    },
+    {
+      "language": "English",
+      "fluency": "Full professional proficiency"
+    }
+  ],
+  "interests": [],
+  "references": [],
+  "projects": []
+}
