@@ -5,7 +5,7 @@
     "label": "Data Engineer",
     "image": "",
     "email": "cristian@abrante.me",
-    "phone": "",
+    "phone": "+34 634 682 893",
     "url": "https://cristianabrante.com",
     "summary": "Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at Alohas.com, where I design and implement scalable data and analytics architectures to drive business insights and decision-making.",
     "location": {
@@ -13,7 +13,7 @@
       "postalCode": "",
       "city": "Barcelona",
       "countryCode": "ES",
-      "region": "Catalonia"
+      "region": "Spain"
     },
     "profiles": [
       {
@@ -300,19 +300,31 @@
       "date": "2019-11-01",
       "awarder": "Universidad de La Laguna",
       "summary": "Award obtained for exceptional academic performance in the Bachelor's degree in Computer Science at La Laguna University.",
-      "visibility": ["website"]
+      "visibility": ["pdf", "website"]
     },
     {
       "title": "Best Project Award - GeneticJS",
       "date": "2019-04-01",
       "awarder": "Oficina de Software Libre - Universidad de La Laguna",
       "summary": "Special award for best project in the local phase of the Spanish University free software contest, given to the project GeneticJS.",
-      "visibility": ["website"]
+      "visibility": ["pdf", "website"]
     }
   ],
   "certificates": [],
   "publications": [],
   "skills": [
+    {
+      "name": "Languages",
+      "level": "Advanced",
+      "keywords": ["SQL", "TypeScript", "Python"],
+      "visibility": ["pdf", "website"]
+    },
+    {
+      "name": "Frameworks & technologies",
+      "level": "Advanced",
+      "keywords": ["dbt", "Spark", "Dagster"],
+      "visibility": ["pdf", "website"]
+    },
     {
       "name": "Data Engineering",
       "level": "Advanced",
@@ -349,12 +361,12 @@
     {
       "language": "Spanish",
       "fluency": "Native speaker",
-      "visibility": ["website"]
+      "visibility": ["pdf", "website"]
     },
     {
       "language": "English",
       "fluency": "Full professional proficiency",
-      "visibility": ["website"]
+      "visibility": ["pdf", "website"]
     }
   ],
   "interests": [],

@@ -158,20 +158,20 @@ function generateEducation(resume) {
 }
 
 /**
- * Generate sidebar content
+ * Generate contact info for \personalinfo{}
  */
-function generateSidebar(resume) {
+function generatePersonalInfo(resume) {
   const { basics } = resume;
   
   let latex = '';
   
   // Contact information
   if (basics.email) {
-    latex += `\\email{${escapeLatex(basics.email)}}\n`;
+    latex += `  \\email{${escapeLatex(basics.email)}}\n`;
   }
   
   if (basics.url) {
-    latex += `\\homepage{${escapeLatex(basics.url.replace('https://', '').replace('http://', ''))}}\n`;
+    latex += `  \\homepage{${escapeLatex(basics.url.replace('https://', '').replace('http://', ''))}}\n`;
   }
   
   // Social profiles
@@ -179,12 +179,125 @@ function generateSidebar(resume) {
     basics.profiles.forEach(profile => {
       const username = escapeLatex(profile.username);
       if (profile.network === 'LinkedIn') {
-        latex += `\\linkedin{${username}}\n`;
+        latex += `  \\linkedin{${username}}\n`;
       } else if (profile.network === 'GitHub') {
-        latex += `\\github{${username}}\n`;
+        latex += `  \\github{${username}}\n`;
       }
     });
   }
+  
+  return latex;
+}
+
+/**
+ * Generate sidebar file content (page1sidebar.tex)
+ */
+function generateSidebarContent(resume) {
+  const { basics } = resume;
+  const pdfAwards = filterByVisibility(resume.awards, 'pdf');
+  const pdfSkills = filterByVisibility(resume.skills, 'pdf');
+  const pdfLanguages = filterByVisibility(resume.languages, 'pdf');
+  
+  let latex = '% AUTO-GENERATED SIDEBAR - DO NOT EDIT\n';
+  latex += '% Run "npm run generate:cv" to regenerate\n\n';
+  
+  // Contact Section
+  latex += '\\cvsection{Contact}\n\n';
+  
+  if (basics.phone) {
+    latex += `\\cvachievement{\\faPhone}{Phone}{${escapeLatex(basics.phone)}}\n`;
+  }
+  if (basics.email) {
+    latex += `\\cvachievement{\\faAt}{Mail}{${escapeLatex(basics.email)}}\n`;
+  }
+  if (basics.location && basics.location.city) {
+    const location = basics.location.region 
+      ? `${basics.location.city}, ${basics.location.region}`
+      : basics.location.city;
+    latex += `\\cvachievement{\\faMapPin}{Address}{${escapeLatex(location)}}\n`;
+  }
+  
+  latex += '\n\\divider\n\n';
+  
+  // Social links
+  if (basics.profiles && basics.profiles.length > 0) {
+    basics.profiles.forEach(profile => {
+      const username = escapeLatex(profile.username);
+      const url = escapeLatex(profile.url.replace('https://', '').replace('http://', ''));
+      
+      if (profile.network === 'GitHub') {
+        latex += `\\cvachievement{\\faGithub}{GitHub}{\\url{${url}}}\n`;
+      } else if (profile.network === 'LinkedIn') {
+        latex += `\\cvachievement{\\faLinkedin}{LinkedIn}{\\url{${url}}}\n`;
+      }
+    });
+  }
+  
+  if (basics.url) {
+    const url = escapeLatex(basics.url.replace('https://', '').replace('http://', ''));
+    latex += `\\cvachievement{\\faLink}{Webpage}{\\url{${url}}}\n`;
+  }
+  
+  // Awards Section
+  if (pdfAwards.length > 0) {
+    latex += '\n\\cvsection{Awards}\n\n';
+    
+    pdfAwards.forEach((award, index) => {
+      const title = escapeLatex(award.title);
+      const awarder = escapeLatex(award.awarder);
+      
+      latex += `\\cvachievement{\\faBook}{${title}}{${awarder}}\n`;
+      
+      if (index < pdfAwards.length - 1) {
+        latex += '\n\\divider\n\n';
+      }
+    });
+  }
+  
+  // Skills Section (if we have PDF skills)
+  if (pdfSkills.length > 0) {
+    latex += '\n\\cvsection{Skills}\n\n';
+    
+    pdfSkills.forEach((skillCategory, catIndex) => {
+      latex += `${escapeLatex(skillCategory.name)}:\n\n`;
+      latex += '\\medskip{}\n\n';
+      
+      if (skillCategory.keywords && skillCategory.keywords.length > 0) {
+        skillCategory.keywords.forEach(keyword => {
+          latex += `\\cvtag{${escapeLatex(keyword)}}\n`;
+        });
+      }
+      
+      if (catIndex < pdfSkills.length - 1) {
+        latex += '\n\\divider\n\n';
+      }
+    });
+  }
+  
+  // Languages Section
+  if (pdfLanguages.length > 0) {
+    latex += '\n\\cvsection{Languages}\n\n';
+    
+    pdfLanguages.forEach((lang, index) => {
+      const language = escapeLatex(lang.language);
+      const fluency = escapeLatex(lang.fluency);
+      
+      // Estimate skill level (1-5) based on fluency
+      let level = 3;
+      if (lang.fluency.toLowerCase().includes('native')) level = 5;
+      else if (lang.fluency.toLowerCase().includes('full professional')) level = 4;
+      else if (lang.fluency.toLowerCase().includes('professional')) level = 3;
+      
+      latex += `\\cvskill{${language}}{${level}}\n`;
+      latex += `${fluency}\n`;
+      
+      if (index < pdfLanguages.length - 1) {
+        latex += '\\divider\n\n';
+      }
+    });
+  }
+  
+  latex += '\n\\clearpage\n';
   
   return latex;
 }
@@ -206,7 +319,7 @@ function generateLatexCV(resume) {
 \\documentclass[10pt,a4paper]{altacv}
 
 % Change the page layout if you need to
-\\geometry{left=1cm,right=9cm,marginparwidth=6.8cm,marginparsep=1.2cm,top=1.25cm,bottom=1.25cm,footskip=2}
+\\geometry{left=1cm,right=9cm,marginparwidth=6.8cm,marginparsep=1.2cm,top=1.25cm,bottom=1.25cm,footskip=2pt}
 
 % If using pdflatex:
 \\usepackage[T1]{fontenc}
@@ -239,7 +352,7 @@ function generateLatexCV(resume) {
 \\photo{2.5cm}{picture}
 
 \\personalinfo{%
-${generateSidebar(resume)}
+${generatePersonalInfo(resume)}
 }
 
 %% Make the header extend all the way to the right
@@ -248,7 +361,7 @@ ${generateSidebar(resume)}
 \\end{fullwidth}
 
 %% Work Experience Section
-\\cvsection{Work Experience}
+\\cvsection[page1sidebar]{Work Experience}
 
 ${generateWorkExperience(resume)}
 
@@ -271,6 +384,7 @@ function main() {
   
   const resume = loadResume();
   const latexContent = generateLatexCV(resume);
+  const sidebarContent = generateSidebarContent(resume);
   
   try {
     // Ensure output directory exists
@@ -282,6 +396,12 @@ function main() {
     fs.writeFileSync(OUTPUT_TEX, latexContent, 'utf8');
     console.log('✅ LaTeX CV generated successfully!');
     console.log(`📍 Output: ${OUTPUT_TEX}`);
+    
+    // Write sidebar file
+    const sidebarPath = path.join(OUTPUT_DIR, 'page1sidebar.tex');
+    fs.writeFileSync(sidebarPath, sidebarContent, 'utf8');
+    console.log('✅ Sidebar file generated successfully!');
+    console.log(`📍 Output: ${sidebarPath}`);
     
     // Copy necessary files to output directory
     const filesToCopy = ['altacv.cls', 'picture.jpg'];
