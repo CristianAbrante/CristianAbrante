@@ -135,22 +135,136 @@
     {
       "institution": "Aalto University",
       "url": "https://www.aalto.fi/",
-      "area": "Data Science",
+      "area": "Data Science & Digital Innovation",
       "studyType": "Master of Science",
-      "startDate": "2020-01-01",
-      "endDate": "2022-12-31",
-      "score": "",
-      "courses": []
+      "startDate": "2020-09-01",
+      "endDate": "2022-11-30",
+      "score": "4.27 / 5.0",
+      "summary": "Second year of master's studies organized by EIT Digital. Deepened knowledge of data science subjects and studied entrepreneurship topics.",
+      "courses": [
+        "Machine Learning, Supervised methods",
+        "Methods for Data Mining",
+        "Reinforcement learning",
+        "Master's thesis"
+      ],
+      "keywords": ["LaTeX", "Machine Learning", "Data Science", "Python"],
+      "highlights": [
+        "Grade: 4.27/5.0 (highest in program)",
+        "Part of EIT Digital master's program",
+        "Completed thesis: https://github.com/CristianAbrante/masters-thesis-data-science",
+        "Course projects on GitHub: Machine Learning, Data Mining, Reinforcement Learning"
+      ]
+    },
+    {
+      "institution": "Coventry University",
+      "url": "https://www.coventry.ac.uk/",
+      "area": "Data, Visualization and Connectivity for Healthcare",
+      "studyType": "EIT Digital Summer School",
+      "startDate": "2020-08-01",
+      "endDate": "2020-08-31",
+      "score": "9 / 10",
+      "summary": "Two-week summer program working on a business case provided by WCS Care Services (UK), focused on elderly care homes sector. Developed an innovative solution including business model specification.",
+      "courses": [],
+      "keywords": ["Healthcare", "Business Innovation", "EIT Digital"],
+      "highlights": [
+        "Grade: 9/10",
+        "Worked on real-world healthcare business case",
+        "Collaborated with WCS Care Services (UK)",
+        "Developed complete business model for proposed solution"
+      ]
+    },
+    {
+      "institution": "Universidad Politécnica de Madrid",
+      "url": "https://www.upm.es/",
+      "area": "Data Science & Digital Innovation",
+      "studyType": "Master of Science",
+      "startDate": "2019-09-01",
+      "endDate": "2020-06-30",
+      "score": "3.48 / 4.00",
+      "summary": "First year of master's program organized by EIT Digital. Gained strong foundation in data science and engineering while learning business and entrepreneurship concepts.",
+      "courses": [
+        "Statistical data analysis",
+        "Data processes",
+        "Deep learning",
+        "Big Data"
+      ],
+      "keywords": ["Statistics", "LaTeX", "Data Science", "Big Data", "R"],
+      "highlights": [
+        "Grade: 3.48/4.0",
+        "Part of EIT Digital master's program (Year 1)",
+        "Combined technical data science with business/entrepreneurship",
+        "Foundation in statistical analysis and big data technologies"
+      ]
     },
     {
       "institution": "Universidad de La Laguna",
       "url": "https://www.ull.es/",
       "area": "Computer Science",
-      "studyType": "Bachelor",
-      "startDate": "2015-09-01",
-      "endDate": "2019-06-30",
+      "studyType": "Bachelor of Science",
+      "startDate": "2014-09-01",
+      "endDate": "2019-07-31",
+      "score": "3.86 / 4.00",
+      "summary": "Honored with the extraordinary award for bachelor's degree students in Computer Science in recognition of outstanding performance. Gained solid foundation in algorithms and data structures, software engineering, and data science.",
+      "courses": [
+        "Algorithms and Data Structures",
+        "Software Engineering",
+        "Data Science fundamentals"
+      ],
+      "keywords": ["Software Engineering", "Algorithms", "JavaScript", "Java", "C++", "HTML5", "CSS3", "Git"],
+      "highlights": [
+        "Grade: 3.86/4.0",
+        "Extraordinary Award for Academic Performance",
+        "Best academic record of promotion",
+        "Strong foundation in algorithms, software engineering, and data science",
+        "Technologies: Java, C++, JavaScript, HTML5, CSS3, Git"
+      ]
+    },
+    {
+      "institution": "I.E.S. Lucas Martín Espino",
+      "url": "",
+      "area": "Science and Technology",
+      "studyType": "General Certificate of Education",
+      "startDate": "2014-09-01",
+      "endDate": "2015-06-30",
+      "score": "9.81 / 10",
+      "summary": "Obtained with honors, awarded best academic record of the class.",
+      "courses": [],
+      "keywords": ["Science", "Technology"],
+      "highlights": [
+        "Grade: 9.81/10 (highest grade)",
+        "Obtained with honors",
+        "Best academic record of promotion"
+      ]
+    },
+    {
+      "institution": "I.E.S. San Marcos",
+      "url": "",
+      "area": "Science and Technology",
+      "studyType": "General Certificate of Education",
+      "startDate": "2013-09-01",
+      "endDate": "2014-06-30",
       "score": "",
-      "courses": []
+      "summary": "Science and technology track in secondary education.",
+      "courses": [],
+      "keywords": ["Science", "Technology"],
+      "highlights": []
+    },
+    {
+      "institution": "I.E.S. El Tanque",
+      "url": "",
+      "area": "General Secondary Education",
+      "studyType": "General Certificate of Secondary Education",
+      "startDate": "2009-09-01",
+      "endDate": "2012-06-30",
+      "score": "9.55 / 10",
+      "summary": "Obtained with honors, awarded best academic record of the class.",
+      "courses": [],
+      "keywords": [],
+      "highlights": [
+        "Grade: 9.55/10 (highest grade)",
+        "Obtained with honors",
+        "Best academic record of promotion"
+      ]
     }
   ],
   "awards": [
