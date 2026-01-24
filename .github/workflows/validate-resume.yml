@@ -1,0 +1,51 @@
+name: Validate Resume
+
+on:
+  pull_request:
+    paths:
+      - "resume.json"
+
+jobs:
+  validate:
+    name: Validate JSON Resume
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Create validation script
+        run: |
+          cat > validate.js << 'EOF'
+          const fs = require('fs');
+          const resumeSchema = require('@jsonresume/schema');
+          const resume = JSON.parse(fs.readFileSync('./resume.json', 'utf8'));
+
+          resumeSchema.validate(resume, (err, report) => {
+            if (err) {
+              console.error('❌ Resume validation failed:');
+              console.error(err);
+              process.exit(1);
+            }
+            console.log('✅ Resume validated successfully against JSON Resume schema!');
+            process.exit(0);
+          });
+          EOF
+
+      - name: Install dependencies and validate
+        run: |
+          npm install @jsonresume/schema
+          node validate.js
+
+      - name: Validate JSON syntax
+        run: |
+          if ! python3 -m json.tool resume.json > /dev/null 2>&1; then
+            echo "❌ Invalid JSON syntax in resume.json"
+            exit 1
+          fi
+          echo "✅ JSON syntax is valid"
