@@ -1,3 +1,6 @@
+<!-- This file is auto-generated from resume.json. Do not edit manually. -->
+<!-- Run "npm run generate:readme" to regenerate this file. -->
+
 <h1 align="center">
   Hi, I am Cristian 
   <img src="https://github.com/TheDudeThatCode/TheDudeThatCode/blob/master/Assets/Hi.gif" width="29px">
@@ -5,28 +8,29 @@
 
 ## 👨🏻‍💻 About me
 
-Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at [Alohas.com](https://alohas.com/), where I design and implement scalable data and analytics architectures to drive business insights and decision-making.
+Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at Alohas.com, where I design and implement scalable data and analytics architectures to drive business insights and decision-making.
 
 ## 💼 Work Experience
 
-- 👨🏻‍💻 Data Engineer - [`alohas.com`](https://alohas.com/)  
+- 👨🏻‍💻 Data Engineer - [`@ALOHAS2020`](https://github.com/ALOHAS2020)  
 *Barcelona, Spain | March 2025 - Present*  
+
 
 - 👨🏻‍💻 Data Engineer - [`@Fiksuruoka-fi`](https://github.com/Fiksuruoka-fi)  
 *Helsinki, Finland | October 2023 - February 2025*  
-🛠 **Technologies**: SQL · dbt · Snowflake · Dagster · Terraform · GCP · Tableau
+🛠 **Technologies**: dbt · Snowflake · Dagster · Terraform · GCP · Tableau
 
 - 👨🏻‍💻 Software Engineer - [`@Unity-Technologies`](https://github.com/Unity-Technologies)  
-  *Helsinki, Finland | September 2021 - October 2023*  
-  🛠 **Technologies**: dbt · Snowflake · Apache Spark · Apache Druid · JavaScript · Terraform · Python · Airflow · SQL · GCP  
+*Helsinki, Finland | September 2021 - October 2023*  
+🛠 **Technologies**: dbt · Snowflake · Terraform · GCP · Apache Spark · Apache Druid · Airflow
 
 - 👨🏻‍💻 Software Engineer Intern - [`@Unity-Technologies`](https://github.com/Unity-Technologies)  
-  *Helsinki, Finland | April 2021 - September 2021*  
-  🛠 **Technologies**: JavaScript · TypeScript · Git · Jest · OpenAPI Specification (OAS)  
-
+*Helsinki, Finland | April 2021 - September 2021*  
+🛠 **Technologies**: JavaScript · TypeScript · Jest · OpenAPI
 
 ## 🔗 Links  
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/cristianabrante/)  
-- 🖥️ [Personal Website](https://cristianabrante.com/)  
+- 💻 [GitHub](https://github.com/CristianAbrante)  
+- 🖥️ [Personal Website](https://cristianabrante.com)  
 - 📧 [Email](mailto:cristian@abrante.me)  
