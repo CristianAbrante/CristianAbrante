@@ -23,10 +23,63 @@ npm run generate:readme
   - Links section (LinkedIn, GitHub, website, email)
 
 **Features:**
-- Automatically detects and displays technologies from work highlights
+- Displays technologies from `technologies` field
 - Formats dates as "Month Year - Month Year" (or "Present")
 - Handles GitHub organization URLs with special formatting
 - Adds HTML comments indicating the file is auto-generated
+
+---
+
+### Generate All Formats
+
+**Usage:**
+```bash
+npm run generate:all
+```
+
+**What it does:**
+- Generates README.md
+- Generates LaTeX CV files (cv.tex, page1sidebar.tex)
+- Compiles PDF from LaTeX
+
+This is equivalent to running:
+```bash
+npm run generate:readme && npm run generate:cv && npm run generate:pdf
+```
+
+**Future:** Will also generate website files (Phase 5).
+
+---
+
+### Compile PDF from LaTeX
+
+**Usage:**
+```bash
+npm run generate:pdf
+```
+
+**What it does:**
+- Compiles `cv/output/cv.tex` to `cv/output/cv.pdf` using pdflatex
+- Runs in non-interactive mode for automated builds
+
+**Prerequisites:**
+- LaTeX must be installed (see [cv/README.md](../cv/README.md))
+- LaTeX files must already be generated (`npm run generate:cv`)
+
+---
+
+### `generate:all` (Coming in Phase 7)
+
+Generates all formats at once:
+```bash
+npm run generate:all
+```
+
+Currently generates:
+- README.md
+- LaTeX CV (cv.tex)
+
+Future: Will also generate website files.
 
 ## Future Scripts
 
@@ -35,6 +88,13 @@ Additional scripts will be added in upcoming phases:
 - `generate-cv.js` - Generate LaTeX CV (Phase 3)
 - `generate-website.js` - Generate static website (Phase 5)
 - `generate-all.js` - Generate all formats (Phase 7)
+- `validate-resume.js` - Validate resume.json schema (Phase 7)
+
+## Future Scripts
+
+Additional scripts planned for upcoming phases:
+
+- `generate-website.js` - Generate static website (Phase 5)
 - `validate-resume.js` - Validate resume.json schema (Phase 7)
 
 ## Development
@@ -77,9 +137,12 @@ When adding new generation scripts:
 # Generate README only
 npm run generate:readme
 
-# (Coming soon) Generate all formats
-npm run generate:all
+# Generate LaTeX CV files only
+npm run generate:cv
 
-# (Coming soon) Validate resume before generating
-npm run validate:resume && npm run generate:all
+# Compile PDF from existing LaTeX files
+npm run generate:pdf
+
+# Generate everything (README + CV + PDF)
+npm run generate:all
 ```
