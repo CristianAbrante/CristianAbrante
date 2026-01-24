@@ -44,20 +44,24 @@ Download and install [MiKTeX](https://miktex.org/) or [TeX Live](https://www.tug
    ```bash
    npm run generate:cv
    ```
-   This creates `cv/output/cv.tex` from your resume.json data.
+   This creates `cv/output/cv.tex` and `cv/output/page1sidebar.tex` from your resume.json data.
 
 2. **Compile to PDF:**
    ```bash
-   cd cv/output
-   pdflatex cv.tex
+   npm run generate:pdf
    ```
-   This creates `cv/output/cv.pdf`.
+   This compiles the LaTeX files to create `cv/output/cv.pdf`.
 
 ### One-Command Generation
 
-For convenience, you can also run:
+Generate everything (README + LaTeX + PDF) at once:
 ```bash
-npm run generate:cv && cd cv/output && pdflatex -interaction=nonstopmode cv.tex
+npm run generate:all
+```
+
+Or just generate CV and PDF:
+```bash
+npm run generate:cv && npm run generate:pdf
 ```
 
 ## What's Included in the PDF
@@ -75,8 +79,11 @@ The PDF CV includes entries from `resume.json` with `visibility: ["pdf"]`:
 
 Edit `resume.json` and regenerate:
 ```bash
-npm run generate:cv
-cd cv/output && pdflatex cv.tex
+npm run generate:cv && npm run generate:pdf
+```
+Or simply:
+```bash
+npm run generate:all
 ```
 
 ### Changing CV Style
