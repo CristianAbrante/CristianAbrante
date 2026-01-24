@@ -1,9 +1,11 @@
 name: Sync Resume Formats
 
 on:
-  pull_request:
-    # paths:
-    # - 'resume.json'
+  push:
+    branches:
+      - master
+    paths:
+      - "resume.json"
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -74,7 +76,6 @@ jobs:
           retention-days: 90
 
       - name: Create Release with PDF
-        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: cv-${{ steps.get_version.outputs.version }}
