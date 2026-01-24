@@ -19,12 +19,9 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Install dependencies
-        run: npm install -g @jsonresume/schema
-      
-      - name: Validate resume.json against schema
+      - name: Create validation script
         run: |
-          node -e "
+          cat > validate.js << 'EOF'
           const fs = require('fs');
           const resumeSchema = require('@jsonresume/schema');
           const resume = JSON.parse(fs.readFileSync('./resume.json', 'utf8'));
@@ -38,7 +35,12 @@ jobs:
             console.log('✅ Resume validated successfully against JSON Resume schema!');
             process.exit(0);
           });
-          "
+          EOF
+      
+      - name: Install dependencies and validate
+        run: |
+          npm install @jsonresume/schema
+          node validate.js
       
       - name: Validate JSON syntax
         run: |
