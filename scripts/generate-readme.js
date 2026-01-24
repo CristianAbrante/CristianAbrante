@@ -133,7 +133,8 @@ function generateReadme(resume) {
   
   // Add generated file notice (as HTML comment)
   readme += '<!-- This file is auto-generated from resume.json. Do not edit manually. -->\n';
-  readme += '<!-- Run "npm run generate:readme" to regenerate this file. -->\n\n';
+  readme += '<!-- Run "npm run generate:readme" to regenerate this file. -->\n';
+  readme += '<!-- Automatically updated via GitHub Actions when resume.json changes. -->\n\n';
   
   // Header with greeting
   readme += '<h1 align="center">\n';
