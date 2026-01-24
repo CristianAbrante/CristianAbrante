@@ -210,7 +210,16 @@
         "Software Engineering",
         "Data Science fundamentals"
       ],
-      "keywords": ["Software Engineering", "Algorithms", "JavaScript", "Java", "C++", "HTML5", "CSS3", "Git"],
+      "keywords": [
+        "Software Engineering",
+        "Algorithms",
+        "JavaScript",
+        "Java",
+        "C++",
+        "HTML5",
+        "CSS3",
+        "Git"
+      ],
       "highlights": [
         "Grade: 3.86/4.0",
         "Extraordinary Award for Academic Performance",
