@@ -90,7 +90,7 @@
         "dbt",
         "Snowflake"
       ],
-      "visibility": ["readme", "pdf", "website"]
+      "visibility": ["readme", "website"]
     },
     {
       "name": "Unity Technologies",
