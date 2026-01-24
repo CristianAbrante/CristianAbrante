@@ -32,7 +32,7 @@ All major sections support a `visibility` field that controls where each entry a
 
 ### Work Experience (`work`)
 
-Each work experience entry supports the `visibility` field:
+Each work experience entry supports the `visibility` and `technologies` fields:
 
 ```json
 {
@@ -46,11 +46,15 @@ Each work experience entry supports the `visibility` field:
       "endDate": "YYYY-MM-DD",
       "summary": "Brief description",
       "highlights": ["Achievement 1", "Achievement 2"],
+      "technologies": ["Technology 1", "Technology 2", "Technology 3"],
       "visibility": ["readme", "pdf", "website"]
     }
   ]
 }
 ```
+
+**Custom Fields:**
+- `technologies` (array of strings, optional): List of technologies/tools used in this position. Displayed in README and can be used in other formats.
 
 **Visibility Guidelines:**
 - **README**: First 4-5 most recent/relevant positions

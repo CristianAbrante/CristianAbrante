@@ -1,4 +1,10 @@
 {
+  "name": "cristianabrante-resume",
+  "version": "1.0.0",
+  "description": "Multi-format resume generation from JSON Resume",
+  "scripts": {
+    "generate:readme": "node scripts/generate-readme.js"
+  },
   "dependencies": {
     "@jsonresume/schema": "^1.2.1"
   }
