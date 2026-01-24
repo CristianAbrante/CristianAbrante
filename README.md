@@ -1,5 +1,6 @@
 <!-- This file is auto-generated from resume.json. Do not edit manually. -->
 <!-- Run "npm run generate:readme" to regenerate this file. -->
+<!-- Automatically updated via GitHub Actions when resume.json changes. -->
 
 <h1 align="center">
   Hi, I am Cristian 
