@@ -58,8 +58,15 @@
         "Built infrastructure as code using Terraform on GCP",
         "Created business intelligence dashboards using Tableau"
       ],
-      "technologies": ["dbt", "Snowflake", "Dagster", "Terraform", "GCP", "Tableau"],
-      "visibility": ["readme", "website"]
+      "technologies": [
+        "dbt",
+        "Snowflake",
+        "Dagster",
+        "Terraform",
+        "GCP",
+        "Tableau"
+      ],
+      "visibility": ["readme", "pdf", "website"]
     },
     {
       "name": "Unity Technologies",
@@ -75,8 +82,15 @@
         "Developed workflow orchestration solutions with Apache Airflow",
         "Managed cloud infrastructure on GCP using Terraform"
       ],
-      "technologies": ["Scala", "Apache Spark", "Apache Druid", "Airflow", "dbt", "Snowflake"],
-      "visibility": ["readme", "website"]
+      "technologies": [
+        "Scala",
+        "Apache Spark",
+        "Apache Druid",
+        "Airflow",
+        "dbt",
+        "Snowflake"
+      ],
+      "visibility": ["readme", "pdf", "website"]
     },
     {
       "name": "Unity Technologies",
