@@ -242,11 +242,58 @@ When updating `resume.json`, ensure:
 
 When adding or updating resume entries:
 
-1. Add the entry to the appropriate section in `resume.json`
-2. Include the `visibility` field with appropriate targets
+1. Edit `resume.json` with your changes
+2. Include the `visibility` field with appropriate targets for each entry
 3. Follow the visibility guidelines above
-4. Run validation script: `npm run validate:resume` (once implemented)
-5. Generate outputs: `npm run generate:all` (once implemented)
+4. **Automatic generation** (recommended):
+   - Commit and push `resume.json` to master branch
+   - GitHub Actions automatically generates README.md and PDF CV
+   - README.md is committed back to the repository
+   - PDF is uploaded as a release
+5. **Manual generation** (for local testing):
+   - Run `npm run generate:all`
+   - Verify outputs in `README.md` and `cv/output/cv.pdf`
+
+## Automation
+
+### CI/CD Pipeline
+
+When `resume.json` is pushed to the `master` branch, a GitHub Actions workflow automatically:
+
+1. **Generates README.md**
+   - Runs `npm run generate:readme`
+   - Commits changes back to master (if README changed)
+   - Uses `[skip ci]` to prevent infinite loops
+
+2. **Generates and Compiles PDF CV**
+   - Runs `npm run generate:cv` (creates LaTeX files)
+   - Runs `npm run generate:pdf` (compiles to PDF)
+   - Uploads PDF as GitHub Actions artifact (90-day retention)
+
+3. **Creates Release**
+   - Creates a GitHub release with the PDF attached
+   - Tag format: `cv-YYYY.MM.DD-{git-sha}`
+   - Includes generation date and commit info
+
+### Manual Workflow Trigger
+
+You can manually trigger resume generation:
+1. Go to GitHub Actions tab
+2. Select "Sync Resume Formats" workflow
+3. Click "Run workflow" on master branch
+
+### Accessing Generated Files
+
+**README.md:**
+- Automatically committed to repository
+- View on GitHub profile
+
+**PDF CV:**
+- Download from [Releases](https://github.com/CristianAbrante/CristianAbrante/releases)
+- Latest release: `https://github.com/CristianAbrante/CristianAbrante/releases/latest`
+- Also available as workflow artifacts (temporary, 90 days)
+
+See [.github/workflows/README.md](.github/workflows/README.md) for full CI/CD documentation.
 
 ## Future Enhancements
 

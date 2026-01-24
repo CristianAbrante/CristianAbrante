@@ -1,0 +1,92 @@
+name: Sync Resume Formats
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "resume.json"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  generate-resume-formats:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Needed to commit README changes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texlive-bibtex-extra
+
+      - name: Generate README and LaTeX CV
+        run: |
+          npm run generate:readme
+          npm run generate:cv
+
+      - name: Compile PDF
+        run: npm run generate:pdf
+
+      - name: Check for README changes
+        id: check_changes
+        run: |
+          if git diff --quiet README.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push README if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git commit -m "chore: auto-update README.md from resume.json [skip ci]"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+
+      - name: Get version from resume.json
+        id: get_version
+        run: |
+          VERSION=$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-${{ steps.get_version.outputs.version }}
+          path: cv/output/cv.pdf
+          retention-days: 90
+
+      - name: Create Release with PDF
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: cv-${{ steps.get_version.outputs.version }}
+          name: CV - ${{ steps.get_version.outputs.version }}
+          body: |
+            Auto-generated CV from resume.json
+
+            **Generated:** ${{ steps.get_version.outputs.version }}
+            **Commit:** ${{ github.sha }}
+          files: cv/output/cv.pdf
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
