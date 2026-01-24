@@ -164,6 +164,12 @@ fs.copyFileSync(
   path.join(OUTPUT_DIR, 'script.js')
 );
 
+// Copy profile picture from root
+const picturePath = path.join(__dirname, '..', 'picture.jpg');
+if (fs.existsSync(picturePath)) {
+  fs.copyFileSync(picturePath, path.join(OUTPUT_DIR, 'picture.jpg'));
+}
+
 console.log('✅ Website generated successfully!');
 console.log(`📁 Output: ${OUTPUT_DIR}`);
 console.log(`🌐 Open: ${OUTPUT_HTML}`);
