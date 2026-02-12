@@ -36,30 +36,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texlive-bibtex-extra
 
-      - name: Generate README and LaTeX CV
+      - name: Generate README, LaTeX CV, and Website
         run: |
           npm run generate:readme
           npm run generate:cv
+          npm run generate:website
 
       - name: Compile PDF
         run: npm run generate:pdf
 
-      - name: Check for README changes
+      - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet README.md; then
+          if git diff --quiet README.md website/; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push README if changed
+      - name: Commit and push changes if any
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add README.md
-          git commit -m "chore: auto-update README.md from resume.json [skip ci]"
+          git add README.md website/output/
+          git commit -m "chore: auto-update README.md and website from resume.json [skip ci]"
           git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
       - name: Get version from resume.json
