@@ -197,3 +197,6 @@ dist
 
 # LaTeX CV output directory (generated files)
 cv/output/
+
+# Website output directory (generated files)
+website/output/

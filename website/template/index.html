@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{SUMMARY}}">
+    <meta name="author" content="{{NAME}}">
+    <title>{{NAME}} - {{LABEL}}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">{{NAME}}</a>
+            <ul class="nav-menu">
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <img src="picture.jpg" alt="{{NAME}}" class="hero-image">
+                <div class="hero-text">
+                    <h1 class="hero-title">{{NAME}}</h1>
+                    <p class="hero-subtitle">{{LABEL}}</p>
+                    <p class="hero-location">{{LOCATION}}</p>
+                    <div class="hero-links">
+                        {{PROFILES}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <p class="about-text">{{SUMMARY}}</p>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="section section-alt" id="experience">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <div class="timeline">
+                {{WORK_EXPERIENCE}}
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="section" id="education">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+            <div class="timeline">
+                {{EDUCATION}}
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="section section-alt" id="skills">
+        <div class="container">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                {{SKILLS}}
+            </div>
+            {{AWARDS}}
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get in Touch</h2>
+            <div class="contact-info">
+                <p class="contact-text">Feel free to reach out for collaborations or opportunities.</p>
+                <div class="contact-links">
+                    <a href="mailto:{{EMAIL}}" class="contact-link">{{EMAIL}}</a>
+                    {{PHONE}}
+                </div>
+                <div class="social-links">
+                    {{PROFILES}}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 {{NAME}}. All rights reserved.</p>
+            <p class="footer-note">Generated from <a href="https://github.com/{{GITHUB_USERNAME}}/{{GITHUB_USERNAME}}" target="_blank">resume.json</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

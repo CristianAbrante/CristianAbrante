@@ -6,7 +6,8 @@
     "generate:readme": "node scripts/generate-readme.js",
     "generate:cv": "node scripts/generate-cv.js",
     "generate:pdf": "cd cv/output && pdflatex -interaction=nonstopmode cv.tex",
-    "generate:all": "npm run generate:readme && npm run generate:cv && npm run generate:pdf"
+    "generate:website": "node scripts/generate-website.js",
+    "generate:all": "npm run generate:readme && npm run generate:cv && npm run generate:pdf && npm run generate:website"
   },
   "dependencies": {
     "@jsonresume/schema": "^1.2.1"
