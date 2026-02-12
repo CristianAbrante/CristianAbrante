@@ -123,6 +123,73 @@ function generateAwards() {
             </div>`;
 }
 
+// Generate SEO keywords from skills and work
+function generateKeywords() {
+  const skills = (resume.skills || [])
+    .filter(item => hasVisibility(item))
+    .flatMap(skill => skill.keywords || []);
+  
+  const work = (resume.work || [])
+    .filter(item => hasVisibility(item))
+    .flatMap(job => job.technologies || []);
+  
+  const allKeywords = [...new Set([...skills, ...work, resume.basics.label, 'Data Engineer', 'Resume', 'Portfolio'])];
+  
+  return allKeywords.slice(0, 20).join(', ');
+}
+
+// Generate JSON-LD structured data for SEO
+function generateStructuredData() {
+  const profiles = resume.basics.profiles || [];
+  const sameAs = profiles.map(p => p.url);
+  
+  const workHistory = (resume.work || [])
+    .filter(item => hasVisibility(item))
+    .map(job => ({
+      "@type": "OrganizationRole",
+      "roleName": job.position,
+      "startDate": job.startDate,
+      "endDate": job.endDate || new Date().toISOString().split('T')[0],
+      "name": job.name
+    }));
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": resume.basics.name,
+    "url": "https://cristianabrante.com",
+    "image": "https://cristianabrante.com/picture.jpg",
+    "jobTitle": resume.basics.label,
+    "description": resume.basics.summary,
+    "email": resume.basics.email,
+    "telephone": resume.basics.phone || "",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": resume.basics.location.city,
+      "addressRegion": resume.basics.location.region,
+      "addressCountry": resume.basics.location.countryCode || "ES"
+    },
+    "sameAs": sameAs,
+    "knowsAbout": (resume.skills || [])
+      .filter(item => hasVisibility(item))
+      .flatMap(skill => skill.keywords || [])
+      .slice(0, 10),
+    "alumniOf": (resume.education || [])
+      .filter(item => hasVisibility(item))
+      .map(edu => ({
+        "@type": "EducationalOrganization",
+        "name": edu.institution,
+        "url": edu.url || ""
+      })),
+    "worksFor": workHistory.length > 0 ? {
+      "@type": "Organization",
+      "name": workHistory[0].name
+    } : undefined
+  };
+  
+  return JSON.stringify(structuredData, null, 2);
+}
+
 // Read HTML template
 let html = fs.readFileSync(HTML_TEMPLATE, 'utf8');
 
@@ -143,7 +210,9 @@ const replacements = {
   '{{EDUCATION}}': generateEducation(),
   '{{SKILLS}}': generateSkills(),
   '{{AWARDS}}': generateAwards(),
-  '{{GITHUB_USERNAME}}': githubUsername
+  '{{GITHUB_USERNAME}}': githubUsername,
+  '{{KEYWORDS}}': generateKeywords(),
+  '{{STRUCTURED_DATA}}': generateStructuredData()
 };
 
 // Apply replacements
@@ -169,6 +238,16 @@ const picturePath = path.join(__dirname, '..', 'picture.jpg');
 if (fs.existsSync(picturePath)) {
   fs.copyFileSync(picturePath, path.join(OUTPUT_DIR, 'picture.jpg'));
 }
+
+// Generate and copy robots.txt
+const robotsTxtTemplate = fs.readFileSync(path.join(TEMPLATE_DIR, 'robots.txt'), 'utf8');
+fs.writeFileSync(path.join(OUTPUT_DIR, 'robots.txt'), robotsTxtTemplate);
+
+// Generate and copy sitemap.xml with current date
+const sitemapTemplate = fs.readFileSync(path.join(TEMPLATE_DIR, 'sitemap.xml'), 'utf8');
+const lastMod = new Date().toISOString().split('T')[0];
+const sitemap = sitemapTemplate.replace('{{LAST_MOD}}', lastMod);
+fs.writeFileSync(path.join(OUTPUT_DIR, 'sitemap.xml'), sitemap);
 
 console.log('✅ Website generated successfully!');
 console.log(`📁 Output: ${OUTPUT_DIR}`);
