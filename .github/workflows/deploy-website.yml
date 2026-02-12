@@ -49,6 +49,9 @@ jobs:
       - name: Add .nojekyll file
         run: touch website/output/.nojekyll
 
+      - name: Add CNAME file for custom domain
+        run: echo "cristianabrante.com" > website/output/CNAME
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

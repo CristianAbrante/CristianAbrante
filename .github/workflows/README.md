@@ -82,11 +82,13 @@ Automatically deploys the resume website to GitHub Pages when `resume.json` or w
 
 2. **Prepares for Deployment**
    - Adds `.nojekyll` file to prevent Jekyll processing
+   - Adds `CNAME` file with custom domain: `cristianabrante.com`
    - Configures GitHub Pages settings
 
 3. **Deploys to GitHub Pages**
    - Uploads `website/output/` as Pages artifact
-   - Deploys to production URL: `https://cristianabrante.github.io`
+   - Deploys to production URL: `https://cristianabrante.com` (custom domain)
+   - Also accessible via: `https://cristianabrante.github.io` (redirects to custom domain)
 
 **Environment:**
 - Runner: `ubuntu-latest`
@@ -109,8 +111,9 @@ Automatically deploys the resume website to GitHub Pages when `resume.json` or w
 resume.json updated → Workflow triggered
   ├─ Generate website from resume.json
   ├─ Add .nojekyll file
+  ├─ Add CNAME file (cristianabrante.com)
   ├─ Upload website/output/ to Pages
-  └─ Deploy to https://cristianabrante.github.io
+  └─ Deploy to https://cristianabrante.com
 ```
 
 ## Manual Trigger
@@ -136,8 +139,9 @@ This is useful for:
 - View at: `https://github.com/CristianAbrante/CristianAbrante/blob/master/README.md`
 
 ### Website
-- Automatically deployed to GitHub Pages
-- View at: `https://cristianabrante.github.io`
+- Automatically deployed to GitHub Pages with custom domain
+- Primary URL: `https://cristianabrante.com`
+- Also accessible: `https://cristianabrante.github.io` (redirects to custom domain)
 - Updates within 1-2 minutes after workflow completes
 
 ### PDF (Artifacts)
@@ -234,18 +238,52 @@ To enable website deployment, you need to configure GitHub Pages in your reposit
 
 4. **Verify Deployment:**
    - Go to Actions tab and watch the "Deploy Website" workflow run
-   - Once complete (usually 1-2 minutes), visit: `https://cristianabrante.github.io`
+   - Once complete (usually 1-2 minutes), visit: `https://cristianabrante.com`
    - Your resume website should be live!
 
-### Custom Domain (Optional):
+### Custom Domain Setup:
 
-If you want to use a custom domain like `cristianabrante.com`:
+This repository is configured to use the custom domain `cristianabrante.com`.
 
-1. Add your domain in repository Settings → Pages → Custom domain
-2. Create CNAME file: `echo "your-domain.com" > website/output/CNAME`
-3. Configure DNS with your domain provider:
-   - For apex domain (cristianabrante.com): Add A records to GitHub IPs
-   - For subdomain (www.cristianabrante.com): Add CNAME to `cristianabrante.github.io`
+**What's already configured in code:**
+- ✅ CNAME file automatically generated in deployment workflow
+- ✅ Points to: `cristianabrante.com`
+
+**What you need to configure externally:**
+
+1. **DNS Configuration (GoDaddy):**
+   
+   Add these DNS records in your GoDaddy account:
+   
+   **A Records (for apex domain):**
+   ```
+   Type: A, Name: @, Value: 185.199.108.153, TTL: 600
+   Type: A, Name: @, Value: 185.199.109.153, TTL: 600
+   Type: A, Name: @, Value: 185.199.110.153, TTL: 600
+   Type: A, Name: @, Value: 185.199.111.153, TTL: 600
+   ```
+   
+   **CNAME Record (for www subdomain):**
+   ```
+   Type: CNAME, Name: www, Value: cristianabrante.github.io, TTL: 600
+   ```
+
+2. **GitHub Pages Settings:**
+   - Go to: Settings → Pages → Custom domain
+   - Enter: `cristianabrante.com`
+   - Click "Save"
+   - Wait for DNS check to pass (green checkmark)
+   - Check "Enforce HTTPS" (appears after DNS verification)
+   - Wait 1-2 hours for SSL certificate provisioning
+
+3. **Verify Setup:**
+   - `https://cristianabrante.com` → Your website (primary URL)
+   - `https://www.cristianabrante.com` → Redirects to cristianabrante.com
+   - `https://cristianabrante.github.io` → Redirects to cristianabrante.com
+
+**Timeline:**
+- DNS propagation: 1-48 hours (usually 1-2 hours)
+- SSL certificate: 1-24 hours (usually 1-2 hours)
 
 See [GitHub Pages custom domain docs](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site) for details.
 
