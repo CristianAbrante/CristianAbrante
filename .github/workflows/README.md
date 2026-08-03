@@ -59,6 +59,25 @@ resume.json updated → Workflow triggered
   └─ Create release with cv.pdf
 ```
 
+### `pr-cv-preview.yml` - Per-PR CV Preview
+
+Compiles the CV on every pull request that touches the resume or CV files, so
+the result can be reviewed before merging.
+
+**Triggers:**
+- Pull requests changing `resume.json`, `cv/**`, or the workflow itself
+
+**What it does:**
+
+1. **Compiles the CV** with Typst (same command as `generate:pdf`)
+2. **Uploads the PDF** as an artifact: `cv-preview-pr{number}` (14-day retention)
+3. **Comments on the PR** with a direct download link for the PDF
+   - The comment is updated in place on subsequent pushes (no comment spam)
+
+**Permissions:**
+- `contents: read` - Read repository files
+- `pull-requests: write` - Create/update the preview comment
+
 ### `deploy-website.yml` - GitHub Pages Deployment
 
 Automatically deploys the resume website to GitHub Pages when `resume.json` or website files change.

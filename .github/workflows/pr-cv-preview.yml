@@ -1,0 +1,77 @@
+name: PR CV Preview
+
+on:
+  pull_request:
+    paths:
+      - "resume.json"
+      - "cv/**"
+      - ".github/workflows/pr-cv-preview.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-cv-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          cache-dependency-path: cv/cv.typ
+
+      - name: Compile CV
+        run: |
+          mkdir -p cv/output
+          typst compile cv/cv.typ "cv/output/cv-pr${{ github.event.pull_request.number }}-${GITHUB_SHA::7}.pdf" --root . --font-path cv/fonts
+
+      - name: Upload CV preview artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-preview-pr${{ github.event.pull_request.number }}
+          path: cv/output/*.pdf
+          retention-days: 14
+
+      - name: Comment on PR with preview link
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- cv-preview-comment -->';
+            const body = [
+              marker,
+              '## 📄 CV Preview',
+              '',
+              `The CV compiled successfully for commit \`${context.payload.pull_request.head.sha.slice(0, 7)}\`.`,
+              '',
+              '**[⬇️ Download the PDF](${{ steps.upload.outputs.artifact-url }})** (artifact, kept for 14 days)',
+              '',
+              `_Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}_`,
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
