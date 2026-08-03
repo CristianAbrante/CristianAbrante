@@ -43,6 +43,7 @@
         "Leveraged AI-assisted development (OpenCode + Claude) to accelerate delivery"
       ],
       "technologies": ["Airbyte", "Dagster", "dbt", "BigQuery", "Lightdash", "OpenCode", "Claude"],
+      "logo": "logos/alohas.png",
       "visibility": ["readme", "pdf", "website"]
     },
     {
@@ -67,6 +68,7 @@
         "GCP",
         "Tableau"
       ],
+      "logo": "logos/foodello.png",
       "visibility": ["readme", "pdf", "website"]
     },
     {
@@ -91,6 +93,7 @@
         "dbt",
         "Snowflake"
       ],
+      "logo": "logos/unity.png",
       "visibility": ["readme", "pdf", "website"]
     },
     {
@@ -176,6 +179,7 @@
         "Reinforcement learning",
         "Master's thesis"
       ],
+      "logo": "logos/aalto.png",
       "keywords": ["LaTeX", "Machine Learning", "Data Science", "Python"],
       "highlights": [
         "Grade: 4.27/5.0 (highest in program)",
@@ -219,6 +223,7 @@
         "Deep learning",
         "Big Data"
       ],
+      "logo": "logos/upm.png",
       "keywords": ["Statistics", "LaTeX", "Data Science", "Big Data", "R"],
       "highlights": [
         "Grade: 3.48/4.0",

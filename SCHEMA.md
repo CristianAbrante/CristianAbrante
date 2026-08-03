@@ -47,6 +47,7 @@ Each work experience entry supports the `visibility` and `technologies` fields:
       "summary": "Brief description",
       "highlights": ["Achievement 1", "Achievement 2"],
       "technologies": ["Technology 1", "Technology 2", "Technology 3"],
+      "logo": "logos/company.png",
       "visibility": ["readme", "pdf", "website"]
     }
   ]
@@ -55,6 +56,7 @@ Each work experience entry supports the `visibility` and `technologies` fields:
 
 **Custom Fields:**
 - `technologies` (array of strings, optional): List of technologies/tools used in this position. Displayed in README and can be used in other formats.
+- `logo` (string, optional): Path to a company logo image, relative to the `cv/` directory (e.g. `logos/company.png`). Rendered inline next to the entry title in the PDF CV.
 
 **Visibility Guidelines:**
 - **README**: First 4-5 most recent/relevant positions
@@ -80,11 +82,15 @@ Each education entry supports the `visibility` field:
       "courses": ["Course 1", "Course 2"],
       "keywords": ["Skill 1", "Skill 2"],
       "highlights": ["Achievement 1", "Achievement 2"],
+      "logo": "logos/university.png",
       "visibility": ["pdf", "website"]
     }
   ]
 }
 ```
+
+**Custom Fields:**
+- `logo` (string, optional): Path to an institution logo image, relative to the `cv/` directory. Rendered inline next to the entry title in the PDF CV.
 
 **Visibility Guidelines:**
 - **README**: Education section not included in README
@@ -265,9 +271,8 @@ When `resume.json` is pushed to the `master` branch, a GitHub Actions workflow a
    - Commits changes back to master (if README changed)
    - Uses `[skip ci]` to prevent infinite loops
 
-2. **Generates and Compiles PDF CV**
-   - Runs `npm run generate:cv` (creates LaTeX files)
-   - Runs `npm run generate:pdf` (compiles to PDF)
+2. **Compiles PDF CV**
+   - Runs `npm run generate:pdf` (Typst compiles `cv/cv.typ`, which reads `resume.json` directly)
    - Uploads PDF as GitHub Actions artifact (90-day retention)
 
 3. **Creates Release**

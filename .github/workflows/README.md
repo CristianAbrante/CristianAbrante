@@ -9,7 +9,7 @@ This directory contains CI/CD workflows for automating resume generation.
 Automatically generates and updates all resume formats when `resume.json` changes.
 
 **Triggers:**
-- Push to `master` branch with changes to `resume.json`
+- Push to `master` branch with changes to `resume.json`, `cv/cv.typ`, or `cv/fonts/**`
 - Manual trigger via GitHub Actions UI (workflow_dispatch)
 
 **What it does:**
@@ -19,25 +19,22 @@ Automatically generates and updates all resume formats when `resume.json` change
    - Commits and pushes changes back to master if changed
    - Uses `[skip ci]` in commit message to prevent infinite loops
 
-2. **Generates LaTeX CV**
-   - Runs `npm run generate:cv`
-   - Creates `cv.tex` and `page1sidebar.tex`
-
-3. **Generates Website**
+2. **Generates Website**
    - Runs `npm run generate:website`
    - Creates HTML, CSS, and JS files in `website/output/`
    - Commits website files to repository if changed
 
-4. **Compiles PDF**
-   - Installs LaTeX (texlive) on Ubuntu runner
-   - Runs `npm run generate:pdf`
-   - Generates `cv.pdf`
+3. **Compiles PDF with Typst**
+   - Installs Typst via `typst-community/setup-typst@v5` (with package caching)
+   - Runs `npm run generate:pdf` → `typst compile cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts`
+   - `cv/cv.typ` reads `resume.json` directly (no code generation step)
+   - Fonts are vendored in `cv/fonts/` (Roboto, Source Sans 3, Font Awesome 7)
 
-5. **Uploads Artifacts**
+4. **Uploads Artifacts**
    - Uploads PDF as GitHub Actions artifact (90-day retention)
    - Artifact name: `cv-YYYY.MM.DD-{git-sha}`
 
-6. **Creates Release**
+5. **Creates Release**
    - Creates a GitHub release with the PDF attached
    - Tag format: `cv-YYYY.MM.DD-{git-sha}`
    - Includes commit SHA and generation date in release notes
@@ -45,7 +42,7 @@ Automatically generates and updates all resume formats when `resume.json` change
 **Environment:**
 - Runner: `ubuntu-latest`
 - Node.js: v20
-- LaTeX: texlive-latex-base + fonts + extras
+- Typst: latest (via typst-community/setup-typst)
 
 **Permissions:**
 - `contents: write` - Required to commit README changes and create releases
@@ -55,12 +52,57 @@ Automatically generates and updates all resume formats when `resume.json` change
 ```
 resume.json updated → Workflow triggered
   ├─ Generate README.md
-  ├─ Generate cv.tex + page1sidebar.tex
   ├─ Generate website files (HTML, CSS, JS)
   ├─ Commit README.md and website files (if changed)
-  ├─ Compile cv.pdf
+  ├─ Compile cv.pdf (typst compile cv/cv.typ)
   ├─ Upload cv.pdf as artifact
   └─ Create release with cv.pdf
+```
+
+### `pr-cv-preview.yml` - Per-PR CV Preview
+
+Compiles the CV on every pull request that touches the resume or CV files, so
+the result can be reviewed before merging.
+
+**Triggers:**
+- Pull requests changing `resume.json`, `cv/**`, or the workflow itself
+
+**What it does:**
+
+1. **Compiles the CV** with Typst (same command as `generate:pdf`)
+2. **Uploads the PDF** as an artifact: `cv-preview-pr{number}` (14-day retention)
+3. **Comments on the PR** with a direct download link for the PDF
+   - The comment is updated in place on subsequent pushes (no comment spam)
+
+**Permissions:**
+- `contents: read` - Read repository files
+- `pull-requests: write` - Create/update the preview comment
+
+### `ats-verify.yml` - ATS Verification
+
+Verifies on every pull request that the generated CV PDF is parseable by
+Applicant Tracking Systems.
+
+**Triggers:**
+- Pull requests changing `resume.json`, `cv/**`, `scripts/verify-ats.js`, or the workflow itself
+
+**What it does:**
+
+1. **Compiles the CV** (Typst, PDF/UA-1 tagged output)
+2. **Extracts the text layer** with poppler's `pdftotext` — the same technique
+   ATS parsers use
+3. **Verifies every pdf-visible field from resume.json** survives extraction:
+   name, email, phone, section headers, positions, companies, dates,
+   technologies, institutions, degrees, awards, skills, and languages
+4. **Fails the check** if any field is missing or extraction is corrupted;
+   warns on ligature/icon glyph noise
+5. **Comments on the PR** with the score and per-field failures
+   (sticky comment, updated in place)
+
+**Run locally:**
+```bash
+brew install poppler   # one-time
+npm run generate:pdf && npm run verify:ats
 ```
 
 ### `deploy-website.yml` - GitHub Pages Deployment
@@ -166,9 +208,11 @@ npm run generate:all
 
 # Test individual formats
 npm run generate:readme
-npm run generate:cv
 npm run generate:website
 npm run generate:pdf
+
+# Live preview while editing resume.json or cv/cv.typ
+npm run watch:pdf
 
 # Verify outputs
 ls -la cv/output/cv.pdf
@@ -188,9 +232,9 @@ When modifying the workflow:
 
 ### Common Issues
 
-**LaTeX compilation fails:**
-- Check LaTeX installation step includes all required packages
+**Typst compilation fails:**
 - Test locally: `npm run generate:pdf`
+- Ensure fonts are present in `cv/fonts/` (compilation warns about unknown font families)
 - Check logs in GitHub Actions run
 
 **README not committing:**
