@@ -15,7 +15,7 @@ Passionate Data Engineer with a strong foundation in data science, shaped by div
 
 - 👨🏻‍💻 Data Engineer - [`@ALOHAS2020`](https://github.com/ALOHAS2020)  
 *Barcelona, Spain | March 2025 - Present*  
-🛠 **Technologies**: Dagster · dbt · BigQuery
+🛠 **Technologies**: Airbyte · Dagster · dbt · BigQuery · Lightdash · OpenCode · Claude
 
 - 👨🏻‍💻 Data Engineer - [`@Fiksuruoka-fi`](https://github.com/Fiksuruoka-fi)  
 *Helsinki, Finland | October 2023 - February 2025*  

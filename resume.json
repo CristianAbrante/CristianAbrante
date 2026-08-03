@@ -35,13 +35,14 @@
       "location": "Barcelona, Catalonia, Spain",
       "url": "https://github.com/ALOHAS2020",
       "startDate": "2025-03-01",
-      "summary": "Designing and implementing scalable data and analytics architectures to drive business insights and decision-making.",
+      "summary": "Built data capabilities in the company from scratch. As the first data hire, I started a modern data platform (Airbyte, Dagster, dbt, BigQuery, Lightdash) that centralized analytics across the company, all powered by AI (OpenCode + Claude).",
       "highlights": [
-        "Built data infrastructure and pipelines for analytics platforms",
-        "Designed scalable data architectures supporting business growth",
-        "Implemented data solutions enabling data-driven decision-making"
+        "First data hire — bootstrapped the entire data function from scratch",
+        "Built a modern data platform with Airbyte, Dagster, dbt, BigQuery, and Lightdash",
+        "Centralized analytics across the company to enable data-driven decision-making",
+        "Leveraged AI-assisted development (OpenCode + Claude) to accelerate delivery"
       ],
-      "technologies": ["Dagster", "dbt", "BigQuery"],
+      "technologies": ["Airbyte", "Dagster", "dbt", "BigQuery", "Lightdash", "OpenCode", "Claude"],
       "visibility": ["readme", "pdf", "website"]
     },
     {
