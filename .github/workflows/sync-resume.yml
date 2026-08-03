@@ -6,14 +6,14 @@ on:
       - master
     paths:
       - "resume.json"
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   generate-resume-formats:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write # Needed to commit README changes
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -28,15 +28,18 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+        with:
+          typst-version: latest
+
+      - name: Install poppler-utils (for ATS validation)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Install LaTeX
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texlive-bibtex-extra
-
-      - name: Generate README, LaTeX CV, and Website
+      - name: Generate README, Typst CV, and Website
         run: |
           npm run generate:readme
           npm run generate:cv
@@ -45,10 +48,13 @@ jobs:
       - name: Compile PDF
         run: npm run generate:pdf
 
+      - name: Validate ATS compatibility
+        run: npm run validate:ats
+
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet README.md website/; then
+          if git diff --quiet README.md website/ cv/typst/cv.typ cv/typst/cv.pdf; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -59,11 +65,11 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add README.md website/output/
-          git commit -m "chore: auto-update README.md and website from resume.json [skip ci]"
+          git add README.md website/output/ cv/typst/cv.typ cv/typst/cv.pdf
+          git commit -m "chore: auto-update generated formats from resume.json [skip ci]"
           git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
-      - name: Get version from resume.json
+      - name: Get version
         id: get_version
         run: |
           VERSION=$(date +'%Y.%m.%d')-$(git rev-parse --short HEAD)
@@ -73,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cv-${{ steps.get_version.outputs.version }}
-          path: cv/output/cv.pdf
+          path: cv/typst/cv.pdf
           retention-days: 90
 
       - name: Create Release with PDF
@@ -82,11 +88,11 @@ jobs:
           tag_name: cv-${{ steps.get_version.outputs.version }}
           name: CV - ${{ steps.get_version.outputs.version }}
           body: |
-            Auto-generated CV from resume.json
+            Auto-generated CV from resume.json (Typst + basic-resume, ATS-validated).
 
             **Generated:** ${{ steps.get_version.outputs.version }}
             **Commit:** ${{ github.sha }}
-          files: cv/output/cv.pdf
+          files: cv/typst/cv.pdf
           draft: false
           prerelease: false
         env:

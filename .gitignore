@@ -195,8 +195,8 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,node
 
-# LaTeX CV output directory (generated files)
-cv/output/
+# Typst CV preview images (compiled PDF is committed)
+cv/typst/preview-*.png
 
 # Website output directory (generated files)
 website/output/
