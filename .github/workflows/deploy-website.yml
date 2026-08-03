@@ -8,28 +8,18 @@ on:
       - "resume.json"
       - "website/**"
       - "scripts/generate-website.js"
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,23 +33,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate website from resume.json
+      - name: Generate website
         run: npm run generate:website
 
-      - name: Add .nojekyll file
-        run: touch website/output/.nojekyll
+      - name: Add CNAME and .nojekyll
+        run: |
+          echo "cristianabrante.com" > website/output/CNAME
+          touch website/output/.nojekyll
 
-      - name: Add CNAME file for custom domain
-        run: echo "cristianabrante.com" > website/output/CNAME
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: 'website/output'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          folder: website/output
+          branch: gh-pages
+          clean-exclude: pr-preview
+          force: false

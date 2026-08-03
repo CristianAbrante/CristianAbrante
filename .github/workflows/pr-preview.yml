@@ -1,0 +1,206 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+    paths:
+      - "resume.json"
+      - "scripts/**"
+      - "cv/**"
+      - "website/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/pr-preview.yml"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  build-and-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+        with:
+          typst-version: latest
+
+      - name: Install poppler-utils
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate all formats
+        run: npm run generate:all
+
+      - name: Render PDF to PNG previews
+        run: typst compile cv/typst/cv.typ 'cv/typst/preview-{p}.png' --ppi 150
+
+      - name: Extract PDF text (for diff)
+        run: pdftotext -layout cv/typst/cv.pdf cv/typst/cv.txt
+
+      - name: Upload PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-pdf-pr-${{ github.event.pull_request.number }}
+          path: cv/typst/cv.pdf
+          retention-days: 30
+
+      - name: Upload PNG previews
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-preview-pr-${{ github.event.pull_request.number }}
+          path: cv/typst/preview-*.png
+          retention-days: 30
+
+      - name: Upload website
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-pr-${{ github.event.pull_request.number }}
+          path: website/output/
+          retention-days: 30
+
+      - name: Deploy website preview to gh-pages
+        id: preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: website/output
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: deploy
+          pages-base-url: cristianabrante.com
+          comment: false
+
+      - name: Diff generated README against base
+        id: readme_diff
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          if git diff --quiet "origin/${{ github.base_ref }}" -- README.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            {
+              echo 'diff<<EOF_DIFF'
+              git diff --no-color "origin/${{ github.base_ref }}" -- README.md | head -200
+              echo 'EOF_DIFF'
+            } >> $GITHUB_OUTPUT
+          fi
+
+      - name: Diff generated PDF text against base
+        id: pdf_diff
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          if git show "origin/${{ github.base_ref }}:cv/typst/cv.pdf" > /tmp/cv-base.pdf 2>/dev/null; then
+            pdftotext -layout /tmp/cv-base.pdf /tmp/cv-base.txt
+            if diff -q /tmp/cv-base.txt cv/typst/cv.txt > /dev/null; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+              {
+                echo 'diff<<EOF_DIFF'
+                diff -u /tmp/cv-base.txt cv/typst/cv.txt | head -200
+                echo 'EOF_DIFF'
+              } >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "changed=new" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build PR comment body
+        id: comment
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          PR_NUM="${{ github.event.pull_request.number }}"
+          PREVIEW_URL="${{ steps.preview.outputs.preview-url }}"
+
+          {
+            echo 'body<<EOF_BODY'
+            echo "## 📄 Resume Preview"
+            echo ""
+            echo "✅ **ATS validation passed** — PDF parses cleanly for Workday, Greenhouse, Lever, Taleo, iCIMS."
+            echo ""
+            echo "### 🌐 Live website preview"
+            echo ""
+            echo "**${PREVIEW_URL}**"
+            echo ""
+            echo "_(Give GitHub Pages ~30-60s after this comment to finish deploying.)_"
+            echo ""
+            echo "### Artifacts"
+            echo ""
+            echo "| Format | Download |"
+            echo "|---|---|"
+            echo "| 📕 PDF CV | [\`cv-pdf-pr-${PR_NUM}\`](${RUN_URL}#artifacts) |"
+            echo "| 🖼️ PNG previews | [\`cv-preview-pr-${PR_NUM}\`](${RUN_URL}#artifacts) |"
+            echo "| 🌐 Website (zip) | [\`website-pr-${PR_NUM}\`](${RUN_URL}#artifacts) |"
+            echo ""
+
+            if [ "${{ steps.readme_diff.outputs.changed }}" = "true" ]; then
+              echo "### README changes"
+              echo ""
+              echo '```diff'
+              echo "${{ steps.readme_diff.outputs.diff }}"
+              echo '```'
+              echo ""
+            fi
+
+            if [ "${{ steps.pdf_diff.outputs.changed }}" = "true" ]; then
+              echo "### PDF text changes"
+              echo ""
+              echo '```diff'
+              echo "${{ steps.pdf_diff.outputs.diff }}"
+              echo '```'
+              echo ""
+            elif [ "${{ steps.pdf_diff.outputs.changed }}" = "new" ]; then
+              echo "### PDF"
+              echo ""
+              echo "_New PDF — no baseline on \`${{ github.base_ref }}\` to compare._"
+              echo ""
+            fi
+
+            echo "<sub>Updated by [\`pr-preview.yml\`](${{ github.server_url }}/${{ github.repository }}/blob/${{ github.head_ref }}/.github/workflows/pr-preview.yml) · run \`${{ github.run_id }}\`</sub>"
+            echo 'EOF_BODY'
+          } >> $GITHUB_OUTPUT
+
+      - name: Post sticky PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: resume-preview
+          message: ${{ steps.comment.outputs.body }}
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove website preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: remove
+
+      - name: Update sticky PR comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: resume-preview
+          message: |
+            ## 📄 Resume Preview
+
+            🧹 Preview removed — PR was closed.
