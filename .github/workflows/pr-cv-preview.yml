@@ -25,7 +25,7 @@ jobs:
       - name: Compile CV
         run: |
           mkdir -p cv/output
-          typst compile cv/cv.typ "cv/output/cv-pr${{ github.event.pull_request.number }}-${GITHUB_SHA::7}.pdf" --root . --font-path cv/fonts
+          typst compile cv/cv.typ "cv/output/cv-pr${{ github.event.pull_request.number }}-${GITHUB_SHA::7}.pdf" --root . --font-path cv/fonts --pdf-standard ua-1
 
       - name: Upload CV preview artifact
         id: upload

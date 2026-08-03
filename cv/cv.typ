@@ -50,14 +50,14 @@
 
 // Entry title with an optional inline logo (path relative to cv/, from the
 // entry's "logo" field in resume.json).
-#let entry-title(entry, title) = {
+#let entry-title(entry, title, alt: "logo") = {
   let logo = entry.at("logo", default: none)
   if logo == none { title } else {
     box(
       baseline: 30%,
       clip: true,
       radius: 2.5pt,
-      image(logo, height: 15pt),
+      image(logo, height: 15pt, alt: alt + " logo"),
     )
     h(6pt)
     title
@@ -84,7 +84,7 @@
     linkedin: profile-username("LinkedIn"),
     address: basics.location.city + ", " + basics.location.region,
   ),
-  profile-picture: image("picture.jpg"),
+  profile-picture: image("picture.jpg", alt: "Profile picture of " + basics.name),
   profile-picture-size: 2.6cm,
   name-size: 22pt,
   accent-color: rgb("#15959F"),
@@ -105,7 +105,7 @@
 
 #for job in visible(data.work) [
   #resume-entry(
-    title: entry-title(job, job.position),
+    title: entry-title(job, job.position, alt: job.name),
     location: job.at("location", default: ""),
     date: format-date-range(job),
     description: job.name,
@@ -126,7 +126,7 @@
 
 #for edu in visible(data.education) [
   #resume-entry(
-    title: entry-title(edu, edu.institution),
+    title: entry-title(edu, edu.institution, alt: edu.institution),
     location: {
       let score = edu.at("score", default: "")
       if score != "" { "Grade: " + score } else { "" }
