@@ -78,7 +78,6 @@
     lastname: basics.name.split(" ").slice(1).join(" "),
     positions: (basics.label,),
     email: basics.email,
-    phone: basics.phone,
     homepage: basics.url,
     github: profile-username("GitHub"),
     linkedin: profile-username("LinkedIn"),

@@ -95,7 +95,6 @@ function main() {
   const resume = JSON.parse(fs.readFileSync(RESUME_PATH, 'utf8'));
   const rawText = extractText(pdfPath);
   const text = normalize(rawText);
-  const digitsOnly = rawText.replace(/\D/g, '');
 
   const failures = [];
   const warnings = [];
@@ -120,7 +119,6 @@ function main() {
   const { basics } = resume;
   check('Contact', basics.name, contains(basics.name));
   check('Contact', basics.email, contains(basics.email));
-  check('Contact', `phone ${basics.phone}`, digitsOnly.includes(basics.phone.replace(/\D/g, '')));
 
   // --- Section headers -------------------------------------------------------
   for (const section of EXPECTED_SECTIONS) {
