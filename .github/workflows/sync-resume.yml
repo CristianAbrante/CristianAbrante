@@ -6,6 +6,10 @@ on:
       - master
     paths:
       - "resume.json"
+      - "cv/cv.typ"
+      - "cv/modern-cv/**"
+      - "cv/fonts/**"
+      - "cv/logos/**"
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -31,15 +35,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install LaTeX
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra texlive-bibtex-extra
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5
+        with:
+          cache-dependency-path: cv/cv.typ
 
-      - name: Generate README, LaTeX CV, and Website
+      - name: Generate README and Website
         run: |
           npm run generate:readme
-          npm run generate:cv
           npm run generate:website
 
       - name: Compile PDF

@@ -4,27 +4,35 @@ This file provides instructions for AI coding agents working in this repository.
 
 ## Repository Overview
 
-GitHub profile repository for CristianAbrante. This is currently a documentation-only repository.
+GitHub profile repository for CristianAbrante. `resume.json` (JSON Resume format)
+is the single source of truth; README, PDF CV (Typst), and website are generated
+from it. Entries are filtered per target via `visibility: ["readme", "pdf", "website"]`.
 
 ## Build Commands
 
-> Note: No build system is currently configured. When adding code, update this section.
-
-### Example commands for future setup:
-
 ```bash
-# Install dependencies (Node.js/npm)
+# Install dependencies
 npm install
 
-# Install dependencies (Python)
-pip install -r requirements.txt
+# Generate README.md from resume.json
+npm run generate:readme
 
-# Build project
-npm run build
+# Compile PDF CV (Typst; requires `brew install typst`)
+npm run generate:pdf
 
-# Development mode
-npm run dev
+# Live-preview PDF while editing resume.json or cv/cv.typ
+npm run watch:pdf
+
+# Generate website (website/output/)
+npm run generate:website
+
+# Generate everything
+npm run generate:all
 ```
+
+The PDF CV is built from `cv/cv.typ` (modern-cv template), which reads
+`resume.json` directly — do not add a code-generation step for it. Fonts are
+vendored in `cv/fonts/`.
 
 ## Test Commands
 

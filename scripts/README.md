@@ -30,6 +30,35 @@ npm run generate:readme
 
 ---
 
+### `generate-website.js`
+
+Generates the static website in `website/output/` from `resume.json`.
+
+**Usage:**
+```bash
+npm run generate:website
+```
+
+---
+
+### Compile PDF with Typst
+
+**Usage:**
+```bash
+npm run generate:pdf     # one-time compile
+npm run watch:pdf        # live preview (recompiles on change)
+```
+
+**What it does:**
+- Compiles `cv/cv.typ` to `cv/output/cv.pdf` using the Typst CLI
+- `cv/cv.typ` reads `resume.json` directly — there is no intermediate
+  code-generation step or script for the PDF
+
+**Prerequisites:**
+- Typst must be installed (see [cv/README.md](../cv/README.md))
+
+---
+
 ### Generate All Formats
 
 **Usage:**
@@ -37,65 +66,10 @@ npm run generate:readme
 npm run generate:all
 ```
 
-**What it does:**
-- Generates README.md
-- Generates LaTeX CV files (cv.tex, page1sidebar.tex)
-- Compiles PDF from LaTeX
-
-This is equivalent to running:
+Equivalent to running:
 ```bash
-npm run generate:readme && npm run generate:cv && npm run generate:pdf
+npm run generate:readme && npm run generate:pdf && npm run generate:website
 ```
-
-**Future:** Will also generate website files (Phase 5).
-
----
-
-### Compile PDF from LaTeX
-
-**Usage:**
-```bash
-npm run generate:pdf
-```
-
-**What it does:**
-- Compiles `cv/output/cv.tex` to `cv/output/cv.pdf` using pdflatex
-- Runs in non-interactive mode for automated builds
-
-**Prerequisites:**
-- LaTeX must be installed (see [cv/README.md](../cv/README.md))
-- LaTeX files must already be generated (`npm run generate:cv`)
-
----
-
-### `generate:all` (Coming in Phase 7)
-
-Generates all formats at once:
-```bash
-npm run generate:all
-```
-
-Currently generates:
-- README.md
-- LaTeX CV (cv.tex)
-
-Future: Will also generate website files.
-
-## Future Scripts
-
-Additional scripts will be added in upcoming phases:
-
-- `generate-cv.js` - Generate LaTeX CV (Phase 3)
-- `generate-website.js` - Generate static website (Phase 5)
-- `generate-all.js` - Generate all formats (Phase 7)
-- `validate-resume.js` - Validate resume.json schema (Phase 7)
-
-## Future Scripts
-
-Additional scripts planned for upcoming phases:
-
-- `generate-website.js` - Generate static website (Phase 5)
-- `validate-resume.js` - Validate resume.json schema (Phase 7)
 
 ## Development
 
@@ -137,12 +111,12 @@ When adding new generation scripts:
 # Generate README only
 npm run generate:readme
 
-# Generate LaTeX CV files only
-npm run generate:cv
-
-# Compile PDF from existing LaTeX files
+# Compile PDF CV with Typst
 npm run generate:pdf
 
-# Generate everything (README + CV + PDF)
+# Live preview the PDF while editing resume.json or cv/cv.typ
+npm run watch:pdf
+
+# Generate everything (README + PDF + website)
 npm run generate:all
 ```

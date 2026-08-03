@@ -4,10 +4,10 @@
   "description": "Multi-format resume generation from JSON Resume",
   "scripts": {
     "generate:readme": "node scripts/generate-readme.js",
-    "generate:cv": "node scripts/generate-cv.js",
-    "generate:pdf": "cd cv/output && pdflatex -interaction=nonstopmode cv.tex",
+    "generate:pdf": "mkdir -p cv/output && typst compile cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts",
+    "watch:pdf": "mkdir -p cv/output && typst watch cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts",
     "generate:website": "node scripts/generate-website.js",
-    "generate:all": "npm run generate:readme && npm run generate:cv && npm run generate:pdf && npm run generate:website"
+    "generate:all": "npm run generate:readme && npm run generate:pdf && npm run generate:website"
   },
   "dependencies": {
     "@jsonresume/schema": "^1.2.1"
