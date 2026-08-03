@@ -59,6 +59,25 @@ npm run watch:pdf        # live preview (recompiles on change)
 
 ---
 
+### `verify-ats.js`
+
+Verifies the compiled PDF is ATS-parseable.
+
+**Usage:**
+```bash
+npm run verify:ats
+```
+
+**What it does:**
+- Extracts the PDF text layer with `pdftotext` (requires poppler:
+  `brew install poppler` on macOS)
+- Asserts every pdf-visible field from `resume.json` appears in the extracted
+  text (contact info, sections, jobs, education, awards, skills, languages)
+- Writes `cv/output/ats-report.json` and `cv/output/ats-report.md`
+- Exits non-zero on any missing field (used as a PR gate in CI)
+
+---
+
 ### Generate All Formats
 
 **Usage:**

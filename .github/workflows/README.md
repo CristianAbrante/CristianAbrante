@@ -78,6 +78,33 @@ the result can be reviewed before merging.
 - `contents: read` - Read repository files
 - `pull-requests: write` - Create/update the preview comment
 
+### `ats-verify.yml` - ATS Verification
+
+Verifies on every pull request that the generated CV PDF is parseable by
+Applicant Tracking Systems.
+
+**Triggers:**
+- Pull requests changing `resume.json`, `cv/**`, `scripts/verify-ats.js`, or the workflow itself
+
+**What it does:**
+
+1. **Compiles the CV** (Typst, PDF/UA-1 tagged output)
+2. **Extracts the text layer** with poppler's `pdftotext` — the same technique
+   ATS parsers use
+3. **Verifies every pdf-visible field from resume.json** survives extraction:
+   name, email, phone, section headers, positions, companies, dates,
+   technologies, institutions, degrees, awards, skills, and languages
+4. **Fails the check** if any field is missing or extraction is corrupted;
+   warns on ligature/icon glyph noise
+5. **Comments on the PR** with the score and per-field failures
+   (sticky comment, updated in place)
+
+**Run locally:**
+```bash
+brew install poppler   # one-time
+npm run generate:pdf && npm run verify:ats
+```
+
 ### `deploy-website.yml` - GitHub Pages Deployment
 
 Automatically deploys the resume website to GitHub Pages when `resume.json` or website files change.
