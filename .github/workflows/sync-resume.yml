@@ -37,8 +37,6 @@ jobs:
 
       - name: Setup Typst
         uses: typst-community/setup-typst@v5
-        with:
-          cache-dependency-path: cv/cv.typ
 
       - name: Generate README and Website
         run: |
