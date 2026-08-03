@@ -54,12 +54,12 @@
   let logo = entry.at("logo", default: none)
   if logo == none { title } else {
     box(
-      baseline: 25%,
+      baseline: 30%,
       clip: true,
-      radius: 2pt,
-      image(logo, height: 11pt),
+      radius: 2.5pt,
+      image(logo, height: 15pt),
     )
-    h(5pt)
+    h(6pt)
     title
   }
 }
