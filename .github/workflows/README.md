@@ -22,7 +22,7 @@ Automatically generates and updates all resume formats when `resume.json` change
 2. **Generates Website**
    - Runs `npm run generate:website`
    - Creates HTML, CSS, and JS files in `website/output/`
-   - Commits website files to repository if changed
+   - Output is gitignored; deployment happens via the `deploy-website.yml` workflow (GitHub Pages)
 
 3. **Compiles PDF with Typst**
    - Installs Typst via `typst-community/setup-typst@v5` (with package caching)
