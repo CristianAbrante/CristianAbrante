@@ -96,6 +96,9 @@
   keywords: (basics.label,),
 )
 
+// Tighten the gap between the header block and the first section.
+#v(-0.6em)
+
 = Profile
 
 #basics.summary
