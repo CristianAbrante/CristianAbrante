@@ -9,7 +9,7 @@
 
 ## 👨🏻‍💻 About me
 
-Passionate Data Engineer with a strong foundation in data science, shaped by diverse international experiences. Currently contributing at Alohas.com, where I design and implement scalable data and analytics architectures to drive business insights and decision-making.
+Data Engineer with experience across big corporations (Unity Technologies) and startups, spanning both data engineering and analytics engineering. I build scalable data platforms end to end — from ingestion and orchestration to modeling and the semantic layer — and leverage AI-assisted development to deliver high-quality results, fast.
 
 ## 💼 Work Experience
 
