@@ -481,8 +481,8 @@
 
   let name = {
     align(center)[
-      #pad(bottom: 5pt)[
-        #block[
+      #pad(bottom: 0pt)[
+        #block(below: 0.1em)[
           #set text(size: name-size, style: "normal", font: header-font)
           #if language == "zh" or language == "ja" [
             #text(accent-color, weight: "bold")[#author.lastname]#text(
