@@ -334,47 +334,40 @@
   "publications": [],
   "skills": [
     {
-      "name": "Languages",
+      "name": "AI Development",
       "level": "Advanced",
-      "keywords": ["SQL", "TypeScript", "Python"],
-      "visibility": ["pdf", "website"]
-    },
-    {
-      "name": "Frameworks & technologies",
-      "level": "Advanced",
-      "keywords": ["dbt", "Spark", "Dagster"],
+      "keywords": ["OpenCode", "Claude Code", "Agents", "MCPs", "Skills"],
       "visibility": ["pdf", "website"]
     },
     {
       "name": "Data Engineering",
       "level": "Advanced",
       "keywords": [
-        "dbt",
-        "Snowflake",
-        "Dagster",
         "Apache Spark",
         "Apache Druid",
+        "Dataproc",
+        "Dagster",
         "Airflow"
       ],
-      "visibility": ["website"]
+      "visibility": ["pdf", "website"]
     },
     {
-      "name": "Programming Languages",
+      "name": "Analytics Engineering",
       "level": "Advanced",
-      "keywords": ["SQL", "Python", "JavaScript", "TypeScript"],
-      "visibility": ["website"]
+      "keywords": ["BigQuery", "Snowflake", "dbt", "SQL", "semantic layer"],
+      "visibility": ["pdf", "website"]
+    },
+    {
+      "name": "Data Visualization",
+      "level": "Advanced",
+      "keywords": ["Lightdash", "Looker"],
+      "visibility": ["pdf", "website"]
     },
     {
       "name": "Cloud & Infrastructure",
       "level": "Advanced",
       "keywords": ["GCP", "Terraform"],
-      "visibility": ["website"]
-    },
-    {
-      "name": "Analytics & Tools",
-      "level": "Intermediate",
-      "keywords": ["Tableau", "Jest", "OpenAPI"],
-      "visibility": ["website"]
+      "visibility": ["pdf", "website"]
     }
   ],
   "languages": [
