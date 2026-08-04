@@ -9,7 +9,7 @@
 
 ## 👨🏻‍💻 About me
 
-Data Engineer with experience across big corporations (Unity Technologies) and startups, spanning both data engineering and analytics engineering. I build scalable data platforms end to end — from ingestion and orchestration to modeling and the semantic layer — and leverage AI-assisted development to deliver high-quality results, fast.
+Data Engineer with experience across big corporations (Unity Technologies) and startups, spanning both data engineering and analytics engineering. I build scalable data platforms end to end, from ingestion and orchestration to modeling and the semantic layer, and leverage AI-assisted development to deliver high-quality results.
 
 ## 💼 Work Experience
 
