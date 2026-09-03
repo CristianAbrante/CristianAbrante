@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Primary Meta Tags -->
-    <title>{{NAME}} - {{LABEL}}</title>
+
+    <title>{{NAME}} — {{LABEL}}</title>
     <meta name="title" content="{{NAME}} - {{LABEL}}">
     <meta name="description" content="{{SUMMARY}}">
     <meta name="author" content="{{NAME}}">
@@ -13,11 +12,10 @@
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
-    
-    <!-- Canonical URL -->
+    <meta name="theme-color" content="#fcf6ef">
+
     <link rel="canonical" href="https://cristianabrante.com/">
-    
-    <!-- Open Graph / Facebook -->
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cristianabrante.com/">
     <meta property="og:title" content="{{NAME}} - {{LABEL}}">
@@ -25,121 +23,139 @@
     <meta property="og:image" content="https://cristianabrante.com/picture.jpg">
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="{{NAME}}">
-    
-    <!-- Twitter -->
+
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://cristianabrante.com/">
     <meta property="twitter:title" content="{{NAME}} - {{LABEL}}">
     <meta property="twitter:description" content="{{SUMMARY}}">
     <meta property="twitter:image" content="https://cristianabrante.com/picture.jpg">
-    
-    <!-- Favicon -->
+
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    
-    <!-- Stylesheet -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Halant:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
-    
-    <!-- JSON-LD Structured Data -->
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+    }
+    </script>
+
     <script type="application/ld+json">
     {{STRUCTURED_DATA}}
     </script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="nav">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">{{NAME}}</a>
+        <div class="nav-inner">
+            <a href="#hero" class="nav-logo">
+                <span class="nav-logo-dot" aria-hidden="true"></span>
+                <span class="nav-logo-name">{{NAME}}</span>
+            </a>
             <ul class="nav-menu">
-                <li><a href="#about">About</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#education">Education</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <a href="#contact" class="btn btn-primary btn-sm">Get in touch</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-        <div class="container">
-            <div class="hero-content">
-                <img src="picture.jpg" alt="{{NAME}}" class="hero-image">
-                <div class="hero-text">
-                    <h1 class="hero-title">{{NAME}}</h1>
-                    <p class="hero-subtitle">{{LABEL}}</p>
-                    <p class="hero-location">{{LOCATION}}</p>
-                    <div class="hero-links">
+    <main>
+        <section class="hero" id="hero">
+            <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+            <div class="hero-mask" aria-hidden="true"></div>
+
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <h1 class="hero-title">{{NAME}}<span class="hero-title-accent">.</span></h1>
+                    <p class="hero-subtitle">{{LABEL}} · {{LOCATION}}</p>
+                    <p class="hero-lede">{{SUMMARY}}</p>
+                    <div class="hero-cta">
+                        <a href="#contact" class="btn btn-primary">Get in touch <span aria-hidden="true">→</span></a>
+                        <a href="#experience" class="btn btn-ghost">See experience</a>
+                    </div>
+                </div>
+
+                <aside class="hero-portrait">
+                    <img src="picture.jpg" alt="Portrait of {{NAME}}" class="hero-image">
+                </aside>
+            </div>
+        </section>
+
+        <section class="section" id="experience">
+            <div class="container">
+                <header class="section-head">
+                    <span class="eyebrow"><span class="eyebrow-num">01</span> Experience</span>
+                    <h2 class="section-title">Where I've been building.</h2>
+                </header>
+                <div class="timeline">
+                    {{WORK_EXPERIENCE}}
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="education">
+            <div class="container">
+                <header class="section-head">
+                    <span class="eyebrow"><span class="eyebrow-num">02</span> Education</span>
+                    <h2 class="section-title">Studies &amp; craft.</h2>
+                </header>
+                <div class="timeline">
+                    {{EDUCATION}}
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="skills">
+            <div class="container">
+                <header class="section-head">
+                    <span class="eyebrow"><span class="eyebrow-num">03</span> Skills</span>
+                    <h2 class="section-title">Tools of the trade.</h2>
+                </header>
+                <div class="skills-grid">
+                    {{SKILLS}}
+                </div>
+                {{AWARDS}}
+            </div>
+        </section>
+
+        <section class="section section-contact" id="contact">
+            <div class="container">
+                <div class="contact-card">
+                    <span class="eyebrow"><span class="eyebrow-num">04</span> Contact</span>
+                    <h2 class="contact-title">Let's build something considered.</h2>
+                    <p class="contact-lede">Open to collaborations, correspondence, and the occasional coffee — reach out and I'll write back.</p>
+                    <div class="contact-cta">
+                        <a href="mailto:{{EMAIL}}" class="btn btn-primary btn-lg">{{EMAIL}} <span aria-hidden="true">→</span></a>
+                        {{PHONE}}
+                    </div>
+                    <div class="contact-links">
                         {{PROFILES}}
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- About Section -->
-    <section class="section" id="about">
-        <div class="container">
-            <h2 class="section-title">About</h2>
-            <p class="about-text">{{SUMMARY}}</p>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section class="section section-alt" id="experience">
-        <div class="container">
-            <h2 class="section-title">Experience</h2>
-            <div class="timeline">
-                {{WORK_EXPERIENCE}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Education Section -->
-    <section class="section" id="education">
-        <div class="container">
-            <h2 class="section-title">Education</h2>
-            <div class="timeline">
-                {{EDUCATION}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section class="section section-alt" id="skills">
-        <div class="container">
-            <h2 class="section-title">Skills</h2>
-            <div class="skills-grid">
-                {{SKILLS}}
-            </div>
-            {{AWARDS}}
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="section" id="contact">
-        <div class="container">
-            <h2 class="section-title">Get in Touch</h2>
-            <div class="contact-info">
-                <p class="contact-text">Feel free to reach out for collaborations or opportunities.</p>
-                <div class="contact-links">
-                    <a href="mailto:{{EMAIL}}" class="contact-link">{{EMAIL}}</a>
-                    {{PHONE}}
-                </div>
-                <div class="social-links">
-                    {{PROFILES}}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 {{NAME}}. All rights reserved.</p>
-            <p class="footer-note">Generated from <a href="https://github.com/{{GITHUB_USERNAME}}/{{GITHUB_USERNAME}}" target="_blank">resume.json</a></p>
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="nav-logo-dot" aria-hidden="true"></span>
+                <span>{{NAME}}</span>
+            </div>
+            <p class="footer-meta">&copy; MMXXVI · All rights reserved</p>
+            <p class="footer-note">Set from <a href="https://github.com/{{GITHUB_USERNAME}}/{{GITHUB_USERNAME}}" target="_blank" rel="noopener noreferrer">resume.json</a></p>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    <script type="module" src="three-scene.js"></script>
 </body>
 </html>

@@ -1,52 +1,64 @@
-// Smooth scroll for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+(function () {
+    const nav = document.querySelector('.nav');
+
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href.length <= 1) return;
+            const target = document.querySelector(href);
+            if (!target) return;
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     });
-});
 
-// Add scroll indicator to nav
-let lastScroll = 0;
-const nav = document.querySelector('.nav');
+    const onScroll = () => {
+        if (!nav) return;
+        nav.classList.toggle('is-scrolled', window.pageYOffset > 12);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll <= 0) {
-        nav.style.boxShadow = 'none';
-    } else {
-        nav.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+    const revealTargets = document.querySelectorAll(
+        '.hero-copy > *, .hero-portrait, .section-head, .entry, .skill-category, .award-item, .contact-card'
+    );
+
+    document.querySelectorAll('.entry-summary').forEach((btn) => {
+        if (btn.disabled) return;
+        const entry = btn.closest('.entry');
+        const panel = document.getElementById(btn.getAttribute('aria-controls'));
+        if (!entry || !panel) return;
+
+        btn.addEventListener('click', () => {
+            const isOpen = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', String(!isOpen));
+            entry.classList.toggle('is-open', !isOpen);
+            panel.hidden = isOpen;
+        });
+    });
+
+    if ('IntersectionObserver' in window) {
+        revealTargets.forEach((el, i) => {
+            el.classList.add('reveal');
+            el.style.transitionDelay = `${Math.min(i, 6) * 60}ms`;
+        });
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+        );
+
+        revealTargets.forEach((el) => observer.observe(el));
+
+        window.setTimeout(() => {
+            revealTargets.forEach((el) => el.classList.add('is-visible'));
+        }, 2500);
     }
-    
-    lastScroll = currentScroll;
-});
-
-// Add fade-in animation on scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe timeline items and skill categories
-document.querySelectorAll('.timeline-item, .skill-category, .award-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
+})();

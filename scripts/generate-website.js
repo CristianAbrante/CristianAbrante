@@ -38,56 +38,106 @@ function generateProfiles() {
   ).join('\n                ');
 }
 
-// Generate work experience HTML
-function generateWorkExperience() {
-  const work = (resume.work || []).filter(item => hasVisibility(item));
-  
-  return work.map(job => `
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div class="timeline-position">${job.position}</div>
-                        <div class="timeline-date">${formatDate(job.startDate)} – ${formatDate(job.endDate)}</div>
-                    </div>
-                    <div class="timeline-company">
-                        ${job.url ? `<a href="${job.url}" target="_blank" rel="noopener noreferrer">${job.name}</a>` : job.name}
-                    </div>
-                    ${job.location ? `<div class="timeline-location">${job.location}</div>` : ''}
-                    ${job.summary ? `<p class="timeline-description">${job.summary}</p>` : ''}
-                    ${job.highlights && job.highlights.length > 0 ? `
-                    <ul class="timeline-highlights">
-                        ${job.highlights.map(h => `<li>${h}</li>`).join('\n                        ')}
-                    </ul>` : ''}
-                    ${job.technologies && job.technologies.length > 0 ? `
-                    <div class="timeline-technologies">
-                        ${job.technologies.map(t => `<span class="tech-tag">${t}</span>`).join('\n                        ')}
-                    </div>` : ''}
-                </div>`).join('\n                ');
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
 }
 
-// Generate education HTML
+function monogramFor(name) {
+  const parts = String(name || '').trim().split(/\s+/);
+  const initials = parts.slice(0, 2).map(p => p[0] || '').join('').toUpperCase() || '?';
+  return initials.slice(0, 2);
+}
+
+function resolveLogo(entry, name) {
+  if (entry.logo) return entry.logo;
+  const url = entry.url || '';
+  const gh = url.match(/^https?:\/\/github\.com\/([^\/\?#]+)/i);
+  if (gh) return `https://github.com/${gh[1]}.png?size=120`;
+  return null;
+}
+
+function logoMarkup(entry, name) {
+  const src = resolveLogo(entry, name);
+  const mono = monogramFor(name);
+  const safeName = escapeHtml(name);
+  if (src) {
+    return `<span class="entry-logo" data-monogram="${escapeHtml(mono)}">
+                                <img src="${escapeHtml(src)}" alt="${safeName} logo" loading="lazy" decoding="async" onerror="this.remove(); this.parentNode.classList.add('is-mono');">
+                            </span>`;
+  }
+  return `<span class="entry-logo is-mono" data-monogram="${escapeHtml(mono)}" aria-label="${safeName}"></span>`;
+}
+
+let entryUid = 0;
+
+function renderEntry({ id, position, name, url, dateLine, location, summary, highlights, tags, logoHtml }) {
+  const hasDetail = Boolean(dateLine || location || summary || (highlights && highlights.length));
+  const chipsHtml = tags && tags.length ? `
+                        <span class="entry-chips">
+                            ${tags.slice(0, 5).map(t => `<span class="tech-tag">${escapeHtml(t)}</span>`).join('\n                            ')}
+                            ${tags.length > 5 ? `<span class="tech-tag tech-tag-more">+${tags.length - 5}</span>` : ''}
+                        </span>` : '';
+  const companyLink = url
+    ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="entry-company-link" onclick="event.stopPropagation()">${escapeHtml(name)}</a>`
+    : escapeHtml(name);
+  const detailHighlights = highlights && highlights.length ? `
+                            <ul class="entry-highlights">
+                                ${highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('\n                                ')}
+                            </ul>` : '';
+  return `
+                <article class="entry${hasDetail ? '' : ' entry-static'}" data-entry>
+                    <button type="button" class="entry-summary" aria-expanded="false" aria-controls="entry-${id}-details"${hasDetail ? '' : ' disabled'}>
+                        ${logoHtml}
+                        <span class="entry-meta">
+                            <span class="entry-position">${escapeHtml(position)}</span>
+                            <span class="entry-company">${companyLink}</span>
+                        </span>${chipsHtml}
+                        ${hasDetail ? `<span class="entry-toggle" aria-hidden="true"><svg viewBox="0 0 12 12" width="12" height="12"><path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>` : ''}
+                    </button>
+                    ${hasDetail ? `<div id="entry-${id}-details" class="entry-details" hidden>
+                        <div class="entry-details-inner">
+                            <div class="entry-meta-row">
+                                ${dateLine ? `<span class="entry-date">${escapeHtml(dateLine)}</span>` : ''}
+                                ${location ? `<span class="entry-location">${escapeHtml(location)}</span>` : ''}
+                            </div>
+                            ${summary ? `<p class="entry-description">${escapeHtml(summary)}</p>` : ''}${detailHighlights}
+                        </div>
+                    </div>` : ''}
+                </article>`;
+}
+
+function generateWorkExperience() {
+  const work = (resume.work || []).filter(item => hasVisibility(item));
+  return work.map(job => renderEntry({
+    id: `w${++entryUid}`,
+    position: job.position,
+    name: job.name,
+    url: job.url,
+    dateLine: `${formatDate(job.startDate)} – ${formatDate(job.endDate)}`,
+    location: job.location,
+    summary: job.summary,
+    highlights: job.highlights,
+    tags: job.technologies,
+    logoHtml: logoMarkup(job, job.name),
+  })).join('\n                ');
+}
+
 function generateEducation() {
   const education = (resume.education || []).filter(item => hasVisibility(item));
-  
-  return education.map(edu => `
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div class="timeline-position">${edu.studyType}${edu.area ? `, ${edu.area}` : ''}</div>
-                        <div class="timeline-date">${formatDate(edu.startDate)} – ${formatDate(edu.endDate)}</div>
-                    </div>
-                    <div class="timeline-company">
-                        ${edu.url ? `<a href="${edu.url}" target="_blank" rel="noopener noreferrer">${edu.institution}</a>` : edu.institution}
-                    </div>
-                    ${edu.score ? `<div class="timeline-location">Grade: ${edu.score}</div>` : ''}
-                    ${edu.summary ? `<p class="timeline-description">${edu.summary}</p>` : ''}
-                    ${edu.highlights && edu.highlights.length > 0 ? `
-                    <ul class="timeline-highlights">
-                        ${edu.highlights.map(h => `<li>${h}</li>`).join('\n                        ')}
-                    </ul>` : ''}
-                    ${edu.keywords && edu.keywords.length > 0 ? `
-                    <div class="timeline-technologies">
-                        ${edu.keywords.map(k => `<span class="tech-tag">${k}</span>`).join('\n                        ')}
-                    </div>` : ''}
-                </div>`).join('\n                ');
+  return education.map(edu => renderEntry({
+    id: `e${++entryUid}`,
+    position: `${edu.studyType}${edu.area ? `, ${edu.area}` : ''}`,
+    name: edu.institution,
+    url: edu.url,
+    dateLine: `${formatDate(edu.startDate)} – ${formatDate(edu.endDate)}`,
+    location: edu.score ? `Grade: ${edu.score}` : null,
+    summary: edu.summary,
+    highlights: edu.highlights,
+    tags: edu.keywords,
+    logoHtml: logoMarkup(edu, edu.institution),
+  })).join('\n                ');
 }
 
 // Generate skills HTML
@@ -232,11 +282,25 @@ fs.copyFileSync(
   path.join(TEMPLATE_DIR, 'script.js'),
   path.join(OUTPUT_DIR, 'script.js')
 );
+fs.copyFileSync(
+  path.join(TEMPLATE_DIR, 'three-scene.js'),
+  path.join(OUTPUT_DIR, 'three-scene.js')
+);
 
 // Copy profile picture from root
 const picturePath = path.join(__dirname, '..', 'picture.jpg');
 if (fs.existsSync(picturePath)) {
   fs.copyFileSync(picturePath, path.join(OUTPUT_DIR, 'picture.jpg'));
+}
+
+// Copy company/institution logos referenced by resume.json (paths like "logos/foo.png").
+const LOGOS_SRC = path.join(__dirname, '..', 'cv', 'logos');
+const LOGOS_DST = path.join(OUTPUT_DIR, 'logos');
+if (fs.existsSync(LOGOS_SRC)) {
+  if (!fs.existsSync(LOGOS_DST)) fs.mkdirSync(LOGOS_DST, { recursive: true });
+  for (const f of fs.readdirSync(LOGOS_SRC)) {
+    fs.copyFileSync(path.join(LOGOS_SRC, f), path.join(LOGOS_DST, f));
+  }
 }
 
 // Generate and copy robots.txt
