@@ -82,7 +82,7 @@ npm run watch:pdf        # live preview (recompiles on change)
 ```
 
 **What it does:**
-- Compiles `cv/cv.typ` to `cv/output/cv.pdf` using the Typst CLI
+- Compiles `cv/cv.typ` to `cv/output/cv-cristian-abrante.pdf` using the Typst CLI
 - `cv/cv.typ` reads `resume.json` directly — there is no intermediate
   code-generation step or script for the PDF
 

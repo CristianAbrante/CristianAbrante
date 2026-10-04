@@ -5,9 +5,9 @@
 // Only entries with visibility containing "pdf" are rendered.
 //
 // Compile from the repository root:
-//   typst compile cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts
+//   typst compile cv/cv.typ cv/output/cv-cristian-abrante.pdf --root . --font-path cv/fonts
 // Watch mode:
-//   typst watch cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts
+//   typst watch cv/cv.typ cv/output/cv-cristian-abrante.pdf --root . --font-path cv/fonts
 // ---------------------------------------------------------------------------
 
 // Vendored modern-cv 0.10.0 (cv/modern-cv/) with extra header parameters
