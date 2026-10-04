@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cv-${{ steps.get_version.outputs.version }}
-          path: cv/output/cv.pdf
+          path: cv/output/cv-cristian-abrante.pdf
           retention-days: 90
 
       - name: Create Release with PDF
@@ -87,7 +87,7 @@ jobs:
 
             **Generated:** ${{ steps.get_version.outputs.version }}
             **Commit:** ${{ github.sha }}
-          files: cv/output/cv.pdf
+          files: cv/output/cv-cristian-abrante.pdf
           draft: false
           prerelease: false
         env:
