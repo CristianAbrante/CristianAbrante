@@ -26,7 +26,7 @@ Automatically generates and updates all resume formats when `resume.json` change
 
 3. **Compiles PDF with Typst**
    - Installs Typst via `typst-community/setup-typst@v5` (with package caching)
-   - Runs `npm run generate:pdf` → `typst compile cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts`
+   - Runs `npm run generate:pdf` → `typst compile cv/cv.typ cv/output/cv-cristian-abrante.pdf --root . --font-path cv/fonts`
    - `cv/cv.typ` reads `resume.json` directly (no code generation step)
    - Fonts are vendored in `cv/fonts/` (Roboto, Source Sans 3, Font Awesome 7)
 
@@ -54,9 +54,9 @@ resume.json updated → Workflow triggered
   ├─ Generate README.md
   ├─ Generate website files (HTML, CSS, JS)
   ├─ Commit README.md and website files (if changed)
-  ├─ Compile cv.pdf (typst compile cv/cv.typ)
-  ├─ Upload cv.pdf as artifact
-  └─ Create release with cv.pdf
+  ├─ Compile cv-cristian-abrante.pdf (typst compile cv/cv.typ)
+  ├─ Upload cv-cristian-abrante.pdf as artifact
+  └─ Create release with cv-cristian-abrante.pdf
 ```
 
 ### `pr-cv-preview.yml` - Per-PR CV Preview
@@ -215,7 +215,7 @@ npm run generate:pdf
 npm run watch:pdf
 
 # Verify outputs
-ls -la cv/output/cv.pdf
+ls -la cv/output/cv-cristian-abrante.pdf
 ls -la website/output/
 cat README.md
 ```

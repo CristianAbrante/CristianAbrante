@@ -13,7 +13,7 @@ cv/
 ├── fonts/            # Vendored fonts (Roboto, Source Sans 3, Font Awesome 7)
 ├── logos/            # Company/university logos for entries
 └── output/           # Generated files (git-ignored)
-    └── cv.pdf        # Compiled PDF
+    └── cv-cristian-abrante.pdf   # Compiled PDF
 ```
 
 There is no code-generation step: `cv.typ` loads `../resume.json` natively with
@@ -53,7 +53,7 @@ npm run generate:pdf
 
 This runs (from the repository root):
 ```bash
-typst compile cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts
+typst compile cv/cv.typ cv/output/cv-cristian-abrante.pdf --root . --font-path cv/fonts
 ```
 
 - `--root .` allows `cv.typ` to read `resume.json` at the repository root.
@@ -66,7 +66,7 @@ npm run watch:pdf
 ```
 
 Recompiles automatically whenever `cv.typ` or `resume.json` changes. Open
-`cv/output/cv.pdf` in a viewer that auto-reloads (e.g. Skim on macOS, or the
+`cv/output/cv-cristian-abrante.pdf` in a viewer that auto-reloads (e.g. Skim on macOS, or the
 Preview pane in VS Code with a PDF extension).
 
 ### One-Command Generation

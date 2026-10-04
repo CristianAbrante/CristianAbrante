@@ -4,14 +4,14 @@
  * ATS verification for the generated CV PDF.
  *
  * Simulates what an Applicant Tracking System does: extracts the text layer
- * from cv/output/cv.pdf (via poppler's pdftotext) and verifies that every
+ * from cv/output/cv-cristian-abrante.pdf (via poppler's pdftotext) and verifies that every
  * pdf-visible field from resume.json survives extraction.
  *
  * Hard failures (exit 1): missing contact info, positions, companies,
  * institutions, skills, section headers, or corrupted extraction.
  * Warnings: ligature/private-use-area glyphs that may confuse ATS parsers.
  *
- * Usage: node scripts/verify-ats.js [--pdf cv/output/cv.pdf]
+ * Usage: node scripts/verify-ats.js [--pdf cv/output/cv-cristian-abrante.pdf]
  * Requires: pdftotext (macOS: `brew install poppler`, Ubuntu: `apt-get install poppler-utils`)
  */
 
@@ -35,7 +35,7 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const pdfIndex = args.indexOf('--pdf');
   return {
-    pdfPath: pdfIndex !== -1 ? args[pdfIndex + 1] : path.join(OUTPUT_DIR, 'cv.pdf'),
+    pdfPath: pdfIndex !== -1 ? args[pdfIndex + 1] : path.join(OUTPUT_DIR, 'cv-cristian-abrante.pdf'),
   };
 }
 

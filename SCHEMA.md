@@ -258,7 +258,7 @@ When adding or updating resume entries:
    - PDF is uploaded as a release
 5. **Manual generation** (for local testing):
    - Run `npm run generate:all`
-   - Verify outputs in `README.md` and `cv/output/cv.pdf`
+   - Verify outputs in `README.md` and `cv/output/cv-cristian-abrante.pdf`
 
 ## Automation
 

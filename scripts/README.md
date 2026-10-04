@@ -41,6 +41,38 @@ npm run generate:website
 
 ---
 
+### `generate-signature.js`
+
+Generates Gmail-pasteable email signatures in `signature/output/` from
+`resume.json`.
+
+**Usage:**
+```bash
+npm run generate:signature
+open signature/output/index.html   # preview + copy buttons
+```
+
+**What it does:**
+- Reads `basics` only (name, label, email, url, location, profiles) — the
+  signature shows the job title without an employer and omits the phone
+  number, so it stays valid across job changes
+- Writes three variants plus a plain-text fallback:
+  - `signature-standard.html` — accent bar, full contact details, no images
+  - `signature-photo.html` — adds the avatar hosted at `cristianabrante.com/picture.jpg`
+  - `signature-minimal.html` — two compact lines for replies
+  - `signature.txt` — plain-text signature
+  - `index.html` — preview page with per-variant copy-to-clipboard buttons
+
+**Email-client constraints enforced by the generator:**
+- Table-based layout with `role="presentation"`, no `<style>` blocks and no
+  classes — Gmail strips both from pasted signatures
+- Every style is inline, including explicit `color` on each `<a>` (Gmail does
+  not inherit link color)
+- Spacing comes from spacer rows and `line-height`, not margins
+- Brand colors are mirrored from `website/template/style.css`
+
+---
+
 ### Compile PDF with Typst
 
 **Usage:**
@@ -50,7 +82,7 @@ npm run watch:pdf        # live preview (recompiles on change)
 ```
 
 **What it does:**
-- Compiles `cv/cv.typ` to `cv/output/cv.pdf` using the Typst CLI
+- Compiles `cv/cv.typ` to `cv/output/cv-cristian-abrante.pdf` using the Typst CLI
 - `cv/cv.typ` reads `resume.json` directly — there is no intermediate
   code-generation step or script for the PDF
 
