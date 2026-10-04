@@ -8,7 +8,8 @@
     "watch:pdf": "mkdir -p cv/output && typst watch cv/cv.typ cv/output/cv.pdf --root . --font-path cv/fonts --pdf-standard ua-1",
     "verify:ats": "node scripts/verify-ats.js",
     "generate:website": "node scripts/generate-website.js",
-    "generate:all": "npm run generate:readme && npm run generate:pdf && npm run generate:website"
+    "generate:signature": "node scripts/generate-signature.js",
+    "generate:all": "npm run generate:readme && npm run generate:pdf && npm run generate:website && npm run generate:signature"
   },
   "dependencies": {
     "@jsonresume/schema": "^1.2.1"

@@ -200,3 +200,6 @@ cv/output/
 
 # Website output directory (generated files)
 website/output/
+
+# Email signature output directory (generated files)
+signature/output/
