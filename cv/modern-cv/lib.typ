@@ -393,8 +393,8 @@
   colored-headers: true,
   show-footer: true,
   language: "en",
-  font: ("Source Sans 3", "Source Sans Pro"),
-  header-font: "Roboto",
+  font: ("IBM Plex Sans",),
+  header-font: "IBM Plex Mono",
   paper-size: "a4",
   use-smallcaps: true,
   show-address-icon: false,
@@ -433,7 +433,7 @@
   set text(
     font: font,
     lang: language,
-    size: 11pt,
+    size: 10.5pt,
     fill: color-darkgray,
     fallback: true,
   )
@@ -441,8 +441,8 @@
   set page(
     paper: paper-size,
     margin: (
-      left: 15mm,
-      right: 15mm,
+      left: 12mm,
+      right: 12mm,
       top: 10mm,
       bottom: if show-footer { 20mm } else { 10mm },
     ),
@@ -757,8 +757,8 @@
   date: datetime.today().display("[month repr:long] [day], [year]"),
   accent-color: default-accent-color,
   language: "en",
-  font: ("Source Sans 3", "Source Sans Pro"),
-  header-font: "Roboto",
+  font: ("IBM Plex Sans",),
+  header-font: "IBM Plex Mono",
   show-footer: true,
   signature: none,
   closing: none,

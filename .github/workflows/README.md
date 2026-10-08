@@ -63,7 +63,7 @@ Automatically generates and updates all resume formats when `resume.json` change
    - Installs Typst via `jdx/mise-action@v2` from `mise.toml` (with package caching)
    - Runs `npm run generate:pdf` → `typst compile cv/cv.typ cv/output/cv-cristian-abrante.pdf --root . --font-path cv/fonts`
    - `cv/cv.typ` reads `resume.json` directly (no code generation step)
-   - Fonts are vendored in `cv/fonts/` (Roboto, Source Sans 3, Font Awesome 7)
+   - Fonts are vendored in `cv/fonts/` (IBM Plex Mono, IBM Plex Sans, Font Awesome 7)
 
 4. **Uploads Artifacts**
    - Uploads PDF as GitHub Actions artifact (90-day retention)

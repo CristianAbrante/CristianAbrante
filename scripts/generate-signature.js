@@ -24,11 +24,17 @@ const COLOR_ACCENT = '#175FA8'; //         --accent  (day)   6.48:1 on white
 const COLOR_SEPARATOR = '#BFB49A'; //      --border-1 (day)  non-text rule
 const COLOR_BORDER = '#D8CEB8'; //         --border-0 (day)  non-text rule
 
-/* Deliberately NOT IBM Plex: a webfont cannot be relied on inside a mail client,
-   and a failed load would drop the signature onto an arbitrary fallback. This is
-   the one surface that does not use the system's typography. */
-const FONT_STACK =
-  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif";
+/* Mono, because on the website Mono owns exactly this kind of content — the
+   display name and every piece of metadata — while Sans owns running prose,
+   of which a signature has none.
+
+   IBM Plex Mono is named first but cannot be *delivered*: mail clients strip
+   <style> blocks, so @font-face is impossible and the face only appears for
+   recipients who happen to have it installed locally. The fallbacks therefore
+   carry the real weight, and they are all monospace: the typographic character
+   survives even when the exact face does not. */
+const FONT_MONO =
+  "'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace";
 
 // Avatar served by the personal website (Gmail needs a publicly hosted image)
 const AVATAR_URL = 'https://cristianabrante.com/picture.jpg';
@@ -158,14 +164,14 @@ function detailsTable(data, { includeSummaryLine = true } = {}) {
   return [
     `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">`,
     `<tbody>`,
-    `<tr><td style="font-family:${FONT_STACK};font-size:16px;font-weight:700;color:${COLOR_TEXT};line-height:22px;white-space:nowrap;">${escapeHtml(data.name)}</td></tr>`,
-    `<tr><td style="font-family:${FONT_STACK};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">${escapeHtml(data.label)}</td></tr>`,
+    `<tr><td style="font-family:${FONT_MONO};font-size:16px;font-weight:700;color:${COLOR_TEXT};line-height:22px;white-space:nowrap;">${escapeHtml(data.name)}</td></tr>`,
+    `<tr><td style="font-family:${FONT_MONO};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">${escapeHtml(data.label)}</td></tr>`,
     includeSummaryLine ? spacerRow(10) : '',
     includeSummaryLine
-      ? `<tr><td style="font-family:${FONT_STACK};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">${contactParts.join(separator())}</td></tr>`
+      ? `<tr><td style="font-family:${FONT_MONO};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">${contactParts.join(separator())}</td></tr>`
       : '',
     spacerRow(2),
-    `<tr><td style="font-family:${FONT_STACK};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">${linkParts.join(separator())}</td></tr>`,
+    `<tr><td style="font-family:${FONT_MONO};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">${linkParts.join(separator())}</td></tr>`,
     `</tbody>`,
     `</table>`,
   ]
@@ -178,7 +184,7 @@ function detailsTable(data, { includeSummaryLine = true } = {}) {
  */
 function buildStandardSignature(data) {
   return [
-    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${FONT_STACK};">`,
+    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${FONT_MONO};">`,
     `<tbody>`,
     `<tr>`,
     `<td width="3" style="width:3px;background-color:${COLOR_ACCENT};line-height:1px;font-size:1px;">&nbsp;</td>`,
@@ -195,7 +201,7 @@ function buildStandardSignature(data) {
  */
 function buildPhotoSignature(data) {
   return [
-    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${FONT_STACK};">`,
+    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${FONT_MONO};">`,
     `<tbody>`,
     `<tr>`,
     `<td width="${AVATAR_SIZE}" style="width:${AVATAR_SIZE}px;vertical-align:top;">`,
@@ -218,13 +224,13 @@ function buildMinimalSignature(data) {
   const linkParts = data.links.map(item => link(item.url, item.label, COLOR_ACCENT));
 
   return [
-    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${FONT_STACK};">`,
+    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${FONT_MONO};">`,
     `<tbody>`,
-    `<tr><td style="font-family:${FONT_STACK};font-size:14px;color:${COLOR_TEXT};line-height:20px;">`,
+    `<tr><td style="font-family:${FONT_MONO};font-size:14px;color:${COLOR_TEXT};line-height:20px;">`,
     `<span style="font-weight:700;">${escapeHtml(data.name)}</span>`,
     `<span style="color:${COLOR_TEXT_SECONDARY};"> — ${escapeHtml(data.label)}</span>`,
     `</td></tr>`,
-    `<tr><td style="font-family:${FONT_STACK};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">`,
+    `<tr><td style="font-family:${FONT_MONO};font-size:13px;color:${COLOR_TEXT_SECONDARY};line-height:20px;">`,
     [link(`mailto:${data.email}`, data.email, COLOR_ACCENT), ...linkParts].join(separator()),
     `</td></tr>`,
     `</tbody>`,

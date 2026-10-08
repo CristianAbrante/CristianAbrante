@@ -128,11 +128,10 @@ any surface so the aperture still reads as emitting rather than filled.
 
 ### PDF mapping
 
-The PDF CV shares this palette but **not** the typography — Source Sans 3 /
-Roboto keep the document in a conventional CV register that mono headings would
-cost. It prints on white, so it uses the **day** ramp. The ink constants live in
-the vendored `cv/modern-cv/lib.typ`; the accent is the `accent` binding at the
-top of `cv/cv.typ`.
+The PDF CV shares this palette and, since the typography was unified, the type
+families too. It prints on white, so it uses the **day** ramp. The ink constants
+live in the vendored `cv/modern-cv/lib.typ`; the accent is the `accent` binding
+at the top of `cv/cv.typ`.
 
 | Typst constant | Token | Value | Contrast on white |
 |---|---|---|---|
@@ -171,6 +170,21 @@ system-ui fallback as the primary, no pixel display face.**
 - **Prose:** `"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif`
 - Self-hosted as `woff2` in `website/template/fonts/`, `font-display: swap`,
   latin subset. Weights: Mono 400/500/600 + 400 italic, Sans 400/500/600.
+
+**IBM Plex is the type system on every surface**, with the delivery mechanism
+differing because each medium allows something different:
+
+| Surface | Mono | Sans | Delivery |
+|---|---|---|---|
+| Website | chrome, headings, metadata | prose | self-hosted `woff2` |
+| PDF CV | `header-font` (the name) | body | `ttf` embedded in the PDF by Typst |
+| Email signature | everything | — | **named only**, see below |
+
+Typst cannot read `woff2`, so the CV carries its own `ttf` copies in
+`cv/fonts/` — IBM Plex Mono 400/700 and Sans 400/400 italic/700. Those are the
+weights Typst resolves as one family; the Medium and SemiBold files are
+deliberately *not* vendored, because IBM Plex names them as separate families
+(`IBM Plex Sans SmBld`) that no weight request would ever select.
 
 Mono owns every piece of interface furniture — nav, section headers, dates,
 locations, tech chips, buttons, the footer. Sans owns only running prose
@@ -413,9 +427,15 @@ ramp because it lands on a white message body:
 | `COLOR_SEPARATOR` | `--border-1` (day) | `#BFB49A` | non-text rule |
 | `COLOR_BORDER` | `--border-0` (day) | `#D8CEB8` | non-text rule |
 
-Typography falls back to the Arial/Helvetica stack every mail client has. That
-is a deliberate exception, not an oversight — a webfont would silently fail in
-Outlook and land the signature on a random fallback.
+Typography is the **Mono** stack, because on the website Mono owns exactly what
+a signature contains — the display name and metadata — and Sans owns prose, of
+which there is none here.
+
+IBM Plex Mono is named first but cannot be *delivered*: with `<style>` stripped
+there is no `@font-face`, so the face only appears for recipients who already
+have it installed. The fallbacks are therefore the real mechanism, and every one
+of them is monospace, so the typographic character survives even when the exact
+face does not. Naming a webfont and hoping is the failure mode this avoids.
 
 ### Signature copy page
 
@@ -528,7 +548,8 @@ Every raised level is `inset 1px 1px 0 var(--bevel)` plus an un-blurred offset:
 | Item | Location | Why accepted | Owner / Exit |
 |------|----------|--------------|--------------|
 | Latin-only font subset | `website/template/fonts/` | Content is English-only; full subsets would quadruple font weight | Add subsets if the CV is ever translated |
-| PDF keeps its own typography | `cv/cv.typ` | Source Sans 3 / Roboto read as a conventional CV; IBM Plex Mono headings would cost the professional register the document needs | Colour is shared, type deliberately is not |
+| No small caps in the PDF | `cv/cv.typ` | IBM Plex Sans ships no `smcp` feature, so modern-cv's `use-smallcaps` is set to `false` rather than left as a flag that silently does nothing. Organisation names render in normal case | Revisit if a small-caps cut of Plex is vendored |
+| PDF body is 10.5pt, not 11pt | `cv/modern-cv/lib.typ` | IBM Plex Sans is wider with a larger x-height than Source Sans 3, so 11pt spilled onto a second page. 10.5pt with 12mm side margins is the largest setting that still fits one page — the same criterion 11pt met for the old face | One page is the constraint; if content grows, cut content |
 | PDF page is white, not cream | `cv/cv.typ` | A full-bleed `--surface-0` tint costs toner and some print drivers drop it | One-line opt-in documented in `cv.typ` |
 | Monogram instead of logo for 4 entries | Coventry University, the three I.E.S. schools | No clean public mark was retrievable; the monogram tile is a deliberate part of the system rather than a gap | Drop a PNG in `cv/logos/` and add `logo:` to that `resume.json` entry |
 | No mobile nav drawer | `.nav` under `md` | Section links are dropped on mobile in favour of a single-column scroll; the page is short enough that a drawer adds chrome without aiding navigation | Revisit if the site grows past five sections |

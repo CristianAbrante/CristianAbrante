@@ -101,7 +101,11 @@
   accent-color: accent,
   colored-headers: true,
   show-footer: false,
-  font: "Source Sans 3",
+  font: "IBM Plex Sans",
+  header-font: "IBM Plex Mono",
+  // IBM Plex Sans ships no `smcp` feature, so leaving this true would be a flag
+  // that silently does nothing. Organisation names render in normal case.
+  use-smallcaps: false,
   language: "en",
   paper-size: "a4",
   description: basics.name + " - " + basics.label,
