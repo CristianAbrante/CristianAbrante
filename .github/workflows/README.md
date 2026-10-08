@@ -59,51 +59,123 @@ resume.json updated → Workflow triggered
   └─ Create release with cv-cristian-abrante.pdf
 ```
 
-### `pr-cv-preview.yml` - Per-PR CV Preview
+### `pr-preview.yml` - Per-PR Live Preview
 
-Compiles the CV on every pull request that touches the resume or CV files, so
-the result can be reviewed before merging.
+Builds all three deliverables on every pull request and publishes them to a
+single live URL on Cloudflare Pages, so the website, the email signature and the
+CV can be reviewed in a real browser (including from a phone) before merging.
 
 **Triggers:**
-- Pull requests changing `resume.json`, `cv/**`, or the workflow itself
+- Pull requests changing `resume.json`, `website/**`, `signature/**`, `cv/**`,
+  `scripts/**`, or the workflow itself
 
 **What it does:**
 
-1. **Compiles the CV** with Typst (same command as `generate:pdf`)
-2. **Uploads the PDF** as an artifact: `cv-preview-pr{number}` (14-day retention)
-3. **Comments on the PR** with a direct download link for the PDF
-   - The comment is updated in place on subsequent pushes (no comment spam)
+1. **Generates** website, signature and CV (`generate:website`, `generate:signature`, `generate:pdf`)
+2. **Runs both verification gates**, reporting into the same sticky comment:
+   - `verify:website` — every website-visible `resume.json` field reached the HTML
+   - `verify:ats` — every pdf-visible field survives `pdftotext` extraction, the
+     same technique an Applicant Tracking System uses
+   
+   Both use `continue-on-error` so the preview still deploys and the comment
+   still posts when a check fails — you can look at the broken output while
+   reading the failure. A final step then fails the job, so the check still
+   goes red.
+3. **Assembles the preview bundle** (`generate:preview` → `scripts/build-preview.js`):
+
+   ```
+   preview/
+     index.html      landing page linking to all three
+     website/        generated site
+     signature/      signature variants + copy-to-clipboard page
+     cv.pdf          compiled CV (renders inline in the browser)
+     robots.txt      Disallow: /
+   ```
+
+4. **Diffs the CV text layer** against the base branch — compiles the base
+   commit's CV in a `git worktree`, extracts both with `pdftotext`, and posts a
+   unified diff. Catches silently dropped or reworded CV content.
+5. **Uploads the bundle** as artifact `preview-pr{number}` (14-day retention).
+   This runs for *every* PR, including forks.
+6. **Deploys to Cloudflare Pages** via `cloudflare/wrangler-action@v4` with
+   `--branch=pr-{number}`, producing a stable alias URL
+   `https://pr-{number}.cristianabrante-preview.pages.dev`
+7. **Comments on the PR** — one sticky comment, updated in place
+   (marker `<!-- pr-preview-comment -->`), structured as:
+
+   - **Preview** — table of the three live links
+   - **Automatic Checks** — pass/fail table for both gates, with collapsible
+     per-field failures and ATS glyph warnings
+   - **CV text layer** — the full `pdftotext` extraction in a collapsible,
+     shown on **every** run so you can always read exactly what an ATS sees,
+     followed by the diff versus the base branch when it changed
+
+   Long content is clipped (300 lines of extracted text, 60 of diff) to stay
+   well inside GitHub's 65 536-character comment limit.
+
+**Run the gates locally:**
+```bash
+brew install poppler   # one-time, for pdftotext
+npm run generate:all
+npm run verify:website && npm run verify:ats
+```
+
+**Fork and Dependabot safety:**
+- Steps 1–5 run for everyone. Steps 6–7 are gated on
+  `github.event.pull_request.head.repo.full_name == github.repository`, because
+  fork PRs receive neither repository secrets nor a writable `GITHUB_TOKEN`.
+  Fork PRs therefore stay **green** and still get the verified artifact.
+- The `paths:` filter deliberately excludes `package.json` / `package-lock.json`,
+  so Dependabot PRs never trigger this workflow.
+- This workflow uses `pull_request`, never `pull_request_target` — the latter
+  would expose deployment credentials to arbitrary fork code.
+
+**Search engine indexing:**
+Cloudflare serves `X-Robots-Tag: noindex` on all preview deployments
+automatically. `build-preview.js` additionally forces
+`<meta name="robots" content="noindex, nofollow">` into every HTML file and
+writes a root `robots.txt`, so draft resume content stays unindexed regardless
+of host.
+
+**Required repository secrets:**
+- `CLOUDFLARE_API_TOKEN` - token with the **Cloudflare Pages: Edit** permission
+- `CLOUDFLARE_ACCOUNT_ID` - your Cloudflare account ID
 
 **Permissions:**
 - `contents: read` - Read repository files
 - `pull-requests: write` - Create/update the preview comment
+- `deployments: write` - Let the Cloudflare action create a GitHub Deployment
 
-### `ats-verify.yml` - ATS Verification
+---
 
-Verifies on every pull request that the generated CV PDF is parseable by
-Applicant Tracking Systems.
+### `verify-website.yml` - Website Verification
+
+Asserts the generated website is coherent, on every PR that can affect it.
 
 **Triggers:**
-- Pull requests changing `resume.json`, `cv/**`, `scripts/verify-ats.js`, or the workflow itself
+- Pull requests changing `resume.json`, `website/**`,
+  `scripts/generate-website.js`, `scripts/verify-website.js`, or the workflow itself
 
 **What it does:**
 
-1. **Compiles the CV** (Typst, PDF/UA-1 tagged output)
-2. **Extracts the text layer** with poppler's `pdftotext` — the same technique
-   ATS parsers use
-3. **Verifies every pdf-visible field from resume.json** survives extraction:
-   name, email, phone, section headers, positions, companies, dates,
-   technologies, institutions, degrees, awards, skills, and languages
-4. **Fails the check** if any field is missing or extraction is corrupted;
-   warns on ligature/icon glyph noise
-5. **Comments on the PR** with the score and per-field failures
-   (sticky comment, updated in place)
+1. **Generates the website** from `resume.json`
+2. **Runs `npm run verify:website`**, which fails the check if:
+   - any website-visible `resume.json` field is missing from the HTML —
+     including `highlights`, which `cv/cv.typ` does **not** render, making this
+     the only gate protecting them
+   - a referenced local asset does not exist in `website/output/`
+   - an asset path is root-absolute (breaks when served from a preview subfolder)
+   - a `{{PLACEHOLDER}}` was left unreplaced
+   - the JSON-LD block is not valid JSON
+   - an in-page `#anchor` has no matching element
 
 **Run locally:**
 ```bash
-brew install poppler   # one-time
-npm run generate:pdf && npm run verify:ats
+npm run generate:website && npm run verify:website
 ```
+
+**Permissions:**
+- `contents: read` - Read repository files
 
 ### `deploy-website.yml` - GitHub Pages Deployment
 

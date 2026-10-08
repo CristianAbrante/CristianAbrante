@@ -110,6 +110,65 @@ npm run verify:ats
 
 ---
 
+### `verify-website.js`
+
+Verifies the generated website is structurally coherent.
+
+**Usage:**
+```bash
+npm run generate:website && npm run verify:website
+```
+
+**What it does:**
+- Asserts every website-visible `resume.json` field reaches the HTML: basics,
+  profiles, work (position, company, summary, **highlights**, technologies),
+  education, skills and awards
+- Asserts every referenced local asset exists in `website/output/`
+- Fails on root-absolute asset paths (`/foo.css`), which break when the site is
+  served from a subfolder such as a PR preview
+- Fails on unreplaced `{{PLACEHOLDER}}` tokens, invalid JSON-LD, and in-page
+  `#anchors` with no matching element
+- Exits non-zero on any failure (used as a PR gate in CI)
+
+> `cv/cv.typ` renders `job.summary` but **not** `job.highlights`, so highlights
+> appear on the website only. This script is the only thing guarding them.
+
+---
+
+### `build-preview.js`
+
+Assembles the per-PR preview bundle published to Cloudflare Pages.
+
+**Usage:**
+```bash
+npm run generate:all        # produce website, signature and CV first
+npm run generate:preview    # assemble preview/
+# optionally with PR context:
+npm run generate:preview -- --pr 48 --sha $(git rev-parse HEAD)
+```
+
+**What it does:**
+- Copies `website/output/`, `signature/output/` and the compiled CV into a
+  single bundle. `website/` and `signature/` are nested because both ship an
+  `index.html`:
+
+  ```
+  preview/
+    index.html      landing page linking to all three
+    website/
+    signature/
+    cv.pdf
+    robots.txt      Disallow: /
+  ```
+
+- Generates a mobile-first landing page showing the PR number and commit
+- Forces `<meta name="robots" content="noindex, nofollow">` into every HTML file
+  in the bundle, replacing the website's production `index, follow` directive
+- Exits non-zero with the exact `npm run` command to fix if any build output is
+  missing
+
+---
+
 ### Generate All Formats
 
 **Usage:**

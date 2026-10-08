@@ -1,0 +1,301 @@
+name: PR Preview
+
+on:
+  pull_request:
+    paths:
+      - "resume.json"
+      - "website/**"
+      - "signature/**"
+      - "cv/**"
+      - "scripts/**"
+      - ".github/workflows/pr-preview.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  CF_PAGES_PROJECT: cristianabrante-preview
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install poppler (pdftotext)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate website, signature and CV
+        run: |
+          npm run generate:website
+          npm run generate:signature
+          npm run generate:pdf
+
+      - name: Verify generated website
+        id: verify_website
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run verify:website 2>&1 | tee /tmp/verify-website.txt
+
+      - name: Verify CV is ATS-parseable
+        id: verify_ats
+        continue-on-error: true
+        run: npm run verify:ats
+
+      - name: Assemble preview bundle
+        run: |
+          npm run generate:preview -- \
+            --pr "${{ github.event.pull_request.number }}" \
+            --sha "${{ github.event.pull_request.head.sha }}"
+
+      - name: Extract CV text layer and diff against base branch
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -uo pipefail
+          mkdir -p cv/output
+          pdftotext -enc UTF-8 -layout cv/output/cv-cristian-abrante.pdf cv/output/cv-text.txt
+
+          if ! git worktree add --detach /tmp/cv-base "$BASE_SHA" >/dev/null 2>&1; then
+            echo "skipped: base commit $BASE_SHA not available" > cv/output/cv-text-diff.txt
+            exit 0
+          fi
+
+          if [ ! -f /tmp/cv-base/cv/cv.typ ]; then
+            echo "skipped: base commit has no cv/cv.typ" > cv/output/cv-text-diff.txt
+            exit 0
+          fi
+
+          if ! typst compile /tmp/cv-base/cv/cv.typ /tmp/cv-base.pdf \
+              --root /tmp/cv-base --font-path /tmp/cv-base/cv/fonts >/dev/null 2>&1; then
+            echo "skipped: base CV did not compile" > cv/output/cv-text-diff.txt
+            exit 0
+          fi
+
+          pdftotext -enc UTF-8 -layout /tmp/cv-base.pdf /tmp/cv-base.txt
+          diff -u /tmp/cv-base.txt cv/output/cv-text.txt > cv/output/cv-text-diff.txt || true
+
+      - name: Upload preview bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-pr${{ github.event.pull_request.number }}
+          path: preview/
+          retention-days: 14
+
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: >-
+            pages deploy preview
+            --project-name=${{ env.CF_PAGES_PROJECT }}
+            --branch=pr-${{ github.event.pull_request.number }}
+
+      - name: Resolve preview URL
+        id: resolve
+        if: steps.deploy.outcome == 'success'
+        env:
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
+          FALLBACK_URL: https://pr-${{ github.event.pull_request.number }}.${{ env.CF_PAGES_PROJECT }}.pages.dev
+        run: |
+          URL="${ALIAS_URL:-${DEPLOY_URL:-$FALLBACK_URL}}"
+          echo "url=${URL%/}" >> "$GITHUB_OUTPUT"
+          echo "immutable=${DEPLOY_URL%/}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on PR with preview links
+        if: steps.resolve.outcome == 'success'
+        uses: actions/github-script@v7
+        env:
+          PREVIEW_URL: ${{ steps.resolve.outputs.url }}
+          IMMUTABLE_URL: ${{ steps.resolve.outputs.immutable }}
+          WEBSITE_OUTCOME: ${{ steps.verify_website.outcome }}
+          ATS_OUTCOME: ${{ steps.verify_ats.outcome }}
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- pr-preview-comment -->';
+            const base = process.env.PREVIEW_URL;
+            const immutable = process.env.IMMUTABLE_URL;
+            const sha = context.payload.pull_request.head.sha.slice(0, 7);
+            const icon = ok => (ok ? '✅' : '❌');
+
+            const websiteOk = process.env.WEBSITE_OUTCOME === 'success';
+            let websiteCell = `${icon(websiteOk)} ${websiteOk ? 'passed' : 'failed'}`;
+            let websiteFailures = [];
+            try {
+              const out = fs.readFileSync('/tmp/verify-website.txt', 'utf8');
+              const counts = out.match(/Checks: (\d+)\/(\d+) passed/);
+              if (counts) websiteCell = `${icon(websiteOk)} ${counts[1]}/${counts[2]} checks`;
+              websiteFailures = out
+                .split('\n')
+                .filter(line => line.includes('❌') && !line.includes('verification failed'))
+                .map(line => line.replace(/^\s*❌\s*/, '').trim());
+            } catch {}
+
+            const atsOk = process.env.ATS_OUTCOME === 'success';
+            let atsCell = `${icon(atsOk)} ${atsOk ? 'passed' : 'failed'}`;
+            let atsFailures = [];
+            let atsWarnings = [];
+            try {
+              const report = JSON.parse(fs.readFileSync('cv/output/ats-report.json', 'utf8'));
+              atsCell = `${icon(atsOk)} ${report.checksPassed}/${report.checksTotal} fields`;
+              atsFailures = report.failures || [];
+              atsWarnings = report.warnings || [];
+            } catch {}
+
+            const detail = (title, items) =>
+              items.length === 0
+                ? []
+                : [
+                    '<details>',
+                    `<summary>${title} (${items.length})</summary>`,
+                    '',
+                    ...items.map(item => `- ${item}`),
+                    '',
+                    '</details>',
+                    '',
+                  ];
+
+            const clip = (text, max) => {
+              const lines = text.split('\n');
+              if (lines.length <= max) return text;
+              return `${lines.slice(0, max).join('\n')}\n… ${lines.length - max} more line(s) — see the workflow run`;
+            };
+
+            const collapsible = (summary, lang, content) => [
+              '<details>',
+              `<summary>${summary}</summary>`,
+              '',
+              '```' + lang,
+              content,
+              '```',
+              '</details>',
+              '',
+            ];
+
+            let cvText = '';
+            try {
+              cvText = fs.readFileSync('cv/output/cv-text.txt', 'utf8').replace(/\s+$/, '');
+            } catch {}
+
+            const cvTextSection = cvText
+              ? collapsible(
+                  `Extracted text — what an ATS actually reads (${cvText.split('\n').length} lines)`,
+                  'text',
+                  clip(cvText, 300)
+                )
+              : ['_CV text layer could not be extracted._', ''];
+
+            let diff = '';
+            try {
+              diff = fs.readFileSync('cv/output/cv-text-diff.txt', 'utf8').trim();
+            } catch {}
+
+            let diffSection;
+            if (!diff) {
+              diffSection = ['_No change to the CV text layer versus the base branch._', ''];
+            } else if (diff.startsWith('skipped:')) {
+              diffSection = [`_Diff versus base ${diff.replace('skipped:', 'skipped —').trim()}._`, ''];
+            } else {
+              diffSection = collapsible(
+                `📝 Changed versus base branch (${diff.split('\n').length} diff lines)`,
+                'diff',
+                clip(diff, 60)
+              );
+            }
+
+            const body = [
+              marker,
+              '## 🔍 Preview',
+              '',
+              `**[Open the preview →](${base}/)** · commit \`${sha}\``,
+              '',
+              '| Deliverable | Link |',
+              '| --- | --- |',
+              `| 🌐 Website | [Open](${base}/website/) |`,
+              `| ✉️ Email signature | [Open](${base}/signature/) |`,
+              `| 📄 CV (PDF) | [Open](${base}/cv.pdf) |`,
+              '',
+              `## ${icon(websiteOk && atsOk)} Automatic Checks`,
+              '',
+              '| Check | Result |',
+              '| --- | --- |',
+              `| 🌐 Website structure | ${websiteCell} |`,
+              `| 🤖 ATS (CV text layer) | ${atsCell} |`,
+              '',
+              ...detail('❌ Website verification failures', websiteFailures),
+              ...detail('❌ ATS verification failures', atsFailures),
+              ...detail('⚠️ ATS warnings', atsWarnings),
+              '## 📄 CV text layer',
+              '',
+              ...cvTextSection,
+              ...diffSection,
+              '---',
+              '',
+              `<sub>Updates in place on every push. Not indexed by search engines.${
+                immutable ? ` Immutable build: ${immutable}` : ''
+              } · [Workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})</sub>`,
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
+
+      - name: Note skipped deploy for fork PRs
+        if: github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::notice title=Preview skipped::Fork pull requests cannot access deployment" \
+               "credentials. The bundle was built and verified, but not published."
+
+      - name: Fail if verification did not pass
+        if: steps.verify_website.outcome == 'failure' || steps.verify_ats.outcome == 'failure'
+        run: |
+          [ "${{ steps.verify_website.outcome }}" = "failure" ] && \
+            echo "::error title=Website verification::npm run verify:website failed"
+          [ "${{ steps.verify_ats.outcome }}" = "failure" ] && \
+            echo "::error title=ATS verification::npm run verify:ats failed"
+          exit 1
