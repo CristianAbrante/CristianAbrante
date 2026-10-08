@@ -37,19 +37,20 @@ CROP_HEIGHT = 0.74
 CONTRAST = 1.2
 SATURATION = 1.18
 
-# Luma-indexed grade ramp: deep indigo shadows, slate/teal midtones, salmon and
-# warm cream highlights. Built from DESIGN.md's night palette plus the sakura
-# and teal accents of the reference art, so the portrait carries the same colour
-# story as the rest of the page.
+# Luma-indexed grade ramp: deep navy shadows through steel and slate blue to
+# pale ice highlights. Built from DESIGN.md's azure accent ramp so the portrait
+# carries the same colour story as the phosphor around it — which is what lets
+# the CSS overlays on top of it stay almost transparent.
+# Re-run this script whenever that ramp moves; the grade is baked into the PNG.
 RAMP_STOPS: list[tuple[float, tuple[int, int, int]]] = [
-    (0.00, (0x10, 0x14, 0x2C)),
-    (0.16, (0x2B, 0x33, 0x5E)),
-    (0.32, (0x4C, 0x5A, 0x86)),
-    (0.46, (0x6E, 0x86, 0x96)),
-    (0.58, (0xA0, 0x8E, 0x92)),
-    (0.70, (0xD2, 0x9E, 0x87)),
-    (0.84, (0xF2, 0xC9, 0xA2)),
-    (1.00, (0xFF, 0xF2, 0xDC)),
+    (0.00, (0x0C, 0x12, 0x20)),
+    (0.16, (0x1C, 0x2A, 0x44)),
+    (0.32, (0x33, 0x4C, 0x70)),
+    (0.46, (0x4F, 0x74, 0x9C)),
+    (0.58, (0x74, 0x97, 0xB8)),
+    (0.70, (0x9C, 0xBC, 0xD6)),
+    (0.84, (0xC6, 0xDD, 0xEF)),
+    (1.00, (0xED, 0xF6, 0xFF)),
 ]
 RAMP_STRENGTH = 0.72
 

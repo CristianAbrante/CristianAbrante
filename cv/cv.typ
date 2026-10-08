@@ -24,7 +24,7 @@
 // a full-bleed tint costs toner when printed and some drivers drop it.
 // Add `#set page(fill: rgb("#F2EDE1"))` below the show rule to opt in.
 
-#let accent = rgb("#9A5214") // --accent (day)
+#let accent = rgb("#175FA8") // --accent (day)
 
 // --- Data loading ----------------------------------------------------------
 

@@ -115,7 +115,7 @@ two header parameters not available upstream: `name-size` and
 `profile-picture-size`. To customize, edit `cv/cv.typ`:
 
 - **Accent color**: the `accent` binding at the top of `cv.typ`
-  (`rgb("#9A5214")`, burnt amber). It and the ink ramp in
+  (`rgb("#175FA8")`, deep azure). It and the ink ramp in
   `cv/modern-cv/lib.typ` are the day-theme tokens from
   [`DESIGN.md`](../DESIGN.md) — change them there first, not here.
 - **Header size**: `name-size: 22pt`, `profile-picture-size: 2.6cm`

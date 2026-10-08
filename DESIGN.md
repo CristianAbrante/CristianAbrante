@@ -20,20 +20,27 @@ this file. If a value is needed and is not here, it gets added here first.
   token source; no brand reference was a better fit than the images themselves.
 - **Skipped lanes:** lazyweb and imagen concept drafts — a concrete visual
   reference was supplied, so the reference-fidelity contract already exists.
+- **Later amendment:** the accent was moved from the references' amber to azure
+  at the owner's request. The references stay binding for *geometry, light
+  direction and material* — the hard bevels, the upper-left key light, the cream
+  plastic — and no longer for the phosphor hue. See §2, Ramp rationale.
 
 ---
 
 ## 1. Atmosphere & Identity
 
-A desk at 1 a.m. with one lamp on. The room is cool indigo; the only warmth in it
-comes from a CRT that has been on too long. It is a workstation, not a poster —
-dense, legible, built out of hard-edged panels that look like they could be
-clicked on a machine from 1994, but with 2026 typography and spacing.
+A desk at 1 a.m. with one monitor on. The room is cool indigo and the CRT burns
+a colder blue inside it, the way a screen actually lights a dark room. It is a
+workstation, not a poster — dense, legible, built out of hard-edged panels that
+look like they could be clicked on a machine from 1994, but with 2026 typography
+and spacing.
 
 **The signature is CRT bloom on hard-edged panels**: every surface is a flat
 plane with a 1px border and a hard, un-blurred offset shadow (pixel geometry, no
-soft radii), and the one light source in the whole page is the amber glow of the
-hero monitor, which bleeds into the page background as a radial warm pool.
+soft radii), and the one light source in the whole page is the azure glow of the
+hero monitor, which bleeds into the page background as a radial pool. The cream
+bezel around it is the only warm mass on the page, and it is load-bearing — it is
+what stops a blue screen in a blue room from reading as a flat tint.
 
 Restraint is the brief. The retro reads in the *geometry and the light*, never in
 novelty: no pixel display font, no visible CRT curvature, no chromatic
@@ -60,15 +67,15 @@ room after dark). `day` is reference image 3 (warm paper, blue ink, terracotta).
 | Text / tertiary | `--text-2` | `#9199AE` | `#575D79` | Metadata, captions |
 | Border / default | `--border-0` | `#2B3144` | `#D8CEB8` | Panel edges, rules |
 | Border / strong | `--border-1` | `#3C435B` | `#BFB49A` | Hover edges, section rule |
-| Accent / base | `--accent` | `#F0B349` | `#9A5214` | THE interactive accent |
-| Accent / hover | `--accent-hover` | `#F9CC77` | `#7A3F0D` | Link + control hover |
-| Accent / press | `--accent-press` | `#D1912C` | `#5E300A` | Pressed |
-| Accent / soft | `--accent-soft` | `#FFE6B0` | `#D98C2B` | Bloom core, sweep |
+| Accent / base | `--accent` | `#63B3F0` | `#175FA8` | THE interactive accent |
+| Accent / hover | `--accent-hover` | `#90CCFF` | `#10497F` | Link + control hover |
+| Accent / press | `--accent-press` | `#4290CE` | `#0B3661` | Pressed |
+| Accent / soft | `--accent-soft` | `#C4E5FF` | `#4A90D9` | Bloom core, sweep |
 | Screen / cyan | `--cyan` | `#6FC6D9` | `#2A7A8C` | Power LED + live status dot only |
 | Bloom / rose | `--rose` | `#DE93A8` | `#B2566E` | Reserved for decorative pixel art |
 | Shadow | `--shadow` | `#080A11` | `#C0B49A` | Hard offset shadows |
 | Bevel | `--bevel` | `rgba(233,228,215,0.055)` | `rgba(255,255,255,0.7)` | 1px inset top-left light edge |
-| Glow | `--glow` | `rgba(240,179,73,0.20)` | `rgba(181,101,29,0.17)` | Lamp pool + monitor bloom |
+| Glow | `--glow` | `rgba(99,179,240,0.20)` | `rgba(23,95,168,0.15)` | Lamp pool + monitor bloom |
 | Pool / cool | `--pool-cool` | `rgba(111,198,217,0.11)` | `rgba(96,148,170,0.09)` | Window light, upper-left |
 
 ### Screen tokens (theme-independent)
@@ -78,8 +85,16 @@ themes. These live in `:root`, never in a theme block:
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--screen-warm` | `#FFCF7A` | Screen bloom from the top of the tube |
+| `--screen-hi` | `#BFE3FF` | Bright end of the phosphor range |
 | `--screen-cool` | `#6FC6D9` | Cool end of the phosphor range |
+| `--screen-bloom` | `rgba(120,190,255,0.42)` | `0 0 46px -6px` bloom onto the bezel |
+| `--screen-wash` | `rgba(150,205,255,0.20)` | Radial wash from the top of the tube |
+| `--screen-glare` | `rgba(205,230,255,0.50)` | Diagonal glass reflection |
+
+The three alpha tokens exist because the CRT's light is the one place the system
+paints with transparency. They were previously raw `rgba()` literals inside the
+`.crt` rules, which meant the tube was the only component whose colour could not
+be changed from the palette — exactly what this file forbids.
 
 ### Logo tile tokens (theme-independent)
 
@@ -96,12 +111,20 @@ logo legible in night mode.
 
 ### Ramp rationale
 
-The accent is a four-stop perceptual amber ramp lifted from the CRT bloom in
-reference image 2, not one hex at varying opacity. Night uses the bright half on
-dark ground and gets *lighter* on hover; day shifts the same hue down into burnt
-amber and gets *darker* on hover, because contrast must increase on interaction
-in both directions. Day's `#9A5214` is chosen specifically to clear 4.5:1 on
-`#F2EDE1` (measured 5.01:1).
+The accent is a four-stop perceptual azure ramp, not one hex at varying opacity.
+Night uses the bright half on dark ground and gets *lighter* on hover; day shifts
+the same hue down into deep navy and gets *darker* on hover, because contrast
+must increase on interaction in both directions. Day's `#175FA8` is chosen
+specifically to clear 4.5:1 on `#F2EDE1` (measured 5.55:1).
+
+The tube used to be amber. Blue is a deliberate owner preference, taken with the
+surfaces left exactly as they were, so the room keeps the cool indigo it was
+built with. The trade is stated plainly: the screen and the room now sit in the
+same hue family, so the CRT reads less as *the one warm light in a cool room* and
+more as a lit panel within it. The counterweights that keep the hero from going
+flat are the cream `--crt-plastic` bezel, which is the only large warm mass left
+on the page, and the `--screen-hi` bloom, which stays several steps lighter than
+any surface so the aperture still reads as emitting rather than filled.
 
 ### PDF mapping
 
@@ -113,7 +136,7 @@ top of `cv/cv.typ`.
 
 | Typst constant | Token | Value | Contrast on white |
 |---|---|---|---|
-| `default-accent-color` | `--accent` | `#9A5214` | 5.85:1 |
+| `default-accent-color` | `--accent` | `#175FA8` | 6.48:1 |
 | `color-darknight`, `color-darkgray` | `--text-0` | `#1E2232` | 15.79:1 |
 | `default-location-color` | `--text-1` | `#434963` | 8.85:1 |
 | `color-gray` | `--text-2` | `#575D79` | 6.47:1 |
@@ -252,8 +275,8 @@ Base unit **4px**. Spacing is on an 8px rhythm above `--space-2`.
 
 - **Structure:** inline `<a>`, `--accent`, no underline at rest; a `1px`
   `currentColor` bottom border drawn via `background-image` so it animates.
-- **States:** rest (dim rule) → hover (`--amber-400`, rule reaches full width) →
-  focus-visible (accent outline) → visited (no change; this is a CV).
+- **States:** rest (dim rule) → hover (`--accent-hover`, rule reaches full width)
+  → focus-visible (accent outline) → visited (no change; this is a CV).
 - **Motion:** 160ms `ease-out` on `background-size`.
 
 ### Control (hero actions, theme toggle, skip link)
@@ -282,7 +305,7 @@ screen aperture, in this order:
 
 1. **portrait** — `profile-pixel.png`, `image-rendering: pixelated`, only a light
    `contrast(1.08) saturate(1.06)` lift
-2. **wash** — warm radial from the top, `mix-blend-mode: screen`
+2. **wash** — cool radial from the top, `mix-blend-mode: screen`
 3. **glare** — diagonal glass reflection, `mix-blend-mode: screen`
 4. **scan** — 3px-period scanline mask at 55%
 5. **vignette** — radial falloff to near-black at the aperture edge
@@ -295,8 +318,9 @@ grade has to come back — see the Portrait asset below.
 
 - The bezel carries a top-left highlight and bottom-right shade (single light
   source, upper-left, matching the references), a `7px 7px 0` hard shadow, and
-  the screen emits a `0 0 46px -6px` amber bloom onto the bezel plus an ambient
-  `--glow` radial onto the page.
+  the screen emits a `0 0 46px -6px` azure bloom onto the bezel plus an ambient
+  `--glow` radial onto the page. The bezel stays cream: it is the warm mass the
+  blue screen is read against.
 - A power LED (`--cyan`) sits on the chin and pulses on a 3.2s cycle.
 - **Motion:** one-time power-on sweep (Section 6). Non-interactive, no hover.
 
@@ -305,9 +329,13 @@ grade has to come back — see the Portrait asset below.
 `picture.jpg` (repo root) is the source of truth; `profile-pixel.png` is derived
 from it by `scripts/generate-pixel-portrait.py` and committed, so CI stays
 Node-only. 132×99, 20 colours, ~4 KB, 4:3 to match the CRT aperture exactly so
-nothing is cropped. The grade is a luma-indexed ramp from deep indigo shadows
-through slate and sage to salmon and cream highlights — the same colour story as
-the page, which is what lets the CSS overlays stay almost transparent.
+nothing is cropped. The grade is a luma-indexed ramp from deep navy shadows
+through steel and slate blue to pale ice highlights — the same colour story as
+the phosphor, which is what lets the CSS overlays stay almost transparent.
+
+**The grade must be regenerated whenever the accent ramp moves.** It is baked
+into the bitmap, so a palette change that skips this step leaves a face in the
+old hue sitting inside a tube in the new one.
 
 Re-run after changing the photo: `uv run scripts/generate-pixel-portrait.py`.
 
@@ -369,6 +397,56 @@ stays out of the accessibility tree.
   `--accent`, the command in mono, and a block cursor that blinks.
 - **States:** the command lines are real links and inherit Link states.
 
+### Email signature
+
+Generated by `scripts/generate-signature.js`. It is pasted into Gmail, so it is
+the one surface that cannot use this system's CSS — **no `<style>` block, no
+classes, no custom fonts, every rule inline on the element**, because Gmail
+strips all three. It therefore borrows the palette only, and maps to the **day**
+ramp because it lands on a white message body:
+
+| Generator constant | Token | Value | Contrast on white |
+|---|---|---|---|
+| `COLOR_ACCENT` | `--accent` (day) | `#175FA8` | 6.48:1 |
+| `COLOR_TEXT` | `--text-0` (day) | `#1E2232` | 15.79:1 |
+| `COLOR_TEXT_SECONDARY` | `--text-2` (day) | `#575D79` | 6.47:1 |
+| `COLOR_SEPARATOR` | `--border-1` (day) | `#BFB49A` | non-text rule |
+| `COLOR_BORDER` | `--border-0` (day) | `#D8CEB8` | non-text rule |
+
+Typography falls back to the Arial/Helvetica stack every mail client has. That
+is a deliberate exception, not an oversight — a webfont would silently fail in
+Outlook and land the signature on a random fallback.
+
+### Signature copy page
+
+`signature/output/index.html`, the page with the per-variant copy buttons. Unlike
+the signature itself this is a normal web page, so it **is** built from the
+system: night theme, IBM Plex Mono chrome, Panel geometry, Control states.
+
+- Each variant sits on a white `.paper` card inside a Panel, because the
+  signature is designed against a white message body and must be judged there.
+  The page chrome around it stays in the night theme.
+- Copy buttons are Controls and reuse the lift/press ladder. Their transient
+  states tint the label only — success `--cyan`, failure `--rose` — so the
+  button does not change size and the row never reflows.
+- Fonts are copied into `signature/output/fonts/` by the generator. The page is
+  opened directly from that folder as often as it is served from the preview
+  bundle, so it cannot rely on a sibling directory existing.
+
+### Preview landing page
+
+`preview/index.html`, written by `scripts/build-preview.js`, is the first thing
+seen on a PR. It is a Panel grid in the night theme with the same hard-edged
+geometry as the site, and the three deliverables are Controls.
+
+- It links `website/fonts/*.woff2` rather than shipping its own copy — the
+  bundle always contains `website/`, since `build-preview.js` exits non-zero
+  when that build output is missing.
+- The PR number and commit are a micro label; the build timestamp is `--text-2`.
+- It is explicitly **not** indexed: the generator forces
+  `<meta name="robots" content="noindex, nofollow">` into every HTML file in the
+  bundle, this page included.
+
 ---
 
 ## 6. Motion & Interaction
@@ -409,14 +487,14 @@ Every raised level is `inset 1px 1px 0 var(--bevel)` plus an un-blurred offset:
 | Lifted | `5px 5px 0 var(--shadow)` | Control hover |
 | Pressed | `1px 1px 0 var(--shadow)` | Control active |
 | Bezel | `7px 7px 0 var(--shadow)` + two-sided inset bevel | CRT case |
-| Bloom | `0 0 46px -6px rgba(255,199,106,.42)` | CRT screen only |
+| Bloom | `0 0 46px -6px rgba(120,190,255,.42)` | CRT screen only |
 
 - `border-radius` is `0` everywhere except the CRT screen aperture (`3px`) and the
   LED (`50%`). Rounded corners are the anti-pattern in this system.
 - The page ground is **not a flat fill**. Four fixed, `pointer-events: none`
   layers, split across two paint positions:
-  - **`.room`, behind all content** — a warm `--glow` lamp pool from the upper
-    right and a cool `--pool-cool` window wash from the upper left, over a
+  - **`.room`, behind all content** — a `--glow` monitor pool from the upper
+    right and a `--pool-cool` window wash from the upper left, over a
     9px-period vertical-blind wall texture (`--wall-alpha`, 4–5%).
   - **`.veil`, above all content** — a 3px-period scanline overlay (effective
     2.5% alpha) and an SVG `feTurbulence` grain layer (`--grain-alpha`, 3–3.5%).
@@ -431,8 +509,9 @@ Every raised level is `inset 1px 1px 0 var(--bevel)` plus an un-blurred offset:
 
 - WCAG 2.2 AA. Body text ≥ 4.5:1, large text and non-text UI ≥ 3:1, in **both**
   themes. Measured on the shipped build, the tightest pairs are
-  `--text-2` on `--surface-3` at **4.87:1** (night) and the accent link at
-  **5.01:1** (day). Any token change must be re-measured against those two.
+  `--text-2` on `--surface-3` at **4.87:1** (night) and the same pair at
+  **6.47:1** (day). The accent link measures **6.88:1** night and **5.55:1** day.
+  Any token change must be re-measured against those pairs.
 - Visible focus on every interactive element: `2px solid var(--accent)` at `2px`
   offset. Never `outline: none` without a replacement.
 - A `skip to content` link is the first focusable element.
@@ -453,4 +532,4 @@ Every raised level is `inset 1px 1px 0 var(--bevel)` plus an un-blurred offset:
 | PDF page is white, not cream | `cv/cv.typ` | A full-bleed `--surface-0` tint costs toner and some print drivers drop it | One-line opt-in documented in `cv.typ` |
 | Monogram instead of logo for 4 entries | Coventry University, the three I.E.S. schools | No clean public mark was retrievable; the monogram tile is a deliberate part of the system rather than a gap | Drop a PNG in `cv/logos/` and add `logo:` to that `resume.json` entry |
 | No mobile nav drawer | `.nav` under `md` | Section links are dropped on mobile in favour of a single-column scroll; the page is short enough that a drawer adds chrome without aiding navigation | Revisit if the site grows past five sections |
-| Email signature not yet migrated | signature | Website and PDF now share the palette; the signature is the last surface | Next phase |
+| CRT shares the room's hue family | `.crt`, `--accent` | Blue is an explicit owner preference and the surfaces were deliberately left untouched, so the screen no longer contrasts with the room by temperature. The cream bezel and the lighter `--screen-hi` bloom carry the separation instead | Cool the room to graphite if the hero ever reads flat |

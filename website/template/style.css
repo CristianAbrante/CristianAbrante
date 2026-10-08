@@ -94,8 +94,11 @@
     --gutter: clamp(1.25rem, 5vw, 2.5rem);
     --rail: 10.5rem;
 
-    --screen-warm: #ffcf7a;
+    --screen-hi: #bfe3ff;
     --screen-cool: #6fc6d9;
+    --screen-bloom: rgba(120, 190, 255, 0.42);
+    --screen-wash: rgba(150, 205, 255, 0.2);
+    --screen-glare: rgba(205, 230, 255, 0.5);
 
     /* Logo tiles stay light in both themes so third-party marks — which may be
        dark-on-transparent, light-on-dark, or opaque — all stay legible. */
@@ -126,17 +129,17 @@
     --border-0: #2b3144;
     --border-1: #3c435b;
 
-    --accent: #f0b349;
-    --accent-hover: #f9cc77;
-    --accent-press: #d1912c;
-    --accent-soft: #ffe6b0;
+    --accent: #63b3f0;
+    --accent-hover: #90ccff;
+    --accent-press: #4290ce;
+    --accent-soft: #c4e5ff;
 
     --cyan: #6fc6d9;
     --rose: #de93a8;
 
     --shadow: #080a11;
     --bevel: rgba(233, 228, 215, 0.055);
-    --glow: rgba(240, 179, 73, 0.2);
+    --glow: rgba(99, 179, 240, 0.2);
     --pool-cool: rgba(111, 198, 217, 0.11);
 
     --crt-plastic: #8f8979;
@@ -164,17 +167,17 @@
     --border-0: #d8ceb8;
     --border-1: #bfb49a;
 
-    --accent: #9a5214;
-    --accent-hover: #7a3f0d;
-    --accent-press: #5e300a;
-    --accent-soft: #d98c2b;
+    --accent: #175fa8;
+    --accent-hover: #10497f;
+    --accent-press: #0b3661;
+    --accent-soft: #4a90d9;
 
     --cyan: #2a7a8c;
     --rose: #b2566e;
 
     --shadow: #c0b49a;
     --bevel: rgba(255, 255, 255, 0.7);
-    --glow: rgba(181, 101, 29, 0.17);
+    --glow: rgba(23, 95, 168, 0.15);
     --pool-cool: rgba(96, 148, 170, 0.09);
 
     --crt-plastic: #ddd3bd;
@@ -789,11 +792,11 @@ main,
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border-radius: 4px;
-    background: #0b1018;
+    background: #080a10;
     box-shadow:
         inset 0 0 0 1px rgba(0, 0, 0, 0.92),
         inset 0 3px 12px 2px rgba(0, 0, 0, 0.6),
-        0 0 46px -6px rgba(255, 199, 106, 0.42);
+        0 0 46px -6px var(--screen-bloom);
     transform-origin: center;
 }
 
@@ -816,7 +819,7 @@ main,
 }
 
 .crt__wash {
-    background: radial-gradient(118% 82% at 50% 4%, rgba(255, 207, 122, 0.2), transparent 64%);
+    background: radial-gradient(118% 82% at 50% 4%, var(--screen-wash), transparent 64%);
     mix-blend-mode: screen;
 }
 
@@ -846,7 +849,7 @@ main,
 .crt__sweep {
     inset-block: -45% auto;
     block-size: 42%;
-    background: linear-gradient(180deg, transparent, rgba(255, 230, 176, 0.5), transparent);
+    background: linear-gradient(180deg, transparent, var(--screen-glare), transparent);
     opacity: 0;
     mix-blend-mode: screen;
 }

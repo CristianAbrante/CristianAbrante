@@ -9,7 +9,7 @@
 #let color-darknight = rgb("#1E2232") // --text-0
 #let color-darkgray = rgb("#1E2232") // --text-0
 #let color-gray = rgb("#575D79") // --text-2
-#let default-accent-color = rgb("#9A5214") // --accent
+#let default-accent-color = rgb("#175FA8") // --accent
 #let default-location-color = rgb("#434963") // --text-1
 #let color-rule = rgb("#BFB49A") // --border-1
 
