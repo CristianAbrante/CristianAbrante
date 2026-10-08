@@ -1,0 +1,209 @@
+name: PR Preview
+
+on:
+  pull_request:
+    paths:
+      - "resume.json"
+      - "website/**"
+      - "signature/**"
+      - "cv/**"
+      - "scripts/**"
+      - ".github/workflows/pr-preview.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  CF_PAGES_PROJECT: cristianabrante-preview
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install poppler (pdftotext)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate website, signature and CV
+        run: |
+          npm run generate:website
+          npm run generate:signature
+          npm run generate:pdf
+
+      - name: Verify generated website
+        run: npm run verify:website
+
+      - name: Assemble preview bundle
+        run: |
+          npm run generate:preview -- \
+            --pr "${{ github.event.pull_request.number }}" \
+            --sha "${{ github.event.pull_request.head.sha }}"
+
+      - name: Diff CV text against base branch
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -uo pipefail
+          mkdir -p cv/output
+          pdftotext -enc UTF-8 -layout cv/output/cv-cristian-abrante.pdf /tmp/cv-head.txt
+
+          if ! git worktree add --detach /tmp/cv-base "$BASE_SHA" >/dev/null 2>&1; then
+            echo "skipped: base commit $BASE_SHA not available" > cv/output/cv-text-diff.txt
+            exit 0
+          fi
+
+          if [ ! -f /tmp/cv-base/cv/cv.typ ]; then
+            echo "skipped: base commit has no cv/cv.typ" > cv/output/cv-text-diff.txt
+            exit 0
+          fi
+
+          if ! typst compile /tmp/cv-base/cv/cv.typ /tmp/cv-base.pdf \
+              --root /tmp/cv-base --font-path /tmp/cv-base/cv/fonts >/dev/null 2>&1; then
+            echo "skipped: base CV did not compile" > cv/output/cv-text-diff.txt
+            exit 0
+          fi
+
+          pdftotext -enc UTF-8 -layout /tmp/cv-base.pdf /tmp/cv-base.txt
+          diff -u /tmp/cv-base.txt /tmp/cv-head.txt > cv/output/cv-text-diff.txt || true
+
+      - name: Upload preview bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-pr${{ github.event.pull_request.number }}
+          path: preview/
+          retention-days: 14
+
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: >-
+            pages deploy preview
+            --project-name=${{ env.CF_PAGES_PROJECT }}
+            --branch=pr-${{ github.event.pull_request.number }}
+
+      - name: Resolve preview URL
+        id: resolve
+        if: steps.deploy.outcome == 'success'
+        env:
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
+          FALLBACK_URL: https://pr-${{ github.event.pull_request.number }}.${{ env.CF_PAGES_PROJECT }}.pages.dev
+        run: |
+          URL="${ALIAS_URL:-${DEPLOY_URL:-$FALLBACK_URL}}"
+          echo "url=${URL%/}" >> "$GITHUB_OUTPUT"
+          echo "immutable=${DEPLOY_URL%/}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on PR with preview links
+        if: steps.resolve.outcome == 'success'
+        uses: actions/github-script@v7
+        env:
+          PREVIEW_URL: ${{ steps.resolve.outputs.url }}
+          IMMUTABLE_URL: ${{ steps.resolve.outputs.immutable }}
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- pr-preview-comment -->';
+            const base = process.env.PREVIEW_URL;
+            const immutable = process.env.IMMUTABLE_URL;
+            const sha = context.payload.pull_request.head.sha.slice(0, 7);
+
+            let diff = '';
+            try {
+              diff = fs.readFileSync('cv/output/cv-text-diff.txt', 'utf8').trim();
+            } catch {
+              diff = '';
+            }
+
+            let diffSection;
+            if (!diff) {
+              diffSection = '_CV text layer is unchanged from the base branch._';
+            } else if (diff.startsWith('skipped:')) {
+              diffSection = `_CV text diff ${diff.replace('skipped:', 'skipped —').trim()}._`;
+            } else {
+              const lines = diff.split('\n');
+              const shown = lines.slice(0, 60).join('\n');
+              const truncated = lines.length > 60
+                ? `\n... ${lines.length - 60} more line(s) — see the workflow run`
+                : '';
+              diffSection = [
+                '<details>',
+                `<summary>📝 CV text layer changed (${lines.length} diff line(s)) — click to expand</summary>`,
+                '',
+                '```diff',
+                shown + truncated,
+                '```',
+                '</details>',
+              ].join('\n');
+            }
+
+            const body = [
+              marker,
+              '## 🔍 Preview',
+              '',
+              `**[Open the preview →](${base}/)** · commit \`${sha}\``,
+              '',
+              '| Deliverable | Link |',
+              '| --- | --- |',
+              `| 🌐 Website | [${base}/website/](${base}/website/) |`,
+              `| ✉️ Email signature | [${base}/signature/](${base}/signature/) |`,
+              `| 📄 CV (PDF) | [${base}/cv.pdf](${base}/cv.pdf) |`,
+              '',
+              diffSection,
+              '',
+              `<sub>Updates in place on every push. Not indexed by search engines.${
+                immutable ? ` Immutable build: ${immutable}` : ''
+              } · [Workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})</sub>`,
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
+
+      - name: Note skipped deploy for fork PRs
+        if: github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::notice title=Preview skipped::Fork pull requests cannot access deployment" \
+               "credentials. The bundle was built and verified, but not published."
