@@ -23,27 +23,38 @@ Typst's `json()` function and filters entries by visibility at compile time.
 
 ### Prerequisites
 
-You need the Typst CLI installed:
+You need the Typst CLI installed.
 
-**macOS:**
+**Recommended — [mise](https://mise.jdx.dev) (all platforms):** `mise.toml` at the
+repository root pins Typst, Node and uv, so one command gets the exact versions
+CI uses:
+
 ```bash
-brew install typst
+mise install
 ```
 
-**Linux:**
+Typst comes from mise's `aqua` backend, which downloads the official prebuilt
+binary — no Rust toolchain and no Homebrew required.
+
+<details>
+<summary>Installing Typst without mise</summary>
+
 ```bash
-# snap
-snap install typst
-# or cargo
-cargo install --locked typst-cli
+brew install typst                   # macOS
+snap install typst                   # Linux
+cargo install --locked typst-cli     # any platform, needs Rust
+winget install --id Typst.Typst      # Windows
 ```
 
-**Windows:**
-```powershell
-winget install --id Typst.Typst
-```
+Prebuilt binaries for every platform are also published on the
+[Typst releases page](https://github.com/typst/typst/releases).
+
+</details>
 
 All required fonts are vendored in `cv/fonts/` — no font installation needed.
+
+`npm run verify:ats` additionally needs poppler's `pdftotext`
+(`brew install poppler`); poppler is not available through mise.
 
 ### Compile
 
@@ -103,8 +114,10 @@ Typst template, vendored in `cv/modern-cv/` (v0.10.0). The vendored copy adds
 two header parameters not available upstream: `name-size` and
 `profile-picture-size`. To customize, edit `cv/cv.typ`:
 
-- **Accent color**: `accent-color: rgb("#15959F")` (teal, in the
-  `resume.with(...)` show rule)
+- **Accent color**: the `accent` binding at the top of `cv.typ`
+  (`rgb("#9A5214")`, burnt amber). It and the ink ramp in
+  `cv/modern-cv/lib.typ` are the day-theme tokens from
+  [`DESIGN.md`](../DESIGN.md) — change them there first, not here.
 - **Header size**: `name-size: 22pt`, `profile-picture-size: 2.6cm`
 - **Fonts**: `font: "Source Sans 3"` for body, headers use Roboto
 - **Paper size**: `paper-size: "a4"`
@@ -180,7 +193,7 @@ To control what appears in the PDF, edit the `visibility` field in `resume.json`
 ## CI/CD
 
 GitHub Actions (`.github/workflows/sync-resume.yml`) automatically:
-1. Installs Typst via `typst-community/setup-typst`
+1. Installs Typst via `jdx/mise-action@v2`, pinned in `mise.toml`
 2. Compiles `cv/cv.typ` to PDF
 3. Uploads the PDF as an artifact and creates a GitHub release
 

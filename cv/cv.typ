@@ -14,6 +14,18 @@
 // (name-size, profile-picture-size) not available upstream.
 #import "modern-cv/lib.typ": *
 
+// --- Palette ---------------------------------------------------------------
+//
+// Mirrors the day theme in DESIGN.md so the PDF and the website read as one
+// brand. The ink ramp lives in modern-cv/lib.typ; only the accent and the page
+// ground are set here.
+//
+// The page stays white rather than the site's cream (--surface-0, #F2EDE1):
+// a full-bleed tint costs toner when printed and some drivers drop it.
+// Add `#set page(fill: rgb("#F2EDE1"))` below the show rule to opt in.
+
+#let accent = rgb("#9A5214") // --accent (day)
+
 // --- Data loading ----------------------------------------------------------
 
 #let data = json("../resume.json")
@@ -86,7 +98,7 @@
   profile-picture: image("picture.jpg", alt: "Profile picture of " + basics.name),
   profile-picture-size: 2.6cm,
   name-size: 22pt,
-  accent-color: rgb("#15959F"),
+  accent-color: accent,
   colored-headers: true,
   show-footer: false,
   font: "Source Sans 3",

@@ -2,11 +2,16 @@
 #import "@preview/linguify:0.5.0": *
 
 // const color
-#let color-darknight = rgb("#131A28")
-#let color-darkgray = rgb("#333333")
-#let color-gray = rgb("#5d5d5d")
-#let default-accent-color = rgb("#262F99")
-#let default-location-color = rgb("#333333")
+//
+// Local change to vendored modern-cv: these are the DESIGN.md day-theme tokens,
+// so the PDF shares the website's ink ramp and accent. Keep them in sync with
+// DESIGN.md section 2 — do not restore the upstream greys.
+#let color-darknight = rgb("#1E2232") // --text-0
+#let color-darkgray = rgb("#1E2232") // --text-0
+#let color-gray = rgb("#575D79") // --text-2
+#let default-accent-color = rgb("#9A5214") // --accent
+#let default-location-color = rgb("#434963") // --text-1
+#let color-rule = rgb("#BFB49A") // --border-1
 
 // const icons
 #let linkedin-icon = box(fa-icon("linkedin", fill: color-darknight))
@@ -466,7 +471,7 @@
       color-darkgray
     }
     #text[#strong[#text(color)[#it.body]]]
-    #box(width: 1fr, line(length: 100%))
+    #box(width: 1fr, line(length: 100%, stroke: 0.6pt + color-rule))
   ]
 
   show heading.where(level: 2): it => {
@@ -845,7 +850,7 @@
 
     #align(left)[
       #text[#strong[#text(accent-color)[#it.body]]]
-      #box(width: 1fr, line(length: 100%))
+      #box(width: 1fr, line(length: 100%, stroke: 0.6pt + color-rule))
     ]
   ]
 
