@@ -195,7 +195,7 @@ function educationEntry(edu, index) {
     logo: edu.logo,
     meta: edu.score ? `Grade ${edu.score}` : '',
     summary: edu.summary,
-    points: edu.courses || [],
+    points: edu.highlights || [],
     tags: edu.keywords || [],
   });
 }
