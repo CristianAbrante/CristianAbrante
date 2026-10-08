@@ -15,18 +15,55 @@ const path = require('path');
 const RESUME_PATH = path.join(__dirname, '..', 'resume.json');
 const OUTPUT_DIR = path.join(__dirname, '..', 'signature', 'output');
 
-// Brand tokens — mirrored from website/template/style.css
-const COLOR_TEXT = '#1a1a1a';
-const COLOR_TEXT_SECONDARY = '#666666';
-const COLOR_ACCENT = '#2563eb';
-const COLOR_SEPARATOR = '#cbd5e1';
-const COLOR_BORDER = '#e5e5e5';
+/* Brand tokens — the DESIGN.md *day* ramp, because a signature lands on a white
+   message body. The rules are warm on white for the same reason the PDF's are:
+   both are day-theme surfaces printed on white rather than on the site's cream. */
+const COLOR_TEXT = '#1E2232'; //          --text-0  (day)  15.79:1 on white
+const COLOR_TEXT_SECONDARY = '#575D79'; // --text-2  (day)   6.47:1 on white
+const COLOR_ACCENT = '#175FA8'; //         --accent  (day)   6.48:1 on white
+const COLOR_SEPARATOR = '#BFB49A'; //      --border-1 (day)  non-text rule
+const COLOR_BORDER = '#D8CEB8'; //         --border-0 (day)  non-text rule
+
+/* Deliberately NOT IBM Plex: a webfont cannot be relied on inside a mail client,
+   and a failed load would drop the signature onto an arbitrary fallback. This is
+   the one surface that does not use the system's typography. */
 const FONT_STACK =
   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 // Avatar served by the personal website (Gmail needs a publicly hosted image)
 const AVATAR_URL = 'https://cristianabrante.com/picture.jpg';
 const AVATAR_SIZE = 64;
+
+/* The copy page is a normal web page rather than pasted email markup, so unlike
+   the signature itself it is built from the system — DESIGN.md's night theme,
+   Panel geometry and Control states. Each signature still sits on a white
+   .paper card, because that is the surface it has to survive on. */
+const PAGE = {
+  surface0: '#13151E',
+  surface1: '#191C28',
+  surface2: '#1F2331',
+  surface3: '#272C3D',
+  text0: '#E9E4D7',
+  text1: '#A3A8BD',
+  text2: '#9199AE',
+  border0: '#2B3144',
+  border1: '#3C435B',
+  accent: '#63B3F0',
+  accentHover: '#90CCFF',
+  cyan: '#6FC6D9',
+  rose: '#DE93A8',
+  shadow: '#080A11',
+  bevel: 'rgba(233, 228, 215, 0.055)',
+};
+
+const FONT_FILES = [
+  'ibm-plex-mono-latin-400-normal.woff2',
+  'ibm-plex-mono-latin-500-normal.woff2',
+  'ibm-plex-mono-latin-600-normal.woff2',
+  'ibm-plex-sans-latin-400-normal.woff2',
+];
+const TEMPLATE_DIR = path.join(__dirname, '..', 'website', 'template');
+const FONT_SOURCE_DIR = path.join(TEMPLATE_DIR, 'fonts');
 
 /**
  * Load and parse the resume JSON file
@@ -244,7 +281,7 @@ function buildPreviewPage(data, variants) {
           </div>
           <button type="button" class="copy" data-target="${variant.id}">Copy signature</button>
         </header>
-        <div class="preview" id="${variant.id}">${variant.html}</div>
+        <div class="paper" id="${variant.id}">${variant.html}</div>
         <details>
           <summary>Show HTML source</summary>
           <pre><code>${escapeHtml(variant.html)}</code></pre>
@@ -259,98 +296,174 @@ function buildPreviewPage(data, variants) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <title>${escapeHtml(data.name)} — email signature templates</title>
 <style>
+  /* Tokens and geometry per DESIGN.md. Fonts are copied in beside this file so
+     the page works opened straight from signature/output/, not just from the
+     preview bundle. */
+  @font-face { font-family: 'IBM Plex Mono'; src: url('fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+  @font-face { font-family: 'IBM Plex Mono'; src: url('fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+  @font-face { font-family: 'IBM Plex Sans'; src: url('fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+
   :root {
-    --color-text: ${COLOR_TEXT};
-    --color-text-secondary: ${COLOR_TEXT_SECONDARY};
-    --color-border: ${COLOR_BORDER};
-    --color-accent: ${COLOR_ACCENT};
-    --color-surface: #f9fafb;
+    color-scheme: dark;
+    --surface-0: ${PAGE.surface0};
+    --surface-1: ${PAGE.surface1};
+    --surface-2: ${PAGE.surface2};
+    --surface-3: ${PAGE.surface3};
+    --text-0: ${PAGE.text0};
+    --text-1: ${PAGE.text1};
+    --text-2: ${PAGE.text2};
+    --border-0: ${PAGE.border0};
+    --border-1: ${PAGE.border1};
+    --accent: ${PAGE.accent};
+    --accent-hover: ${PAGE.accentHover};
+    --cyan: ${PAGE.cyan};
+    --rose: ${PAGE.rose};
+    --shadow: ${PAGE.shadow};
+    --bevel: ${PAGE.bevel};
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --raised: inset 1px 1px 0 var(--bevel), 3px 3px 0 var(--shadow);
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 3rem 1.5rem 5rem;
-    font-family: ${FONT_STACK};
-    color: var(--color-text);
-    background: #ffffff;
-    line-height: 1.6;
+    padding: 3.5rem 1.5rem 5rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--text-1);
+    background: var(--surface-0);
+    line-height: 1.7;
   }
-  main { max-width: 760px; margin: 0 auto; }
-  h1 { font-size: 1.75rem; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
-  .lede { color: var(--color-text-secondary); margin: 0 0 2.5rem; }
+  main { max-width: 820px; margin: 0 auto; }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-bottom: 0.6rem;
+  }
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 3.2vw, 1.875rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--text-0);
+    margin: 0 0 0.6rem;
+  }
+  .lede { margin: 0 0 2.5rem; max-width: 65ch; }
+  code { font-family: var(--mono); font-size: 0.875em; color: var(--text-0); }
+
   .steps {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    padding: 1.25rem 1.5rem 1.25rem 2.5rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border-0);
+    box-shadow: var(--raised);
+    padding: 1.4rem 1.5rem 1.4rem 2.75rem;
     margin: 0 0 2.5rem;
-    color: var(--color-text-secondary);
     font-size: 0.9375rem;
   }
-  .steps li + li { margin-top: 0.35rem; }
-  .steps code {
-    font-family: 'SF Mono', Monaco, Consolas, monospace;
-    font-size: 0.85em;
-    background: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 0.1em 0.35em;
+  .steps li + li { margin-top: 0.4rem; }
+  .steps li::marker { font-family: var(--mono); color: var(--accent); }
+  .steps strong { color: var(--text-0); font-weight: 500; }
+
+  .card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-0);
+    box-shadow: var(--raised);
+    margin-bottom: 1.75rem;
   }
-  .card { border: 1px solid var(--color-border); border-radius: 10px; margin-bottom: 1.75rem; overflow: hidden; }
   .card-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
     padding: 1.125rem 1.5rem;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface);
+    border-bottom: 1px solid var(--border-0);
   }
-  .card-header h2 { font-size: 1rem; margin: 0; }
-  .card-note { margin: 0.15rem 0 0; font-size: 0.8125rem; color: var(--color-text-secondary); }
+  .card-header h2 { font-family: var(--mono); font-size: 1.0625rem; font-weight: 500; color: var(--text-0); margin: 0; }
+  .card-note { margin: 0.2rem 0 0; font-size: 0.8125rem; color: var(--text-2); }
+
+  /* Control: the lift/press ladder from DESIGN.md §5. */
   .copy {
     flex: none;
-    font: inherit;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #ffffff;
-    background: var(--color-accent);
-    border: 0;
-    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    min-height: 40px;
+    color: var(--accent);
+    background: var(--surface-3);
+    border: 1px solid var(--border-1);
+    border-radius: 0;
     padding: 0.5rem 0.9rem;
     cursor: pointer;
+    box-shadow: var(--raised);
+    transition: transform 140ms var(--ease, ease-out), box-shadow 140ms ease-out, color 140ms ease-out;
   }
-  .copy:hover { background: #1d4ed8; }
-  .copy[data-state='done'] { background: #15803d; }
-  .copy[data-state='error'] { background: #b91c1c; }
-  .preview { padding: 1.75rem 1.5rem; }
-  details { border-top: 1px solid var(--color-border); }
+  .copy:hover { color: var(--accent-hover); transform: translate(-2px, -2px); box-shadow: inset 1px 1px 0 var(--bevel), 5px 5px 0 var(--shadow); }
+  .copy:active { transform: translate(1px, 1px); box-shadow: inset 1px 1px 0 var(--bevel), 1px 1px 0 var(--shadow); }
+  .copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* Transient states tint the label only, so the button keeps its width and the
+     header row never reflows mid-interaction. */
+  .copy[data-state='done'] { color: var(--cyan); }
+  .copy[data-state='error'] { color: var(--rose); }
+
+  /* The signature is designed against a white message body, so it is judged on
+     white here even though the page around it is in the night theme. */
+  .paper {
+    margin: 1.5rem;
+    padding: 1.75rem 1.5rem;
+    background: #ffffff;
+    border: 1px solid var(--border-1);
+    box-shadow: 3px 3px 0 var(--shadow);
+  }
+
+  details { border-top: 1px solid var(--border-0); }
   summary {
     cursor: pointer;
-    padding: 0.75rem 1.5rem;
+    padding: 0.8rem 1.5rem;
+    font-family: var(--mono);
     font-size: 0.8125rem;
-    color: var(--color-text-secondary);
+    color: var(--text-2);
   }
+  summary:hover { color: var(--accent); }
+  summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
   pre {
     margin: 0;
-    padding: 1rem 1.5rem 1.5rem;
+    padding: 0 1.5rem 1.5rem;
     overflow-x: auto;
-    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-family: var(--mono);
     font-size: 0.75rem;
-    line-height: 1.6;
-    background: var(--color-surface);
+    line-height: 1.7;
+    color: var(--text-2);
     white-space: pre-wrap;
     word-break: break-word;
   }
-  .footnote { color: var(--color-text-secondary); font-size: 0.8125rem; margin-top: 2.5rem; }
+  .footnote {
+    color: var(--text-2);
+    font-size: 0.8125rem;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-0);
+    max-width: 65ch;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .copy { transition: none; }
+    .copy:hover, .copy:active { transform: none; }
+  }
 </style>
 </head>
 <body>
 <main>
+  <span class="eyebrow">generated from resume.json</span>
   <h1>Email signature templates</h1>
-  <p class="lede">Generated from <code>resume.json</code>. Pick a variant, copy it, and paste it into Gmail.</p>
+  <p class="lede">Pick a variant, copy it, and paste it into Gmail. Each one is shown on white because that is the surface it has to survive on — the page around it is dark, the signature is not.</p>
 
   <ol class="steps">
     <li>Click <strong>Copy signature</strong> on the variant you want.</li>
@@ -458,10 +571,24 @@ function main() {
   fs.writeFileSync(path.join(OUTPUT_DIR, 'signature.txt'), buildPlainTextSignature(data), 'utf8');
   fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), buildPreviewPage(data, variants), 'utf8');
 
+  const fontDir = path.join(OUTPUT_DIR, 'fonts');
+  fs.mkdirSync(fontDir, { recursive: true });
+  for (const file of FONT_FILES) {
+    const source = path.join(FONT_SOURCE_DIR, file);
+    if (!fs.existsSync(source)) {
+      console.error(`Missing font: ${path.relative(process.cwd(), source)}`);
+      process.exit(1);
+    }
+    fs.copyFileSync(source, path.join(fontDir, file));
+  }
+
+  fs.copyFileSync(path.join(TEMPLATE_DIR, 'favicon.svg'), path.join(OUTPUT_DIR, 'favicon.svg'));
+
   console.log('Email signatures generated in signature/output/');
   variants.forEach(variant => console.log(`  - ${variant.file} (${variant.title})`));
   console.log('  - signature.txt (plain-text fallback)');
   console.log('  - index.html (preview + copy buttons)');
+  console.log(`  - fonts/ (${FONT_FILES.length} woff2 for the preview page)`);
 }
 
 main();
