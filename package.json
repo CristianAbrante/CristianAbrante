@@ -9,6 +9,7 @@
     "verify:ats": "node scripts/verify-ats.js",
     "verify:website": "node scripts/verify-website.js",
     "generate:website": "node scripts/generate-website.js",
+    "preview:website": "npm run generate:pdf && npm run generate:website && node scripts/preview-website.js",
     "generate:signature": "node scripts/generate-signature.js",
     "generate:preview": "node scripts/build-preview.js",
     "prune:previews": "node scripts/prune-previews.js",

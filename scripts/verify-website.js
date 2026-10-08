@@ -39,9 +39,33 @@ function visibleFor(items, target = 'website') {
   );
 }
 
-/** Collapse whitespace and lowercase so matching ignores template indentation. */
+const NAMED_ENTITIES = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: '\u00a0',
+};
+
+/* generate-website.js HTML-escapes every resume value, so "Cloud & Infrastructure"
+   reaches the markup as "Cloud &amp; Infrastructure". Comparing the raw resume
+   string against the raw markup would report those values as missing, so decode
+   before matching. One pass over all entity forms, not a chain of replaces:
+   decoding "&amp;" first would turn a literal "&amp;lt;" into "<". */
+function decodeEntities(text) {
+  return text.replace(/&(?:#(\d+)|#[xX]([0-9a-fA-F]+)|([a-zA-Z]+));/g, (match, dec, hex, name) => {
+    if (dec !== undefined) return String.fromCodePoint(Number(dec));
+    if (hex !== undefined) return String.fromCodePoint(parseInt(hex, 16));
+    const named = NAMED_ENTITIES[name.toLowerCase()];
+    return named !== undefined ? named : match;
+  });
+}
+
+/** Decode entities, collapse whitespace and lowercase so matching ignores
+    escaping and template indentation. */
 function normalize(text) {
-  return text.replace(/\s+/g, ' ').toLowerCase();
+  return decodeEntities(text).replace(/\s+/g, ' ').toLowerCase();
 }
 
 /** Extract every src="..." / href="..." value from the markup. */

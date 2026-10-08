@@ -26,17 +26,27 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref || github.ref_name }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup toolchain (mise.toml)
+        uses: jdx/mise-action@v2
         with:
-          node-version: "20"
-          cache: "npm"
+          install_args: node typst
+
+      - name: Cache npm downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - name: Cache Typst packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/typst/packages
+          key: ${{ runner.os }}-typst-packages-${{ hashFiles('cv/cv.typ') }}
+          restore-keys: ${{ runner.os }}-typst-packages-
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Setup Typst
-        uses: typst-community/setup-typst@v5
 
       - name: Generate README and Website
         run: |

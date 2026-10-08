@@ -1,142 +1,261 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="night">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Primary Meta Tags -->
-    <title>{{NAME}} - {{LABEL}}</title>
-    <meta name="title" content="{{NAME}} - {{LABEL}}">
+    <title>{{NAME}} — {{LABEL}}</title>
+    <meta name="title" content="{{NAME}} — {{LABEL}}">
     <meta name="description" content="{{SUMMARY}}">
     <meta name="author" content="{{NAME}}">
     <meta name="keywords" content="{{KEYWORDS}}">
     <meta name="robots" content="index, follow">
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="7 days">
-    
+    <meta name="theme-color" content="#13151E" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#F2EDE1" media="(prefers-color-scheme: light)">
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://cristianabrante.com/">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://cristianabrante.com/">
-    <meta property="og:title" content="{{NAME}} - {{LABEL}}">
+    <meta property="og:title" content="{{NAME}} — {{LABEL}}">
     <meta property="og:description" content="{{SUMMARY}}">
     <meta property="og:image" content="https://cristianabrante.com/picture.jpg">
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="{{NAME}}">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://cristianabrante.com/">
-    <meta property="twitter:title" content="{{NAME}} - {{LABEL}}">
+    <meta property="twitter:title" content="{{NAME}} — {{LABEL}}">
     <meta property="twitter:description" content="{{SUMMARY}}">
     <meta property="twitter:image" content="https://cristianabrante.com/picture.jpg">
-    
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <!-- Fonts: self-hosted, preloaded for the two faces above the fold -->
+    <link rel="preload" href="fonts/ibm-plex-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
-    
+
+    <!-- Theme bootstrap: runs before paint so the page never flashes the wrong room -->
+    <script>
+        (function () {
+            document.documentElement.classList.add('js');
+            try {
+                var stored = localStorage.getItem('theme');
+                var theme = stored === 'day' || stored === 'night'
+                    ? stored
+                    : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'day' : 'night');
+                document.documentElement.dataset.theme = theme;
+            } catch (e) { /* storage blocked: keep the night default from the markup */ }
+        })();
+    </script>
+
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {{STRUCTURED_DATA}}
     </script>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="#" class="nav-logo">{{NAME}}</a>
-            <ul class="nav-menu">
-                <li><a href="#about">About</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-        <div class="container">
-            <div class="hero-content">
-                <img src="picture.jpg" alt="{{NAME}}" class="hero-image">
-                <div class="hero-text">
-                    <h1 class="hero-title">{{NAME}}</h1>
-                    <p class="hero-subtitle">{{LABEL}}</p>
-                    <p class="hero-location">{{LOCATION}}</p>
-                    <div class="hero-links">
-                        {{PROFILES}}
+    <!-- Room atmosphere: lamp pool + wall panelling, painted behind all content. -->
+    <div class="room" aria-hidden="true">
+        <span class="room__pool"></span>
+        <span class="room__wall"></span>
+    </div>
+
+    <header class="nav" id="top">
+        <div class="shell shell--wide nav__inner">
+            <a class="wordmark" href="#top">
+                <svg class="wordmark__mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M1 2h14v9H1z" class="wordmark__case"/>
+                    <path d="M3 4h10v5H3z" class="wordmark__screen"/>
+                    <path d="M6 12h4v1H6zM4 13h8v1H4z" class="wordmark__case"/>
+                </svg>
+                <span class="wordmark__text">{{HANDLE}}</span>
+            </a>
+
+            <nav class="nav__menu" aria-label="Sections">
+                <a href="#about">about</a>
+                <a href="#experience">experience</a>
+                <a href="#education">education</a>
+                <a href="#stack">stack</a>
+                <a href="#contact">contact</a>
+            </nav>
+
+            <button class="toggle" type="button" id="theme-toggle" aria-pressed="false">
+                <span class="toggle__bracket" aria-hidden="true">[</span>
+                <span class="toggle__label" data-night="night" data-day="day">night</span>
+                <span class="toggle__bracket" aria-hidden="true">]</span>
+                <span class="visually-hidden">Day mode</span>
+            </button>
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- ── Hero ───────────────────────────────────────────────────── -->
+        <section class="hero">
+            <div class="shell shell--wide hero__inner">
+                <div class="hero__text">
+                    <p class="prompt"><span class="prompt__sigil">$</span> whoami</p>
+                    <h1 class="hero__name">{{NAME}}</h1>
+                    <p class="hero__role">{{LABEL}}<span class="caret" aria-hidden="true"></span></p>
+
+                    <dl class="stats">
+                        <div class="stats__row">
+                            <dt>based</dt>
+                            <dd>{{LOCATION}}</dd>
+                        </div>
+                        <div class="stats__row">
+                            <dt>now</dt>
+                            <dd><span class="led led--inline" aria-hidden="true"></span>{{CURRENT_ROLE}}</dd>
+                        </div>
+                        <div class="stats__row">
+                            <dt>speaks</dt>
+                            <dd>{{LANGUAGES}}</dd>
+                        </div>
+                    </dl>
+
+                    <div class="hero__actions">
+                        {{CV_ACTION}}
+                        {{HERO_LINKS}}
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- About Section -->
-    <section class="section" id="about">
-        <div class="container">
-            <h2 class="section-title">About</h2>
-            <p class="about-text">{{SUMMARY}}</p>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section class="section section-alt" id="experience">
-        <div class="container">
-            <h2 class="section-title">Experience</h2>
-            <div class="timeline">
-                {{WORK_EXPERIENCE}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Education Section -->
-    <section class="section" id="education">
-        <div class="container">
-            <h2 class="section-title">Education</h2>
-            <div class="timeline">
-                {{EDUCATION}}
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section class="section section-alt" id="skills">
-        <div class="container">
-            <h2 class="section-title">Skills</h2>
-            <div class="skills-grid">
-                {{SKILLS}}
-            </div>
-            {{AWARDS}}
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="section" id="contact">
-        <div class="container">
-            <h2 class="section-title">Get in Touch</h2>
-            <div class="contact-info">
-                <p class="contact-text">Feel free to reach out for collaborations or opportunities.</p>
-                <div class="contact-links">
-                    <a href="mailto:{{EMAIL}}" class="contact-link">{{EMAIL}}</a>
-                    {{PHONE}}
-                </div>
-                <div class="social-links">
-                    {{PROFILES}}
+                <div class="crt" aria-hidden="true">
+                    <div class="crt__case">
+                        <div class="crt__screen">
+                            <img class="crt__photo" src="profile-pixel.png" alt="" width="132" height="99" fetchpriority="high">
+                            <span class="crt__wash"></span>
+                            <span class="crt__glare"></span>
+                            <span class="crt__scan"></span>
+                            <span class="crt__vignette"></span>
+                            <span class="crt__sweep"></span>
+                        </div>
+                        <div class="crt__chin">
+                            <span class="led"></span>
+                            <span class="crt__badge">CA&#8211;14</span>
+                            <span class="crt__vent"></span>
+                        </div>
+                    </div>
+                    <div class="crt__neck"></div>
+                    <div class="crt__foot"></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
+        <!-- ── About ──────────────────────────────────────────────────── -->
+        <section class="section" id="about">
+            <div class="shell">
+                <header class="section-head">
+                    <span class="section-head__index">01</span>
+                    <h2 class="section-head__title">about</h2>
+                    <span class="section-head__rule" aria-hidden="true"></span>
+                </header>
+                <div class="prose prose--lead reveal">
+                    <p>{{SUMMARY}}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Experience ─────────────────────────────────────────────── -->
+        <section class="section section--alt" id="experience">
+            <div class="shell">
+                <header class="section-head">
+                    <span class="section-head__index">02</span>
+                    <h2 class="section-head__title">experience</h2>
+                    <span class="section-head__rule" aria-hidden="true"></span>
+                </header>
+                <div class="log">
+                    {{WORK_ENTRIES}}
+                </div>
+                {{WORK_EARLIER}}
+            </div>
+        </section>
+
+        <!-- ── Education ──────────────────────────────────────────────── -->
+        <section class="section" id="education">
+            <div class="shell">
+                <header class="section-head">
+                    <span class="section-head__index">03</span>
+                    <h2 class="section-head__title">education</h2>
+                    <span class="section-head__rule" aria-hidden="true"></span>
+                </header>
+                <div class="log">
+                    {{EDUCATION_ENTRIES}}
+                </div>
+                {{EDUCATION_EARLIER}}
+                {{AWARDS}}
+            </div>
+        </section>
+
+        <!-- ── Stack ──────────────────────────────────────────────────── -->
+        <section class="section section--alt" id="stack">
+            <div class="shell">
+                <header class="section-head">
+                    <span class="section-head__index">04</span>
+                    <h2 class="section-head__title">stack</h2>
+                    <span class="section-head__rule" aria-hidden="true"></span>
+                </header>
+                <div class="rack">
+                    {{SKILLS}}
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Contact ────────────────────────────────────────────────── -->
+        <section class="section" id="contact">
+            <div class="shell">
+                <header class="section-head">
+                    <span class="section-head__index">05</span>
+                    <h2 class="section-head__title">contact</h2>
+                    <span class="section-head__rule" aria-hidden="true"></span>
+                </header>
+                <div class="contact">
+                    <div class="panel term reveal">
+                        <div class="term__bar">
+                            <span class="term__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+                            <span class="term__title">{{HANDLE}} &#8212; contact</span>
+                        </div>
+                        <div class="term__body">
+                            {{CONTACT_LINES}}
+                            {{CV_CONTACT_LINE}}
+                            <p class="term__line"><span class="term__sigil" aria-hidden="true">$</span><span class="caret" aria-hidden="true"></span></p>
+                        </div>
+                    </div>
+                    <p class="contact__note">
+                        Open to conversations about data platforms, analytics engineering,
+                        and AI-assisted development.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 {{NAME}}. All rights reserved.</p>
-            <p class="footer-note">Generated from <a href="https://github.com/{{GITHUB_USERNAME}}/{{GITHUB_USERNAME}}" target="_blank">resume.json</a></p>
+        <div class="shell footer__inner">
+            <p class="footer__line">&copy; {{YEAR}} {{NAME}}</p>
+            <p class="footer__line footer__line--muted">
+                <span aria-hidden="true">//</span> built from
+                <a href="https://github.com/{{GITHUB_USERNAME}}/{{GITHUB_USERNAME}}/blob/master/resume.json" target="_blank" rel="noopener noreferrer">resume.json</a>
+            </p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- CRT veil: scanlines + grain, painted above all content at <=3.5% alpha. -->
+    <div class="veil" aria-hidden="true">
+        <span class="veil__scan"></span>
+        <span class="veil__grain"></span>
+    </div>
+
+    <script src="script.js" defer></script>
 </body>
 </html>

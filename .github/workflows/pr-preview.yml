@@ -35,19 +35,27 @@ jobs:
       - name: Install poppler (pdftotext)
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
-      - name: Setup Typst
-        uses: typst-community/setup-typst@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup toolchain (mise.toml)
+        uses: jdx/mise-action@v2
         with:
-          node-version: "20"
+          install_args: node typst
 
-      - name: Generate website, signature and CV
+      # Both this PR's CV and the base branch's are compiled below, so the
+      # package cache is worth having even though no npm install is needed.
+      - name: Cache Typst packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/typst/packages
+          key: ${{ runner.os }}-typst-packages-${{ hashFiles('cv/cv.typ') }}
+          restore-keys: ${{ runner.os }}-typst-packages-
+
+      # The CV compiles first: generate:website copies the PDF in as cv.pdf for
+      # the download button, and verify:website counts a missing one as a fault.
+      - name: Generate CV, website and signature
         run: |
+          npm run generate:pdf
           npm run generate:website
           npm run generate:signature
-          npm run generate:pdf
 
       - name: Verify generated website
         id: verify_website

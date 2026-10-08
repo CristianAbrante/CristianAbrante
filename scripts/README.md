@@ -39,6 +39,59 @@ Generates the static website in `website/output/` from `resume.json`.
 npm run generate:website
 ```
 
+**What it does:**
+- Fills `website/template/index.html` placeholders from `resume.json`
+  (entries filtered by `visibility: ["website"]`), HTML-escaping every value
+- Renders work and education as collapsed `<details>` entries, showing only the
+  logo, role, organisation, location/grade and technology chips until expanded
+- Keeps the most recent entries in the main list and collapses the rest behind a
+  "show earlier" disclosure — tune `FEATURED_WORK` / `FEATURED_EDUCATION`
+- Falls back to a monogram tile for entries with no `logo` in `resume.json`
+- Copies `style.css`, `script.js`, `favicon.svg`, `robots.txt`,
+  `profile-pixel.png`, the self-hosted `fonts/` directory, `cv/logos/` and
+  `picture.jpg` into the output
+- Copies `cv/output/cv-cristian-abrante.pdf` to `cv.pdf` for the download button
+  and stamps its size onto the label; warns loudly if the PDF has not been
+  compiled yet
+- Stamps `sitemap.xml` with the current date
+- Exits non-zero if any `{{PLACEHOLDER}}` is left unresolved
+
+---
+
+### `generate-pixel-portrait.py`
+
+Derives the retro pixel-art portrait used in the hero CRT from the source photo.
+Local-only (needs `uv`); the output PNG is committed so CI stays Node-only.
+
+**Usage:**
+```bash
+uv run scripts/generate-pixel-portrait.py
+```
+
+**What it does:**
+- Crops `picture.jpg` to 4:3 around the face, matching the CRT aperture
+- Downscales with a BOX filter (averages each cell into a flat block)
+- Applies a luma-indexed colour ramp from `DESIGN.md`, then quantises to 20
+  colours with no dithering
+- Writes `website/template/profile-pixel.png` (~4 KB)
+
+Re-run whenever `picture.jpg` changes. Tuning knobs (`TARGET_WIDTH`,
+`PALETTE_SIZE`, `RAMP_STOPS`, `FACE_CENTRE`) are constants at the top.
+
+---
+
+### `preview-website.js`
+
+Serves `website/output/` over HTTP and opens a browser. A local server is
+required — Chrome blocks `@font-face` loads over `file://`, so opening the
+generated HTML directly loses the self-hosted fonts.
+
+**Usage:**
+```bash
+npm run preview:website     # compiles the PDF, regenerates, serves on :4321, opens a browser
+PORT=5000 npm run preview:website
+```
+
 ---
 
 ### `generate-signature.js`
@@ -62,6 +115,9 @@ open signature/output/index.html   # preview + copy buttons
   - `signature-minimal.html` — two compact lines for replies
   - `signature.txt` — plain-text signature
   - `index.html` — preview page with per-variant copy-to-clipboard buttons
+  - `fonts/` — the four IBM Plex woff2 the preview page needs, copied from
+    `website/template/fonts/` so the page also works opened straight from
+    `signature/output/` rather than only from the preview bundle
 
 **Email-client constraints enforced by the generator:**
 - Table-based layout with `role="presentation"`, no `<style>` blocks and no
@@ -69,7 +125,12 @@ open signature/output/index.html   # preview + copy buttons
 - Every style is inline, including explicit `color` on each `<a>` (Gmail does
   not inherit link color)
 - Spacing comes from spacer rows and `line-height`, not margins
-- Brand colors are mirrored from `website/template/style.css`
+- The signature uses the **day** ramp from `DESIGN.md` (it lands on a white
+  message body) and keeps the Arial/Helvetica stack — a webfont cannot be
+  relied on inside a mail client
+- The preview page is a normal web page, so it *is* built from the system:
+  night theme, IBM Plex, Panel geometry, Control states. Each signature sits on
+  a white `.paper` card inside it, because white is the surface it must survive
 
 ---
 
@@ -116,7 +177,7 @@ Verifies the generated website is structurally coherent.
 
 **Usage:**
 ```bash
-npm run generate:website && npm run verify:website
+npm run generate:pdf && npm run generate:website && npm run verify:website
 ```
 
 **What it does:**
@@ -161,7 +222,10 @@ npm run generate:preview -- --pr 48 --sha $(git rev-parse HEAD)
     robots.txt      Disallow: /
   ```
 
-- Generates a mobile-first landing page showing the PR number and commit
+- Generates a mobile-first landing page showing the PR number and commit, styled
+  from `DESIGN.md` (night theme, hard-edged Panels, Control hover/press). It
+  links `website/fonts/*.woff2` instead of shipping a second copy — the bundle
+  always contains `website/`, since the script exits non-zero without it
 - Forces `<meta name="robots" content="noindex, nofollow">` into every HTML file
   in the bundle, replacing the website's production `index, follow` directive
 - Exits non-zero with the exact `npm run` command to fix if any build output is

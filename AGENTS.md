@@ -8,16 +8,27 @@ GitHub profile repository for CristianAbrante. `resume.json` (JSON Resume format
 is the single source of truth; README, PDF CV (Typst), and website are generated
 from it. Entries are filtered per target via `visibility: ["readme", "pdf", "website"]`.
 
+`DESIGN.md` at the repo root is the visual source of truth for every generated
+surface (website, PDF CV, email signature). Read it before touching any styling,
+and add a token there before using one. Colors and sizes must never be hardcoded
+in `website/template/style.css` or `cv/cv.typ`.
+
 ## Build Commands
 
+Toolchain versions are pinned in `mise.toml` (Node, Typst, uv). With
+[mise](https://mise.jdx.dev) installed, `mise install` gets the exact versions CI
+uses — Typst included, so no `brew install typst` is needed. `mise tasks` lists
+shortcuts for the commands below.
+
 ```bash
-# Install dependencies
+# Install the pinned toolchain, then dependencies
+mise install
 npm install
 
 # Generate README.md from resume.json
 npm run generate:readme
 
-# Compile PDF CV (Typst; requires `brew install typst`)
+# Compile PDF CV (Typst)
 npm run generate:pdf
 
 # Live-preview PDF while editing resume.json or cv/cv.typ
@@ -25,6 +36,9 @@ npm run watch:pdf
 
 # Generate website (website/output/)
 npm run generate:website
+
+# Generate + serve the website at http://localhost:4321 and open a browser
+npm run preview:website
 
 # Generate everything
 npm run generate:all

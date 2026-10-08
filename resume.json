@@ -118,6 +118,7 @@
         "Designed and documented APIs using OpenAPI Specification"
       ],
       "technologies": ["JavaScript", "TypeScript", "Jest", "OpenAPI"],
+      "logo": "logos/unity.png",
       "visibility": ["readme", "website"]
     },
     {
@@ -134,6 +135,7 @@
         "Collaborated with PhD Wilhelmiina Hämäläinen"
       ],
       "technologies": [],
+      "logo": "logos/aalto.png",
       "visibility": ["website"]
     },
     {
@@ -150,6 +152,7 @@
         "Full-stack development role"
       ],
       "technologies": ["React", "TypeScript", "Node.js", "GraphQL"],
+      "logo": "logos/atecresa.png",
       "visibility": ["website"]
     },
     {
@@ -167,6 +170,7 @@
         "Worked under PhD supervision on software engineering research"
       ],
       "technologies": ["TypeScript", "Evolutionary Algorithms", "Optimization"],
+      "logo": "logos/ull.png",
       "visibility": ["website"]
     }
   ],
@@ -272,6 +276,7 @@
         "Strong foundation in algorithms, software engineering, and data science",
         "Technologies: Java, C++, JavaScript, HTML5, CSS3, Git"
       ],
+      "logo": "logos/ull.png",
       "visibility": ["website"]
     },
     {
