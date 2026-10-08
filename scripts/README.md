@@ -50,9 +50,9 @@ npm run generate:website
 - Copies `style.css`, `script.js`, `favicon.svg`, `robots.txt`,
   `profile-pixel.png`, the self-hosted `fonts/` directory, `cv/logos/` and
   `picture.jpg` into the output
-- Copies `cv/output/cv-cristian-abrante.pdf` to `/cv.pdf` for the download
-  button and stamps its
-  size onto the label; warns loudly if the PDF has not been compiled yet
+- Copies `cv/output/cv-cristian-abrante.pdf` to `cv.pdf` for the download button
+  and stamps its size onto the label; warns loudly if the PDF has not been
+  compiled yet
 - Stamps `sitemap.xml` with the current date
 - Exits non-zero if any `{{PLACEHOLDER}}` is left unresolved
 
@@ -169,7 +169,7 @@ Verifies the generated website is structurally coherent.
 
 **Usage:**
 ```bash
-npm run generate:website && npm run verify:website
+npm run generate:pdf && npm run generate:website && npm run verify:website
 ```
 
 **What it does:**

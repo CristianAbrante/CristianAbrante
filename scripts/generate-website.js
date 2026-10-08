@@ -441,12 +441,13 @@ if (fs.existsSync(picturePath)) {
   fs.copyFileSync(picturePath, path.join(OUTPUT_DIR, 'picture.jpg'));
 }
 
-/* The site always links /cv.pdf, so a missing PDF is a broken download rather
-   than a missing button. Warn loudly instead of silently shipping a 404. */
+/* The site always links cv.pdf, so a missing PDF is a broken download rather
+   than a missing button. Warn loudly instead of silently shipping a 404;
+   verify:website turns the same condition into a hard failure in CI. */
 if (fs.existsSync(CV_PDF)) {
   fs.copyFileSync(CV_PDF, path.join(OUTPUT_DIR, CV_PUBLIC_NAME));
 } else {
-  console.warn(`WARNING: ${path.relative(process.cwd(), CV_PDF)} not found — /${CV_PUBLIC_NAME} will 404.`);
+  console.warn(`WARNING: ${path.relative(process.cwd(), CV_PDF)} not found — ${CV_PUBLIC_NAME} will 404.`);
   console.warn('         Run "npm run generate:pdf" first (or use "npm run preview:website").');
 }
 

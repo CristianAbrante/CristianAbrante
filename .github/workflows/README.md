@@ -2,6 +2,41 @@
 
 This directory contains CI/CD workflows for automating resume generation.
 
+## Toolchain
+
+Every workflow gets its tools from the repository's `mise.toml` via
+[`jdx/mise-action@v2`](https://github.com/jdx/mise-action) — there is no
+`setup-node` or `setup-typst` step. CI and a local `mise install` therefore
+resolve the *same* pinned versions (Node 20, Typst 0.15.1, uv), and bumping a
+version is a one-line change in `mise.toml` rather than an edit across five
+workflow files.
+
+Each job installs only what it needs via `install_args`:
+
+| Workflow | Tools |
+|---|---|
+| `sync-resume.yml` | `node typst` |
+| `pr-preview.yml` | `node typst` |
+| `verify-website.yml` | `node typst` |
+| `deploy-website.yml` | `node typst` |
+| `validate-resume.yml` | `node` |
+
+mise-action caches tool installs itself. Two caches that the removed actions
+used to provide are now explicit `actions/cache` steps:
+
+- `~/.npm`, keyed on `package-lock.json` (replaces `setup-node`'s `cache: npm`)
+- `~/.cache/typst/packages`, keyed on `cv/cv.typ` (replaces `setup-typst`'s
+  package caching — `cv.typ` imports `@preview/fontawesome` and
+  `@preview/linguify`, which would otherwise be re-downloaded on every run)
+
+Only the three workflows that run `npm ci` carry the `~/.npm` cache.
+`pr-preview.yml` and `verify-website.yml` drive the generators directly — every
+script under `scripts/` uses Node built-ins only — so they take the Typst cache
+alone.
+
+`poppler-utils` is still installed with `apt-get` in `pr-preview.yml`; it is not
+available through mise.
+
 ## Workflows
 
 ### `sync-resume.yml` - Resume Format Synchronization
@@ -25,7 +60,7 @@ Automatically generates and updates all resume formats when `resume.json` change
    - Output is gitignored; deployment happens via the `deploy-website.yml` workflow (GitHub Pages)
 
 3. **Compiles PDF with Typst**
-   - Installs Typst via `typst-community/setup-typst@v5` (with package caching)
+   - Installs Typst via `jdx/mise-action@v2` from `mise.toml` (with package caching)
    - Runs `npm run generate:pdf` → `typst compile cv/cv.typ cv/output/cv-cristian-abrante.pdf --root . --font-path cv/fonts`
    - `cv/cv.typ` reads `resume.json` directly (no code generation step)
    - Fonts are vendored in `cv/fonts/` (Roboto, Source Sans 3, Font Awesome 7)
@@ -41,8 +76,7 @@ Automatically generates and updates all resume formats when `resume.json` change
 
 **Environment:**
 - Runner: `ubuntu-latest`
-- Node.js: v20
-- Typst: latest (via typst-community/setup-typst)
+- Toolchain: `jdx/mise-action@v2` reading `mise.toml` (Node 20, Typst 0.15.1)
 
 **Permissions:**
 - `contents: write` - Required to commit README changes and create releases
@@ -154,11 +188,14 @@ Asserts the generated website is coherent, on every PR that can affect it.
 
 **Triggers:**
 - Pull requests changing `resume.json`, `website/**`,
-  `scripts/generate-website.js`, `scripts/verify-website.js`, or the workflow itself
+  `scripts/generate-website.js`, `scripts/verify-website.js`, `mise.toml`, or
+  the workflow itself
 
 **What it does:**
 
-1. **Generates the website** from `resume.json`
+1. **Compiles the PDF CV, then generates the website** from `resume.json` —
+   the PDF must exist first, because `generate:website` copies it in as
+   `cv.pdf` and the asset check below treats a missing download as a failure
 2. **Runs `npm run verify:website`**, which fails the check if:
    - any website-visible `resume.json` field is missing from the HTML —
      including `highlights`, which `cv/cv.typ` does **not** render, making this
@@ -171,7 +208,7 @@ Asserts the generated website is coherent, on every PR that can affect it.
 
 **Run locally:**
 ```bash
-npm run generate:website && npm run verify:website
+npm run generate:pdf && npm run generate:website && npm run verify:website
 ```
 
 **Permissions:**
@@ -186,13 +223,20 @@ Automatically deploys the resume website to GitHub Pages when `resume.json` or w
   - `resume.json`
   - `website/**` (any website files)
   - `scripts/generate-website.js`
+  - `cv/**` (the published PDF is built from here)
+  - `mise.toml`
 - Manual trigger via GitHub Actions UI (workflow_dispatch)
 
 **What it does:**
 
-1. **Generates Website**
-   - Runs `npm run generate:website`
-   - Creates fresh HTML, CSS, and JS from `resume.json`
+1. **Compiles the PDF CV, then generates the website**
+   - Runs `npm run generate:pdf` followed by `npm run generate:website`
+   - The PDF step must come first: `generate:website` copies the compiled
+     `cv/output/cv-cristian-abrante.pdf` to `cv.pdf`, which the site's download
+     button links to
+   - That link stays *relative*; `verify:website` rejects root-absolute asset
+     paths because they break when the bundle is served from a PR preview
+     subfolder
 
 2. **Prepares for Deployment**
    - Adds `.nojekyll` file to prevent Jekyll processing
@@ -206,7 +250,7 @@ Automatically deploys the resume website to GitHub Pages when `resume.json` or w
 
 **Environment:**
 - Runner: `ubuntu-latest`
-- Node.js: v20
+- Toolchain: `jdx/mise-action@v2` reading `mise.toml` (Node 20, Typst 0.15.1)
 - Environment: `github-pages`
 
 **Permissions:**

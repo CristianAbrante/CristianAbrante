@@ -8,6 +8,7 @@ on:
       - "scripts/generate-website.js"
       - "scripts/verify-website.js"
       - ".github/workflows/verify-website.yml"
+      - "mise.toml"
 
 permissions:
   contents: read
@@ -20,10 +21,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup toolchain (mise.toml)
+        uses: jdx/mise-action@v2
         with:
-          node-version: "20"
+          install_args: node typst
+
+      - name: Cache Typst packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/typst/packages
+          key: ${{ runner.os }}-typst-packages-${{ hashFiles('cv/cv.typ') }}
+          restore-keys: ${{ runner.os }}-typst-packages-
+
+      # The site links cv.pdf, which generate:website copies out of cv/output/.
+      # Without this step verify:website fails on the download as a missing asset.
+      - name: Compile PDF CV
+        run: npm run generate:pdf
 
       - name: Generate website from resume.json
         run: npm run generate:website
