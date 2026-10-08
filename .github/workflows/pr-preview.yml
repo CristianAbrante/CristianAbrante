@@ -50,7 +50,17 @@ jobs:
           npm run generate:pdf
 
       - name: Verify generated website
-        run: npm run verify:website
+        id: verify_website
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run verify:website 2>&1 | tee /tmp/verify-website.txt
+
+      - name: Verify CV is ATS-parseable
+        id: verify_ats
+        continue-on-error: true
+        run: npm run verify:ats
 
       - name: Assemble preview bundle
         run: |
@@ -123,6 +133,8 @@ jobs:
         env:
           PREVIEW_URL: ${{ steps.resolve.outputs.url }}
           IMMUTABLE_URL: ${{ steps.resolve.outputs.immutable }}
+          WEBSITE_OUTCOME: ${{ steps.verify_website.outcome }}
+          ATS_OUTCOME: ${{ steps.verify_ats.outcome }}
         with:
           script: |
             const fs = require('fs');
@@ -130,6 +142,44 @@ jobs:
             const base = process.env.PREVIEW_URL;
             const immutable = process.env.IMMUTABLE_URL;
             const sha = context.payload.pull_request.head.sha.slice(0, 7);
+            const icon = ok => (ok ? '✅' : '❌');
+
+            const websiteOk = process.env.WEBSITE_OUTCOME === 'success';
+            let websiteCell = `${icon(websiteOk)} ${websiteOk ? 'passed' : 'failed'}`;
+            let websiteFailures = [];
+            try {
+              const out = fs.readFileSync('/tmp/verify-website.txt', 'utf8');
+              const counts = out.match(/Checks: (\d+)\/(\d+) passed/);
+              if (counts) websiteCell = `${icon(websiteOk)} ${counts[1]}/${counts[2]} checks`;
+              websiteFailures = out
+                .split('\n')
+                .filter(line => line.includes('❌') && !line.includes('verification failed'))
+                .map(line => line.replace(/^\s*❌\s*/, '').trim());
+            } catch {}
+
+            const atsOk = process.env.ATS_OUTCOME === 'success';
+            let atsCell = `${icon(atsOk)} ${atsOk ? 'passed' : 'failed'}`;
+            let atsFailures = [];
+            let atsWarnings = [];
+            try {
+              const report = JSON.parse(fs.readFileSync('cv/output/ats-report.json', 'utf8'));
+              atsCell = `${icon(atsOk)} ${report.checksPassed}/${report.checksTotal} fields`;
+              atsFailures = report.failures || [];
+              atsWarnings = report.warnings || [];
+            } catch {}
+
+            const detail = (title, items) =>
+              items.length === 0
+                ? []
+                : [
+                    '<details>',
+                    `<summary>${title} (${items.length})</summary>`,
+                    '',
+                    ...items.map(item => `- ${item}`),
+                    '',
+                    '</details>',
+                    '',
+                  ];
 
             let diff = '';
             try {
@@ -172,6 +222,14 @@ jobs:
               `| ✉️ Email signature | [${base}/signature/](${base}/signature/) |`,
               `| 📄 CV (PDF) | [${base}/cv.pdf](${base}/cv.pdf) |`,
               '',
+              '| Check | Result |',
+              '| --- | --- |',
+              `| 🌐 Website structure | ${websiteCell} |`,
+              `| 🤖 ATS (CV text layer) | ${atsCell} |`,
+              '',
+              ...detail('❌ Website verification failures', websiteFailures),
+              ...detail('❌ ATS verification failures', atsFailures),
+              ...detail('⚠️ ATS warnings', atsWarnings),
               diffSection,
               '',
               `<sub>Updates in place on every push. Not indexed by search engines.${
@@ -207,3 +265,12 @@ jobs:
         run: |
           echo "::notice title=Preview skipped::Fork pull requests cannot access deployment" \
                "credentials. The bundle was built and verified, but not published."
+
+      - name: Fail if verification did not pass
+        if: steps.verify_website.outcome == 'failure' || steps.verify_ats.outcome == 'failure'
+        run: |
+          [ "${{ steps.verify_website.outcome }}" = "failure" ] && \
+            echo "::error title=Website verification::npm run verify:website failed"
+          [ "${{ steps.verify_ats.outcome }}" = "failure" ] && \
+            echo "::error title=ATS verification::npm run verify:ats failed"
+          exit 1
