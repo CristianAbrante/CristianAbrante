@@ -1,0 +1,32 @@
+name: Website Verification
+
+on:
+  pull_request:
+    paths:
+      - "resume.json"
+      - "website/**"
+      - "scripts/generate-website.js"
+      - "scripts/verify-website.js"
+      - ".github/workflows/verify-website.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-website:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate website from resume.json
+        run: npm run generate:website
+
+      - name: Verify generated website
+        run: npm run verify:website
