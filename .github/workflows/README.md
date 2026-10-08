@@ -100,10 +100,18 @@ CV can be reviewed in a real browser (including from a phone) before merging.
 6. **Deploys to Cloudflare Pages** via `cloudflare/wrangler-action@v4` with
    `--branch=pr-{number}`, producing a stable alias URL
    `https://pr-{number}.cristianabrante-preview.pages.dev`
-7. **Comments on the PR** with the three links, a pass/fail table for both
-   verification gates (with expandable per-field failures and warnings), and the
-   CV text diff — one sticky comment, updated in place
-   (marker `<!-- pr-preview-comment -->`)
+7. **Comments on the PR** — one sticky comment, updated in place
+   (marker `<!-- pr-preview-comment -->`), structured as:
+
+   - **Preview** — table of the three live links
+   - **Automatic Checks** — pass/fail table for both gates, with collapsible
+     per-field failures and ATS glyph warnings
+   - **CV text layer** — the full `pdftotext` extraction in a collapsible,
+     shown on **every** run so you can always read exactly what an ATS sees,
+     followed by the diff versus the base branch when it changed
+
+   Long content is clipped (300 lines of extracted text, 60 of diff) to stay
+   well inside GitHub's 65 536-character comment limit.
 
 **Run the gates locally:**
 ```bash
