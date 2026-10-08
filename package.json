@@ -10,6 +10,7 @@
     "verify:website": "node scripts/verify-website.js",
     "generate:website": "node scripts/generate-website.js",
     "generate:signature": "node scripts/generate-signature.js",
+    "generate:preview": "node scripts/build-preview.js",
     "generate:all": "npm run generate:readme && npm run generate:pdf && npm run generate:website && npm run generate:signature"
   },
   "dependencies": {

@@ -203,3 +203,6 @@ website/output/
 
 # Email signature output directory (generated files)
 signature/output/
+
+# PR preview bundle (assembled by scripts/build-preview.js)
+preview/
