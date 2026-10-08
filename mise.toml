@@ -1,0 +1,31 @@
+[tools]
+# node is pinned to the version .github/workflows/* install, so a local build
+# and a CI build cannot diverge. Typst resolves through mise's aqua backend,
+# which fetches the official prebuilt binary — no Rust and no Homebrew needed.
+node = "20"
+typst = "0.15.1"
+uv = "latest"
+
+[tasks.setup]
+description = "Install dependencies"
+run = "npm install"
+
+[tasks.website]
+description = "Generate the website into website/output"
+run = "npm run generate:website"
+
+[tasks.preview]
+description = "Generate, serve and open the website"
+run = "npm run preview:website"
+
+[tasks.pdf]
+description = "Compile the PDF CV"
+run = "npm run generate:pdf"
+
+[tasks.portrait]
+description = "Regenerate the pixel-art portrait from picture.jpg"
+run = "uv run scripts/generate-pixel-portrait.py"
+
+[tasks.all]
+description = "Generate README, PDF and website"
+run = "npm run generate:all"

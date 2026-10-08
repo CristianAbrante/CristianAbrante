@@ -206,3 +206,7 @@ signature/output/
 
 # PR preview bundle (assembled by scripts/build-preview.js)
 preview/
+
+# Agent tooling state (oh-my-opencode)
+.omo/
+.playwright-mcp/
