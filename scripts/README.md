@@ -39,6 +39,59 @@ Generates the static website in `website/output/` from `resume.json`.
 npm run generate:website
 ```
 
+**What it does:**
+- Fills `website/template/index.html` placeholders from `resume.json`
+  (entries filtered by `visibility: ["website"]`), HTML-escaping every value
+- Renders work and education as collapsed `<details>` entries, showing only the
+  logo, role, organisation, location/grade and technology chips until expanded
+- Keeps the most recent entries in the main list and collapses the rest behind a
+  "show earlier" disclosure — tune `FEATURED_WORK` / `FEATURED_EDUCATION`
+- Falls back to a monogram tile for entries with no `logo` in `resume.json`
+- Copies `style.css`, `script.js`, `favicon.svg`, `robots.txt`,
+  `profile-pixel.png`, the self-hosted `fonts/` directory, `cv/logos/` and
+  `picture.jpg` into the output
+- Copies `cv/output/cv-cristian-abrante.pdf` to `/cv.pdf` for the download
+  button and stamps its
+  size onto the label; warns loudly if the PDF has not been compiled yet
+- Stamps `sitemap.xml` with the current date
+- Exits non-zero if any `{{PLACEHOLDER}}` is left unresolved
+
+---
+
+### `generate-pixel-portrait.py`
+
+Derives the retro pixel-art portrait used in the hero CRT from the source photo.
+Local-only (needs `uv`); the output PNG is committed so CI stays Node-only.
+
+**Usage:**
+```bash
+uv run scripts/generate-pixel-portrait.py
+```
+
+**What it does:**
+- Crops `picture.jpg` to 4:3 around the face, matching the CRT aperture
+- Downscales with a BOX filter (averages each cell into a flat block)
+- Applies a luma-indexed colour ramp from `DESIGN.md`, then quantises to 20
+  colours with no dithering
+- Writes `website/template/profile-pixel.png` (~4 KB)
+
+Re-run whenever `picture.jpg` changes. Tuning knobs (`TARGET_WIDTH`,
+`PALETTE_SIZE`, `RAMP_STOPS`, `FACE_CENTRE`) are constants at the top.
+
+---
+
+### `preview-website.js`
+
+Serves `website/output/` over HTTP and opens a browser. A local server is
+required — Chrome blocks `@font-face` loads over `file://`, so opening the
+generated HTML directly loses the self-hosted fonts.
+
+**Usage:**
+```bash
+npm run preview:website     # compiles the PDF, regenerates, serves on :4321, opens a browser
+PORT=5000 npm run preview:website
+```
+
 ---
 
 ### `generate-signature.js`
