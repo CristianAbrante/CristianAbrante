@@ -169,6 +169,42 @@ npm run generate:preview -- --pr 48 --sha $(git rev-parse HEAD)
 
 ---
 
+### `prune-previews.js`
+
+Deletes old Cloudflare Pages preview deployments. Cloudflare has no TTL, so
+without this every preview ever built stays public forever.
+
+**Usage:**
+```bash
+export CLOUDFLARE_API_TOKEN=...   # Pages: Edit
+export CLOUDFLARE_ACCOUNT_ID=...
+
+# see what would go
+npm run prune:previews -- --project cristianabrante-preview --dry-run
+
+# actually delete, protecting open PRs
+npm run prune:previews -- --project cristianabrante-preview \
+  --max-age-days 30 --keep pr-48,pr-50
+```
+
+**Flags:**
+- `--project` — Pages project name (required)
+- `--max-age-days` — retention window, default `30`
+- `--keep` — comma-separated branches never to touch (the workflow passes the
+  branches of all open PRs)
+- `--dry-run` — list what would be deleted and exit without deleting
+
+**Behaviour:**
+- Only `environment: preview` deployments are considered; production is filtered
+  out server-side via `env=preview` and again client-side
+- Deletion sends `force=true`, which the API requires for a deployment holding
+  an active branch alias — and which does delete the latest deployment for a
+  branch, despite the docs saying otherwise
+- Failed deletions are reported per deployment and the script exits non-zero, so
+  a prune that cannot do its job is visible rather than silently green
+
+---
+
 ### Generate All Formats
 
 **Usage:**

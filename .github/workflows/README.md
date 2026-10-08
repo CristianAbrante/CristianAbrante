@@ -177,6 +177,53 @@ npm run generate:website && npm run verify:website
 **Permissions:**
 - `contents: read` - Read repository files
 
+### `prune-previews.yml` - Preview Deployment Retention
+
+**Cloudflare Pages has no TTL.** Every deployment ever made stays reachable
+forever, at both its immutable `<hash>.<project>.pages.dev` URL and its
+`pr-<N>.<project>.pages.dev` branch alias, and there is no native retention
+setting in the dashboard or API. This workflow *is* the retention policy.
+
+**Triggers:**
+- Weekly, Mondays 04:00 UTC
+- Manually via `workflow_dispatch` (inputs: `dry_run`, `max_age_days`)
+- Pull requests touching the pruner itself — always in dry-run
+
+**What it does:**
+
+1. Collects the branches of all open pull requests with `gh` (`pr-48,pr-50`, …)
+2. Runs `scripts/prune-previews.js`, deleting preview deployments older than
+   `max_age_days` (default 30) whose branch is **not** in that protected list
+
+**Deletion is opt-in, not opt-out.** The step sets `LIVE=true` only for a
+`schedule` run or a `workflow_dispatch` that explicitly passed
+`dry_run=false`. Every other trigger falls through to `--dry-run`. Reading
+`inputs.dry_run` directly would be unsafe: it evaluates to empty on events that
+do not define that input, and empty is not `"true"`, so a pull request run
+would have deleted for real.
+
+**Verified behaviour** (live run, 2026-10-08):
+- `force=true` **does** delete a deployment holding an active branch alias,
+  including the latest deployment for that branch. The preview-deployments page
+  says "the latest deployment for a branch cannot be deleted"; that is not what
+  the API does when `force=true` is passed. Deleted URLs return 404 and the
+  alias returns "Deployment Not Found".
+- Deployments on branches with open PRs were untouched.
+
+**Known API quirk:** passing an explicit `per_page` to the deployments list
+endpoint fails with `8000024: Invalid list options provided`, and the accepted
+range is undocumented. The script therefore requests page 1 with no pagination
+parameters and only fetches further pages when `result_info.total_pages > 1`.
+
+**Required repository secrets:** `CLOUDFLARE_API_TOKEN` (Pages: Edit) and
+`CLOUDFLARE_ACCOUNT_ID`.
+
+**Permissions:**
+- `contents: read` - Read repository files
+- `pull-requests: read` - List open PRs to protect their previews
+
+---
+
 ### `deploy-website.yml` - GitHub Pages Deployment
 
 Automatically deploys the resume website to GitHub Pages when `resume.json` or website files change.
