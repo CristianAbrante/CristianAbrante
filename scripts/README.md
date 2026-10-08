@@ -115,6 +115,9 @@ open signature/output/index.html   # preview + copy buttons
   - `signature-minimal.html` — two compact lines for replies
   - `signature.txt` — plain-text signature
   - `index.html` — preview page with per-variant copy-to-clipboard buttons
+  - `fonts/` — the four IBM Plex woff2 the preview page needs, copied from
+    `website/template/fonts/` so the page also works opened straight from
+    `signature/output/` rather than only from the preview bundle
 
 **Email-client constraints enforced by the generator:**
 - Table-based layout with `role="presentation"`, no `<style>` blocks and no
@@ -122,7 +125,12 @@ open signature/output/index.html   # preview + copy buttons
 - Every style is inline, including explicit `color` on each `<a>` (Gmail does
   not inherit link color)
 - Spacing comes from spacer rows and `line-height`, not margins
-- Brand colors are mirrored from `website/template/style.css`
+- The signature uses the **day** ramp from `DESIGN.md` (it lands on a white
+  message body) and keeps the Arial/Helvetica stack — a webfont cannot be
+  relied on inside a mail client
+- The preview page is a normal web page, so it *is* built from the system:
+  night theme, IBM Plex, Panel geometry, Control states. Each signature sits on
+  a white `.paper` card inside it, because white is the surface it must survive
 
 ---
 
@@ -214,7 +222,10 @@ npm run generate:preview -- --pr 48 --sha $(git rev-parse HEAD)
     robots.txt      Disallow: /
   ```
 
-- Generates a mobile-first landing page showing the PR number and commit
+- Generates a mobile-first landing page showing the PR number and commit, styled
+  from `DESIGN.md` (night theme, hard-edged Panels, Control hover/press). It
+  links `website/fonts/*.woff2` instead of shipping a second copy — the bundle
+  always contains `website/`, since the script exits non-zero without it
 - Forces `<meta name="robots" content="noindex, nofollow">` into every HTML file
   in the bundle, replacing the website's production `index, follow` directive
 - Exits non-zero with the exact `npm run` command to fix if any build output is
