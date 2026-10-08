@@ -28,6 +28,12 @@ npm run generate:website
 
 # Generate everything
 npm run generate:all
+
+# Verify the generated website (PR gate; asserts fields, assets, anchors)
+npm run verify:website
+
+# Assemble the per-PR preview bundle in preview/ (website + signature + cv.pdf)
+npm run generate:preview
 ```
 
 The PDF CV is built from `cv/cv.typ` (modern-cv template), which reads
