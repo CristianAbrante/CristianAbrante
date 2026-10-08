@@ -68,13 +68,13 @@ jobs:
             --pr "${{ github.event.pull_request.number }}" \
             --sha "${{ github.event.pull_request.head.sha }}"
 
-      - name: Diff CV text against base branch
+      - name: Extract CV text layer and diff against base branch
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           set -uo pipefail
           mkdir -p cv/output
-          pdftotext -enc UTF-8 -layout cv/output/cv-cristian-abrante.pdf /tmp/cv-head.txt
+          pdftotext -enc UTF-8 -layout cv/output/cv-cristian-abrante.pdf cv/output/cv-text.txt
 
           if ! git worktree add --detach /tmp/cv-base "$BASE_SHA" >/dev/null 2>&1; then
             echo "skipped: base commit $BASE_SHA not available" > cv/output/cv-text-diff.txt
@@ -93,7 +93,7 @@ jobs:
           fi
 
           pdftotext -enc UTF-8 -layout /tmp/cv-base.pdf /tmp/cv-base.txt
-          diff -u /tmp/cv-base.txt /tmp/cv-head.txt > cv/output/cv-text-diff.txt || true
+          diff -u /tmp/cv-base.txt cv/output/cv-text.txt > cv/output/cv-text-diff.txt || true
 
       - name: Upload preview bundle artifact
         uses: actions/upload-artifact@v4
@@ -181,33 +181,52 @@ jobs:
                     '',
                   ];
 
+            const clip = (text, max) => {
+              const lines = text.split('\n');
+              if (lines.length <= max) return text;
+              return `${lines.slice(0, max).join('\n')}\n… ${lines.length - max} more line(s) — see the workflow run`;
+            };
+
+            const collapsible = (summary, lang, content) => [
+              '<details>',
+              `<summary>${summary}</summary>`,
+              '',
+              '```' + lang,
+              content,
+              '```',
+              '</details>',
+              '',
+            ];
+
+            let cvText = '';
+            try {
+              cvText = fs.readFileSync('cv/output/cv-text.txt', 'utf8').replace(/\s+$/, '');
+            } catch {}
+
+            const cvTextSection = cvText
+              ? collapsible(
+                  `Extracted text — what an ATS actually reads (${cvText.split('\n').length} lines)`,
+                  'text',
+                  clip(cvText, 300)
+                )
+              : ['_CV text layer could not be extracted._', ''];
+
             let diff = '';
             try {
               diff = fs.readFileSync('cv/output/cv-text-diff.txt', 'utf8').trim();
-            } catch {
-              diff = '';
-            }
+            } catch {}
 
             let diffSection;
             if (!diff) {
-              diffSection = '_CV text layer is unchanged from the base branch._';
+              diffSection = ['_No change to the CV text layer versus the base branch._', ''];
             } else if (diff.startsWith('skipped:')) {
-              diffSection = `_CV text diff ${diff.replace('skipped:', 'skipped —').trim()}._`;
+              diffSection = [`_Diff versus base ${diff.replace('skipped:', 'skipped —').trim()}._`, ''];
             } else {
-              const lines = diff.split('\n');
-              const shown = lines.slice(0, 60).join('\n');
-              const truncated = lines.length > 60
-                ? `\n... ${lines.length - 60} more line(s) — see the workflow run`
-                : '';
-              diffSection = [
-                '<details>',
-                `<summary>📝 CV text layer changed (${lines.length} diff line(s)) — click to expand</summary>`,
-                '',
-                '```diff',
-                shown + truncated,
-                '```',
-                '</details>',
-              ].join('\n');
+              diffSection = collapsible(
+                `📝 Changed versus base branch (${diff.split('\n').length} diff lines)`,
+                'diff',
+                clip(diff, 60)
+              );
             }
 
             const body = [
@@ -218,9 +237,11 @@ jobs:
               '',
               '| Deliverable | Link |',
               '| --- | --- |',
-              `| 🌐 Website | [${base}/website/](${base}/website/) |`,
-              `| ✉️ Email signature | [${base}/signature/](${base}/signature/) |`,
-              `| 📄 CV (PDF) | [${base}/cv.pdf](${base}/cv.pdf) |`,
+              `| 🌐 Website | [Open](${base}/website/) |`,
+              `| ✉️ Email signature | [Open](${base}/signature/) |`,
+              `| 📄 CV (PDF) | [Open](${base}/cv.pdf) |`,
+              '',
+              `## ${icon(websiteOk && atsOk)} Automatic Checks`,
               '',
               '| Check | Result |',
               '| --- | --- |',
@@ -230,7 +251,11 @@ jobs:
               ...detail('❌ Website verification failures', websiteFailures),
               ...detail('❌ ATS verification failures', atsFailures),
               ...detail('⚠️ ATS warnings', atsWarnings),
-              diffSection,
+              '## 📄 CV text layer',
+              '',
+              ...cvTextSection,
+              ...diffSection,
+              '---',
               '',
               `<sub>Updates in place on every push. Not indexed by search engines.${
                 immutable ? ` Immutable build: ${immutable}` : ''
