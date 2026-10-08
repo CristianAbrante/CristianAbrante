@@ -19,7 +19,6 @@
  */
 
 const API_ROOT = 'https://api.cloudflare.com/client/v4';
-const PER_PAGE = 50;
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -62,17 +61,24 @@ async function api(path, { token, method = 'GET' }) {
   return payload;
 }
 
+// An explicit per_page is rejected with error 8000024 and the accepted range is
+// undocumented, so page 1 is requested without pagination parameters.
 async function listAllDeployments({ account, project, token }) {
-  const deployments = [];
-  for (let page = 1; ; page += 1) {
-    const payload = await api(
-      `/accounts/${account}/pages/projects/${project}/deployments?env=preview&page=${page}&per_page=${PER_PAGE}`,
-      { token }
-    );
-    deployments.push(...payload.result);
+  const base = `/accounts/${account}/pages/projects/${project}/deployments?env=preview`;
+  const first = await api(base, { token });
+  const deployments = [...first.result];
 
-    const total = payload.result_info?.total_count;
-    if (payload.result.length < PER_PAGE || (total && deployments.length >= total)) break;
+  const info = first.result_info;
+  const totalPages = info?.total_pages ?? 1;
+  for (let page = 2; page <= totalPages; page += 1) {
+    const next = await api(`${base}&page=${page}`, { token });
+    deployments.push(...next.result);
+  }
+
+  if (info?.total_count != null && deployments.length < info.total_count) {
+    console.warn(
+      `⚠️  Listed ${deployments.length} of ${info.total_count} reported deployments — pruning this run may be incomplete.`
+    );
   }
   return deployments;
 }
