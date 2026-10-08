@@ -72,7 +72,15 @@ CV can be reviewed in a real browser (including from a phone) before merging.
 **What it does:**
 
 1. **Generates** website, signature and CV (`generate:website`, `generate:signature`, `generate:pdf`)
-2. **Verifies** the website output (`verify:website`) — fails the PR on regression
+2. **Runs both verification gates**, reporting into the same sticky comment:
+   - `verify:website` — every website-visible `resume.json` field reached the HTML
+   - `verify:ats` — every pdf-visible field survives `pdftotext` extraction, the
+     same technique an Applicant Tracking System uses
+   
+   Both use `continue-on-error` so the preview still deploys and the comment
+   still posts when a check fails — you can look at the broken output while
+   reading the failure. A final step then fails the job, so the check still
+   goes red.
 3. **Assembles the preview bundle** (`generate:preview` → `scripts/build-preview.js`):
 
    ```
@@ -92,8 +100,17 @@ CV can be reviewed in a real browser (including from a phone) before merging.
 6. **Deploys to Cloudflare Pages** via `cloudflare/wrangler-action@v4` with
    `--branch=pr-{number}`, producing a stable alias URL
    `https://pr-{number}.cristianabrante-preview.pages.dev`
-7. **Comments on the PR** with the three links and the CV diff
-   (sticky comment, updated in place — marker `<!-- pr-preview-comment -->`)
+7. **Comments on the PR** with the three links, a pass/fail table for both
+   verification gates (with expandable per-field failures and warnings), and the
+   CV text diff — one sticky comment, updated in place
+   (marker `<!-- pr-preview-comment -->`)
+
+**Run the gates locally:**
+```bash
+brew install poppler   # one-time, for pdftotext
+npm run generate:all
+npm run verify:website && npm run verify:ats
+```
 
 **Fork and Dependabot safety:**
 - Steps 1–5 run for everyone. Steps 6–7 are gated on
@@ -151,33 +168,6 @@ npm run generate:website && npm run verify:website
 
 **Permissions:**
 - `contents: read` - Read repository files
-
-### `ats-verify.yml` - ATS Verification
-
-Verifies on every pull request that the generated CV PDF is parseable by
-Applicant Tracking Systems.
-
-**Triggers:**
-- Pull requests changing `resume.json`, `cv/**`, `scripts/verify-ats.js`, or the workflow itself
-
-**What it does:**
-
-1. **Compiles the CV** (Typst, PDF/UA-1 tagged output)
-2. **Extracts the text layer** with poppler's `pdftotext` — the same technique
-   ATS parsers use
-3. **Verifies every pdf-visible field from resume.json** survives extraction:
-   name, email, phone, section headers, positions, companies, dates,
-   technologies, institutions, degrees, awards, skills, and languages
-4. **Fails the check** if any field is missing or extraction is corrupted;
-   warns on ligature/icon glyph noise
-5. **Comments on the PR** with the score and per-field failures
-   (sticky comment, updated in place)
-
-**Run locally:**
-```bash
-brew install poppler   # one-time
-npm run generate:pdf && npm run verify:ats
-```
 
 ### `deploy-website.yml` - GitHub Pages Deployment
 
